@@ -3,4 +3,19 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="scrolling_view">@string/appbar_scrolling_view_behavior</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_filter">filter</string>
+
+    <string name="dummy_title">Kingsman: The Secret Service</string>
+    <string name="dummy_summary">
+        A spy organization recruits an unrefined, but promising street kid into the agency\'s
+        ultra-competitive training program, just as a global threat emerges from a twisted tech
+        genius.
+    </string>
+    <string name="dummy_cast">Cast: Jack Brown, Mitch Daniels, Sandy James</string>
+    <string name="dummy_length">2 hr 15 min</string>
+    <string name="movie_bg">movie_bg</string>
 </resources>
