@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 	@Bind(R.id.app_bar) ControllableAppBarLayout appBarLayout;
 	@Bind(R.id.collapsingToolbar) CollapsingToolbarLayout collapsingLayout;
 	@Bind(R.id.fab) FloatingActionButton fab;
+	@Bind(R.id.movie_bg) ImageView backdrop;
 
 	private Menu menu;
 
@@ -40,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 	}
 
 	private void setToolbar() {
+		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
+		collapsingLayout.setTitle("");
 		collapsingLayout.setExpandedTitleColor(Color.parseColor("#FFC107"));
 	}
 
@@ -93,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 
 	@Override public FloatingActionButton getFab() {
 		return fab;
+	}
+
+	@Override public ImageView getBackdrop() {
+		return backdrop;
 	}
 
 	@Override public View getRootView() {

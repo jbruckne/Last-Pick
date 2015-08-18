@@ -1,11 +1,14 @@
 <android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_grey_700"
     android:clipToPadding="false"
-    app:layout_behavior="@string/scrolling_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:fillViewport="true"
+    android:layout_gravity="fill_vertical"
+    app:layout_behavior="@string/scrolling_view">
 
     <include layout="@layout/card_movie"/>
 

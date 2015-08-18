@@ -18,4 +18,5 @@
     <string name="dummy_cast">Cast: Jack Brown, Mitch Daniels, Sandy James</string>
     <string name="dummy_length">2 hr 15 min</string>
     <string name="movie_bg">movie_bg</string>
+    <string name="poster">Poster</string>
 </resources>
