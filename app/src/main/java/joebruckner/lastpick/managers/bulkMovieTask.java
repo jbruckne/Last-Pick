@@ -40,7 +40,7 @@ public class BulkMovieTask extends AsyncTask<String, Integer, List<MovieDb>> {
 			for (int i = 0; i < pages; i++) {
 				int page = random.nextInt(scope);
 				Log.d(this.getClass().getSimpleName(), "PAGE: " + page);
-				results.addAll(movies.getPopularMovieList(language, page).getResults());
+				results.addAll(movies.getTopRatedMovies(language, page).getResults());
 			}
 
 			return results;

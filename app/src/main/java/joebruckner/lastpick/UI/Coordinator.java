@@ -6,10 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 public interface Coordinator {
-	void collapseAppBar();
-	void expandAppBar();
 	void setTitle(@NonNull String title);
-	void clearTitle();
+	void setThemeColors(int primary, int primaryDark, int accent);
 	FloatingActionButton getFab();
 	ImageView getBackdrop();
 	View getRootView();

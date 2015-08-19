@@ -2,9 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/md_amber_500</item>
-        <item name="colorPrimaryDark">@color/md_amber_700</item>
-        <item name="colorAccent">@color/md_amber_A400</item>
+        <item name="colorPrimary">@color/md_blue_grey_700</item>
+        <item name="colorPrimaryDark">@color/md_blue_grey_900</item>
+        <item name="colorAccent">@color/md_blue_grey_500</item>
+        <item name="android:windowBackground">@color/md_grey_900</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>

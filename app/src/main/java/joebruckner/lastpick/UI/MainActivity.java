@@ -1,6 +1,8 @@
 package joebruckner.lastpick.ui;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 		/* CODE FOR FILTERING FEATURE. NOT FOR VERSION 1.0
 		if (item.getItemId() == R.id.action_filter) {
 			getSupportFragmentManager().beginTransaction()
-					.setCustomAnimations(up, down, up, down)
+					.setCustomAnimations(enter, exit, enter, exit)
 					.add(R.id.content, new CategoriesFragment())
 					.addToBackStack(null)
 					.commit();
@@ -78,21 +80,16 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 		} */ return super.onOptionsItemSelected(item);
 	}
 
-	@Override public void collapseAppBar() {
-		appBarLayout.collapseToolbar(true);
-	}
-
-	@Override public void expandAppBar() {
-		appBarLayout.expandToolbar(true);
-	}
-
 	@Override
 	public void setTitle(@NonNull String title) {
 		collapsingLayout.setTitle(title);
 	}
 
-	@Override public void clearTitle() {
-		collapsingLayout.setTitle("");
+	@Override public void setThemeColors(int primary, int primaryDark, int accent) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+			getWindow().setStatusBarColor(primaryDark);
+		collapsingLayout.setContentScrimColor(primary);
+		fab.setBackgroundTintList(ColorStateList.valueOf(accent));
 	}
 
 	@Override public FloatingActionButton getFab() {

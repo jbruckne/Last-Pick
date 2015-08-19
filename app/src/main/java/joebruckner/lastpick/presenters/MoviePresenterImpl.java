@@ -8,9 +8,10 @@ import info.movito.themoviedbapi.model.MovieDb;
 import joebruckner.lastpick.actors.Actor;
 import joebruckner.lastpick.managers.MovieManager;
 import joebruckner.lastpick.managers.OnNewMovieListener;
+import joebruckner.lastpick.models.Movie;
 
 public class MoviePresenterImpl implements MoviePresenter, OnNewMovieListener {
-	@Nullable Actor<MovieDb> actor;
+	@Nullable Actor<Movie> actor;
 	@NonNull MovieManager manager;
 
 	public MoviePresenterImpl() {
@@ -18,7 +19,7 @@ public class MoviePresenterImpl implements MoviePresenter, OnNewMovieListener {
 		manager.setOnNewMovieListener(this);
 	}
 
-	@Override public void attachActor(Actor<MovieDb> actor) {
+	@Override public void attachActor(Actor<Movie> actor) {
 		this.actor = actor;
 	}
 
@@ -34,7 +35,7 @@ public class MoviePresenterImpl implements MoviePresenter, OnNewMovieListener {
 
 	@Override public void onNewMovie(MovieDb movie) {
 		Log.d(this.getClass().getSimpleName(), "New Movie Received");
-		if (actor != null) actor.showContent(movie);
+		if (actor != null) actor.showContent(new Movie(movie));
 	}
 
 	@Override public void onError(String errorMessage) {

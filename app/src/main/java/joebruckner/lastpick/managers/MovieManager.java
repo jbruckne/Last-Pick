@@ -17,7 +17,7 @@ public class MovieManager implements BulkMovieListener, SingleMovieListener {
 	private static final String API_KEY = "9856c489f3e6e5b5b972c6373c440210";
 	private static final String LANGUAGE = "en";
 	private static final int PAGES = 3;
-	private static final int SCOPE = 100;
+	private static final int SCOPE = 150;
 
 	public MovieManager() {
 		cachedResults = new ArrayList<>();

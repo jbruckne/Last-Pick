@@ -1,10 +1,10 @@
 package joebruckner.lastpick.presenters;
 
-import info.movito.themoviedbapi.model.MovieDb;
 import joebruckner.lastpick.actors.Actor;
+import joebruckner.lastpick.models.Movie;
 
 public interface MoviePresenter {
-	void attachActor(Actor<MovieDb> actor);
+	void attachActor(Actor<Movie> actor);
 	void detachActor();
 	void start();
 }

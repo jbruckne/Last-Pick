@@ -1,12 +1,8 @@
 package joebruckner.lastpick.models;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -16,7 +12,6 @@ import info.movito.themoviedbapi.model.people.PersonCast;
 import joebruckner.lastpick.R;
 
 public class MovieViewHolder {
-	@Bind( R.id.poster )  ImageView poster;
 	@Bind( R.id.title )   TextView title;
 	@Bind( R.id.summary ) TextView summary;
 	@Bind( R.id.cast )    TextView cast;
@@ -24,27 +19,17 @@ public class MovieViewHolder {
 	@Bind( R.id.rating )  TextView rating;
 	@Bind( R.id.length )  TextView length;
 
-	Context context;
-
-	private static final String BASE_URL = "http://image.tmdb.org/t/p/";
-	private static final String BACKDROP_SIZE = "w1280";
-	private static final String POSTER_SIZE = "w342";
-
-	public MovieViewHolder(Context context, @NonNull View view) {
+	public MovieViewHolder(@NonNull View view) {
 		ButterKnife.bind(this, view);
-		this.context = context;
 	}
 
-	public void setBackdrop(@NonNull String imagePath, ImageView view) {
-		Glide.with(context).load(BASE_URL + BACKDROP_SIZE + imagePath)
-				.centerCrop()
-				.into(view);
-	}
-
-	public void setPoster(@NonNull String imagePath) {
-		Glide.with(context).load(BASE_URL + POSTER_SIZE + imagePath)
-				.centerCrop()
-				.into(poster);
+	public void setData(Movie movie) {
+		setTitle(movie.getTitle());
+		setSummary(movie.getSummary());
+		setCast(movie.getCast());
+		setYear(movie.getReleaseDate());
+		setRating(movie.getRating());
+		setLength(movie.getRuntime());
 	}
 
 	public void setTitle(@NonNull String text) {

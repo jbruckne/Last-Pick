@@ -1,45 +1,66 @@
 package joebruckner.lastpick.ui;
 
 
-import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import info.movito.themoviedbapi.model.MovieDb;
 import joebruckner.lastpick.R;
 import joebruckner.lastpick.actors.Actor;
+import joebruckner.lastpick.models.Movie;
 import joebruckner.lastpick.models.MovieViewHolder;
 import joebruckner.lastpick.presenters.MoviePresenter;
 import joebruckner.lastpick.presenters.MoviePresenterImpl;
 import joebruckner.lastpick.widgets.OnAnimationFinishedListener;
 
 
-public class MovieFragment extends Fragment implements Actor<MovieDb> {
+public class MovieFragment extends Fragment implements
+		Actor<Movie>, RequestListener<String, Bitmap> {
 	@Bind(R.id.content) View content;
+	@Bind(R.id.poster) ImageView poster;
 
-	MoviePresenter presenter = new MoviePresenterImpl();
+	@NonNull MoviePresenter presenter = new MoviePresenterImpl();
 	Coordinator coordinator;
 	MovieViewHolder holder;
 
-	Animation up;
-	Animation down;
+	private Animation enter;
+	private Animation exit;
 
-	@Override public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		up = AnimationUtils.loadAnimation(activity, R.anim.slide_up);
-		down = AnimationUtils.loadAnimation(activity, R.anim.slide_down);
-		if (activity instanceof Coordinator)
-			coordinator = (Coordinator) activity;
+	@Override public void onAttach(Context context) {
+		super.onAttach(context);
+		enter = AnimationUtils.loadAnimation(context, R.anim.slide_up);
+		enter.setAnimationListener(new OnAnimationFinishedListener() {
+			@Override public void onAnimationEnd(Animation animation) {
+				onAnimationFinished(animation);
+			}
+		});
+		exit = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+		exit.setAnimationListener(new OnAnimationFinishedListener() {
+			@Override public void onAnimationEnd(Animation animation) {
+				onAnimationFinished(animation);
+			}
+		});
+		if (context instanceof Coordinator)
+			coordinator = (Coordinator) context;
 	}
 
 	@Override
@@ -51,7 +72,7 @@ public class MovieFragment extends Fragment implements Actor<MovieDb> {
 	@Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		ButterKnife.bind(this, view);
-		holder = new MovieViewHolder(getActivity(), view);
+		holder = new MovieViewHolder(view);
 		presenter.attachActor(this);
 		presenter.start();
 		coordinator.getFab().setOnClickListener(new View.OnClickListener() {
@@ -63,28 +84,56 @@ public class MovieFragment extends Fragment implements Actor<MovieDb> {
 
 	@Override public void showLoading() {
 		coordinator.getFab().setClickable(false);
-		content.startAnimation(down);
+		content.startAnimation(exit);
 	}
 
-	@Override public void showContent(MovieDb movie) {
+	@Override public void showContent(Movie movie) {
 		Log.d(this.getClass().getSimpleName(), "Showing Movie " + movie.toString());
-		holder.setBackdrop(movie.getBackdropPath(), coordinator.getBackdrop());
-		holder.setPoster(movie.getPosterPath());
-		holder.setTitle(movie.getTitle());
-		holder.setSummary(movie.getOverview());
-		holder.setCast(movie.getCast());
-		holder.setYear(movie.getReleaseDate());
-		holder.setRating(movie.getUserRating());
-		holder.setLength(movie.getRuntime());
-		up.setAnimationListener(new OnAnimationFinishedListener() {
-			@Override public void onAnimationEnd(Animation animation) {
-				coordinator.getFab().setClickable(true);
-			}
-		});
-		content.startAnimation(up);
+		Glide.with(this).load(movie.getPosterPath())
+				.centerCrop()
+				.into(poster);
+		Glide.with(this).load(movie.getBackdropPath())
+				.asBitmap()
+				.listener(this)
+				.centerCrop()
+				.into(coordinator.getBackdrop());
+		holder.setData(movie);
+		if (exit.hasStarted()) {
+			exit.setAnimationListener(new OnAnimationFinishedListener() {
+				@Override public void onAnimationEnd(Animation animation) {
+					content.startAnimation(enter);
+				}
+			});
+		} else content.startAnimation(enter);
 	}
 
 	@Override public void showError(String errorMessage) {
 		Snackbar.make(coordinator.getRootView(), errorMessage, Snackbar.LENGTH_LONG).show();
+	}
+
+	protected void onAnimationFinished(Animation animation) {
+		if (animation.equals(enter))
+			coordinator.getFab().setClickable(true);
+	}
+
+	@Override
+	public boolean onException(Exception e, String model, Target<Bitmap> target,
+	                           boolean isFirstResource) {
+		Log.e("Glide", e.toString());
+		return false;
+	}
+
+	@Override
+	public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target,
+	                               boolean isFromMemoryCache, boolean isFirstResource) {
+		Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+			@Override public void onGenerated(Palette palette) {
+				int primary = palette.getMutedColor(Color.parseColor("#455A64"));
+				int primaryDark = palette.getDarkMutedColor(Color.parseColor("#263238"));
+				int accent = palette.getVibrantColor(Color.parseColor("#455A64"));
+				coordinator.setThemeColors(primary, primaryDark, accent);
+			}
+		});
+		return false;
 	}
 }
