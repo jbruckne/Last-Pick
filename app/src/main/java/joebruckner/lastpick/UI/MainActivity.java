@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 	@Override public void setThemeColors(int primary, int primaryDark, int accent) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 			getWindow().setStatusBarColor(primaryDark);
+		backdrop.setBackgroundColor(primary);
 		collapsingLayout.setContentScrimColor(primary);
 		fab.setBackgroundTintList(ColorStateList.valueOf(accent));
 	}

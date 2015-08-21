@@ -90,11 +90,11 @@ public class MovieFragment extends Fragment implements
 	@Override public void showContent(Movie movie) {
 		Log.d(this.getClass().getSimpleName(), "Showing Movie " + movie.toString());
 		Glide.with(this).load(movie.getPosterPath())
+				.asBitmap()
+				.listener(this)
 				.centerCrop()
 				.into(poster);
 		Glide.with(this).load(movie.getBackdropPath())
-				.asBitmap()
-				.listener(this)
 				.centerCrop()
 				.into(coordinator.getBackdrop());
 		holder.setData(movie);
@@ -131,6 +131,7 @@ public class MovieFragment extends Fragment implements
 				int primary = palette.getMutedColor(Color.parseColor("#455A64"));
 				int primaryDark = palette.getDarkMutedColor(Color.parseColor("#263238"));
 				int accent = palette.getVibrantColor(Color.parseColor("#455A64"));
+				poster.setBackgroundColor(primary);
 				coordinator.setThemeColors(primary, primaryDark, accent);
 			}
 		});
