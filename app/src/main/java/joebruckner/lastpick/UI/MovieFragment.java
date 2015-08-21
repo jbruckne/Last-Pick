@@ -128,11 +128,30 @@ public class MovieFragment extends Fragment implements
 	                               boolean isFromMemoryCache, boolean isFirstResource) {
 		Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
 			@Override public void onGenerated(Palette palette) {
-				int primary = palette.getMutedColor(Color.parseColor("#455A64"));
-				int primaryDark = palette.getDarkMutedColor(Color.parseColor("#263238"));
-				int accent = palette.getVibrantColor(Color.parseColor("#455A64"));
+				Palette.Swatch muted = palette.getMutedSwatch();
+				Palette.Swatch vibrant = palette.getVibrantSwatch();
+				int primary = Color.parseColor("#455A64");
+				int dark = Color.parseColor("#263238");
+				int accent = Color.parseColor("#607D8B");
+				if (muted != null) {
+					Log.d("Palette", "Muted swatch used");
+					primary = palette.getMutedColor(Color.BLACK);
+					float[] hsl = muted.getHsl();
+					hsl[2] *= 0.9;
+					dark = Color.HSVToColor(hsl);
+					hsl[2] *= 1.8;
+					accent = Color.HSVToColor(hsl);
+				} else if (vibrant != null) {
+					Log.d("Palette", "Vibrant swatch used");
+					primary = palette.getVibrantColor(Color.BLACK);
+					float[] hsl = vibrant.getHsl();
+					hsl[2] *= 0.9;
+					dark = Color.HSVToColor(hsl);
+					hsl[2] *= 1.8;
+					accent = Color.HSVToColor(hsl);
+				} else Log.d("Palette", "Default swatch used");
+				coordinator.setThemeColors(primary, dark, accent);
 				poster.setBackgroundColor(primary);
-				coordinator.setThemeColors(primary, primaryDark, accent);
 			}
 		});
 		return false;
