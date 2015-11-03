@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.AnimRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -28,11 +27,6 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 	@Bind(R.id.collapsingToolbar) CollapsingToolbarLayout collapsingLayout;
 	@Bind(R.id.fab) FloatingActionButton fab;
 	@Bind(R.id.movie_bg) ImageView backdrop;
-
-	private Menu menu;
-
-	@AnimRes int up = R.anim.slide_up;
-	@AnimRes int down = R.anim.slide_down;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,26 +52,13 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		this.menu = menu;
 		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		/* CODE FOR FILTERING FEATURE. NOT FOR VERSION 1.0
-		if (item.getItemId() == R.id.action_filter) {
-			getSupportFragmentManager().beginTransaction()
-					.setCustomAnimations(enter, exit, enter, exit)
-					.add(R.id.content, new CategoriesFragment())
-					.addToBackStack(null)
-					.commit();
-			appBarLayout.collapseToolbar(true);
-			setTitle("Categories");
-			item.setVisible(false);
-			fab.setImageResource(R.drawable.ic_action_done);
-			return true;
-		} */ return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -103,13 +84,5 @@ public class MainActivity extends AppCompatActivity implements Coordinator {
 
 	@Override public View getRootView() {
 		return root;
-	}
-
-	@Override public void onBackPressed() {
-		super.onBackPressed();
-		/* CODE FOR FILTERING FEATURE. NOT FOR VERSION 1.0
-		appBarLayout.expandToolbar(true);
-		menu.findItem(R.id.action_filter).setVisible(true);
-		fab.setImageResource(R.drawable.ic_action_random); */
 	}
 }

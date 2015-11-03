@@ -23,7 +23,7 @@ public class BulkMovieTask extends AsyncTask<String, Integer, List<MovieDb>> {
 	public static final String ERROR_NOT_FOUND = "Error: No movies found";
 
 	public BulkMovieTask(int pages, int scope, @NonNull String key, @NonNull String language,
-	                     @NonNull BulkMovieListener listener) {
+						 @NonNull BulkMovieListener listener) {
 		this.key = key;
 		this.scope = scope;
 		this.pages = pages;
