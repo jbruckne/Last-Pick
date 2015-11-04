@@ -74,10 +74,10 @@ public class MovieFragment extends Fragment implements
 		ButterKnife.bind(this, view);
 		holder = new MovieViewHolder(view);
 		presenter.attachActor(this);
-		presenter.start();
+		presenter.shuffleMovie();
 		coordinator.getFab().setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-				presenter.start();
+				presenter.shuffleMovie();
 			}
 		});
 	}
