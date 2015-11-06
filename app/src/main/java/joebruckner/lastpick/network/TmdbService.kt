@@ -1,18 +1,11 @@
-package joebruckner.lastpick.managers
+package joebruckner.lastpick.network
 
-import com.google.gson.JsonElement
-import com.squareup.okhttp.ResponseBody
-import joebruckner.lastpick.models.Movie
-import joebruckner.lastpick.models.MovieSet
-import org.json.JSONObject
+import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.data.MovieSet
 import retrofit.Call
-import retrofit.Response
 import retrofit.http.GET
-import retrofit.http.Header
 import retrofit.http.Path
 import retrofit.http.Query
-import rx.Observable
-
 
 
 public interface TmdbService {
@@ -24,7 +17,7 @@ public interface TmdbService {
     @GET("movie/top_rated?api_key=$api_key")
     fun getTopRatedMovies(@Query("page") page: Int): Call<MovieSet>
 
-    @GET("movie/{id}?api_key=$api_key")
+    @GET("movie/{id}?api_key=$api_key&append_to_response=credits")
     fun getMovie(@Path("id") id: Int): Call<Movie>
 
 }

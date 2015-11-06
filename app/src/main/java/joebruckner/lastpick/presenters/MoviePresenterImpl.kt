@@ -1,44 +1,48 @@
 package joebruckner.lastpick.presenters
 
 import android.util.Log
+import com.squareup.otto.Bus
+import com.squareup.otto.Subscribe
+import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.data.Request
+import joebruckner.lastpick.data.Error
+import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 
-import info.movito.themoviedbapi.model.MovieDb
-import joebruckner.lastpick.actors.Actor
-import joebruckner.lastpick.managers.MovieManager
-import joebruckner.lastpick.managers.OnNewMovieListener
-import joebruckner.lastpick.models.Movie
+class MoviePresenterImpl(val bus: Bus): MoviePresenter {
 
-class MoviePresenterImpl : MoviePresenter, OnNewMovieListener {
-	var actor: Actor<Movie>? = null
-    val manager: MovieManager
+	var view: MovieView? = null
 
-    init {
-        manager = MovieManager()
-        manager.listener = this
-    }
-
-    override fun attachActor(actor: Actor<Movie>) {
-        this.actor = actor
+    override fun attachActor(view: MovieView) {
+        this.view = view
+        bus.register(this)
     }
 
     override fun detachActor() {
-        this.actor = null
+        this.view = null
+        bus.unregister(this)
     }
 
     override fun shuffleMovie() {
-        actor?.showLoading()
-        manager.findNewMovie()
+        view?.showLoading()
+        bus.post(Request())
     }
 
 	override fun undoShuffle() {
 		throw UnsupportedOperationException()
 	}
 
-    override fun onNewMovie(movie: MovieDb) {
-        actor?.showContent(Movie(movie))
+    @Subscribe fun movieAvailable(movie: Movie) {
+        if (view?.isLoading() ?: false)
+            view?.showContent(movie)
+        else // TODO cache
+
+        Log.d("Movie", movie.toString())
     }
 
-    override fun onError(errorMessage: String) {
-        actor?.showError(errorMessage)
+    @Subscribe fun errorThrown(error: Error) {
+        if (view?.isLoading() ?: false)
+            view?.showError(error.message)
+
+        Log.e("Error", error.toString())
     }
 }

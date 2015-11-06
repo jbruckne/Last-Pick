@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -24,26 +23,28 @@ import com.bumptech.glide.request.target.Target;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import joebruckner.lastpick.LastPickApp;
 import joebruckner.lastpick.R;
-import joebruckner.lastpick.actors.Actor;
-import joebruckner.lastpick.models.Movie;
-import joebruckner.lastpick.models.MovieViewHolder;
+import joebruckner.lastpick.data.Movie;
+import joebruckner.lastpick.data.MovieViewHolder;
 import joebruckner.lastpick.presenters.MoviePresenter;
 import joebruckner.lastpick.presenters.MoviePresenterImpl;
 import joebruckner.lastpick.widgets.OnAnimationFinishedListener;
 
 
 public class MovieFragment extends Fragment implements
-		Actor<Movie>, RequestListener<String, Bitmap> {
+        MoviePresenter.MovieView, RequestListener<String, Bitmap> {
 	@Bind(R.id.content) View content;
 	@Bind(R.id.poster) ImageView poster;
 
-	@NonNull MoviePresenter presenter = new MoviePresenterImpl();
+	MoviePresenter presenter;
 	Coordinator coordinator;
 	MovieViewHolder holder;
 
 	private Animation enter;
 	private Animation exit;
+
+    private boolean isLoading = true;
 
 	@Override public void onAttach(Context context) {
 		super.onAttach(context);
@@ -61,6 +62,9 @@ public class MovieFragment extends Fragment implements
 		});
 		if (context instanceof Coordinator)
 			coordinator = (Coordinator) context;
+
+        LastPickApp app = (LastPickApp) getActivity().getApplication();
+        presenter = new MoviePresenterImpl(app.getBus());
 	}
 
 	@Override
@@ -83,18 +87,20 @@ public class MovieFragment extends Fragment implements
 	}
 
 	@Override public void showLoading() {
+        isLoading = true;
 		coordinator.getFab().setClickable(false);
 		content.startAnimation(exit);
 	}
 
 	@Override public void showContent(Movie movie) {
+        isLoading = false;
 		Log.d(this.getClass().getSimpleName(), "Showing Movie " + movie.toString());
-		Glide.with(this).load(movie.getPosterPath())
+		Glide.with(this).load(movie.getBackdropPath())
 				.asBitmap()
 				.listener(this)
 				.centerCrop()
 				.into(poster);
-		Glide.with(this).load(movie.getBackdropPath())
+		Glide.with(this).load(movie.getPosterPath())
 				.centerCrop()
 				.into(coordinator.getBackdrop());
 		holder.setData(movie);
@@ -108,6 +114,7 @@ public class MovieFragment extends Fragment implements
 	}
 
 	@Override public void showError(String errorMessage) {
+        isLoading = false;
 		Snackbar.make(coordinator.getRootView(), errorMessage, Snackbar.LENGTH_LONG).show();
 	}
 
@@ -160,4 +167,9 @@ public class MovieFragment extends Fragment implements
 		coordinator.setThemeColors(primary, dark, accent);
 		poster.setBackgroundColor(primary);
 	}
+
+    @Override
+    public boolean isLoading() {
+        return isLoading;
+    }
 }
