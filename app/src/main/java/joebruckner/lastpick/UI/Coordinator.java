@@ -6,9 +6,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 public interface Coordinator {
-	void setTitle(@NonNull String title);
-	void setThemeColors(int primary, int primaryDark, int accent);
-	FloatingActionButton getFab();
-	ImageView getBackdrop();
-	View getRootView();
+    void setTitle(@NonNull String title);
+
+    void setThemeColors(int primary, int primaryDark, int accent);
+
+    FloatingActionButton getFab();
+
+    ImageView getBackdrop();
+
+    View getRootView();
 }

@@ -11,7 +11,7 @@ import retrofit.http.Query
 public interface TmdbService {
 
     companion object {
-        const val api_key = "9856c489f3e6e5b5b972c6373c440210"
+        const val api_key = ""
     }
 
     @GET("movie/top_rated?api_key=$api_key")

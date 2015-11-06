@@ -19,4 +19,5 @@
     <string name="dummy_length">2 hr 15 min</string>
     <string name="movie_bg">movie_bg</string>
     <string name="poster">Poster</string>
+    <string name="poster_description">Poster</string>
 </resources>

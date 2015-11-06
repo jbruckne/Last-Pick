@@ -14,4 +14,16 @@ class LastPickApp : Application() {
         super.onCreate()
         Log.d(APP_NAME, "App launched :)")
     }
+
+    override fun getSystemService(name: String): Any? {
+        Log.d("Getting Service", name)
+        when (name) {
+            BUS -> return bus
+            else -> return super.getSystemService(name)
+        }
+    }
+
+    companion object {
+        const val BUS = "BUS"
+    }
 }

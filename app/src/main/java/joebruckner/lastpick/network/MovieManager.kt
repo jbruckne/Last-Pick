@@ -1,9 +1,11 @@
 package joebruckner.lastpick.network
 
+import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.enqueue
-import joebruckner.lastpick.data.Request
+import joebruckner.lastpick.events.Request
+import joebruckner.lastpick.events.RequestError
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import java.util.*
@@ -21,7 +23,9 @@ class MovieManager(val bus: Bus, val language: String, val scope: Int) {
     }
 
     @Subscribe fun requestAvailable(request: Request) {
-        if (idStack.isEmpty()) getNewIds(getRandomPage(0..scope))
+        if (idStack.isEmpty()) {
+            getNewIds(getRandomPage(1..scope))
+        }
         else getNewMovie(idStack.pop())
     }
 
@@ -30,14 +34,19 @@ class MovieManager(val bus: Bus, val language: String, val scope: Int) {
             if (response.isSuccess && response.code() == 200) {
                 response.body().getIds().forEach { idStack.push(it) }
                 getNewMovie(idStack.pop())
+            } else {
+                bus.post(RequestError("Unable to fetch page of top rated", response.code()))
             }
         }
     }
 
     private fun getNewMovie(id: Int) {
         service.getMovie(id).enqueue { response, retrofit ->
-            if (response.isSuccess && response.code() == 200)
+            if (response.isSuccess && response.code() == 200) {
                 bus.post(response.body())
+            } else {
+                bus.post(RequestError("Unable to fetch movie with id $id", response.code()))
+            }
         }
     }
 

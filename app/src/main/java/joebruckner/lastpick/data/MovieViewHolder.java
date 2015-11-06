@@ -12,12 +12,18 @@ import butterknife.ButterKnife;
 import joebruckner.lastpick.R;
 
 public class MovieViewHolder {
-    @Bind( R.id.title )   TextView title;
-    @Bind( R.id.summary ) TextView summary;
-    @Bind( R.id.cast )    TextView cast;
-    @Bind( R.id.year )    TextView year;
-    @Bind( R.id.rating )  TextView rating;
-    @Bind( R.id.length )  TextView length;
+    @Bind(R.id.title)
+    TextView title;
+    @Bind(R.id.summary)
+    TextView summary;
+    @Bind(R.id.cast)
+    TextView cast;
+    @Bind(R.id.year)
+    TextView year;
+    @Bind(R.id.rating)
+    TextView rating;
+    @Bind(R.id.length)
+    TextView length;
 
     public MovieViewHolder(@NonNull View view) {
         ButterKnife.bind(this, view);

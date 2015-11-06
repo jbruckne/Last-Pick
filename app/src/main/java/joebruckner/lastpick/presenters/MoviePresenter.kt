@@ -6,12 +6,12 @@ interface MoviePresenter {
     fun attachActor(view: MovieView)
     fun detachActor()
     fun shuffleMovie()
-	fun undoShuffle()
+    fun undoShuffle()
 
     interface MovieView {
         fun showLoading()
         fun showContent(movie: Movie)
         fun showError(errorMessage: String)
-        fun isLoading(): Boolean
+        var isLoading: Boolean
     }
 }

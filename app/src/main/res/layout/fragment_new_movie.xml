@@ -1,0 +1,32 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/movie_card_margin"
+    tools:context="joebruckner.lastpick.ui.NewMovieFragment"
+    tools:ignore="UnusedAttribute" >
+
+    <View
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_red_800"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/new_card_movie"
+        android:visibility="gone"
+        />
+
+    <View
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/material_grey_800"
+        android:visibility="visible"
+        />
+</FrameLayout>
