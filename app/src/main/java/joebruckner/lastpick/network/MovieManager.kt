@@ -23,9 +23,8 @@ class MovieManager(val bus: Bus, val language: String, val scope: Int) {
     }
 
     @Subscribe fun requestAvailable(request: Request) {
-        if (idStack.isEmpty()) {
+        if (idStack.isEmpty())
             getNewIds(getRandomPage(1..scope))
-        }
         else getNewMovie(idStack.pop())
     }
 
@@ -43,6 +42,7 @@ class MovieManager(val bus: Bus, val language: String, val scope: Int) {
     private fun getNewMovie(id: Int) {
         service.getMovie(id).enqueue { response, retrofit ->
             if (response.isSuccess && response.code() == 200) {
+                Log.d("Manager", "New Movie Fetched")
                 bus.post(response.body())
             } else {
                 bus.post(RequestError("Unable to fetch movie with id $id", response.code()))
@@ -50,6 +50,8 @@ class MovieManager(val bus: Bus, val language: String, val scope: Int) {
         }
     }
 
-    private fun getRandomPage(range: Range<Int>):
-            Int = ((Math.random() * (range.end - range.start + 1)) + range.start).toInt()
+    private fun getRandomPage(range: Range<Int>): Int {
+        val random = Random(System.currentTimeMillis())
+        return random.nextInt(range.end - range.start) + range.start
+    }
 }

@@ -37,6 +37,9 @@ data class Movie(
         val videos: Video.ListWrapper
 ) {
 
+    fun fullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
+
+    fun fullBackdropPath(): String = BASE_URL + BACKDROP_SIZE + backdropPath
 
     companion object {
         private val BASE_URL = "http://image.tmdb.org/t/p/"

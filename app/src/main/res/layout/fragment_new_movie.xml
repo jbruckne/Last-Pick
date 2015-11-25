@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/movie_card_margin"
     tools:context="joebruckner.lastpick.ui.NewMovieFragment"
     tools:ignore="UnusedAttribute" >
 
@@ -14,19 +13,24 @@
         android:background="@color/md_red_800"
         android:visibility="gone"/>
 
-    <include
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/new_card_movie"
-        android:visibility="gone"
-        />
+        android:visibility="visible">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/new_card_movie"
+            />
+    </android.support.v4.widget.NestedScrollView>
 
     <View
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/material_grey_800"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 </FrameLayout>
