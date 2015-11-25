@@ -17,6 +17,13 @@
     </string>
     <string name="dummy_cast">Cast: Jack Brown, Mitch Daniels, Sandy James</string>
     <string name="dummy_length">2 hr 15 min</string>
-    <string name="movie_bg">movie_bg</string>
+    <string name="backdrop">movie_bg</string>
     <string name="poster">Poster</string>
+    <string name="poster_description">Poster</string>
+    <string name="dummy_rating">PG-13</string>
+    <string name="dummy_year">2015</string>
+    <string name="backdrop_description">Backdrop</string>
+    <string name="popularity">popularity</string>
+    <string name="date">date</string>
+    <string name="clock">clock</string>
 </resources>
