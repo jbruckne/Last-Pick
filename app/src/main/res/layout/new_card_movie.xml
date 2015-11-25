@@ -10,6 +10,7 @@
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/md_grey_900"
     app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
     tools:ignore="RtlSymmetry"
     >
 
