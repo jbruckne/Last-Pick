@@ -65,6 +65,7 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 window.statusBarColor = magic.dark
             backdrop.setBackgroundColor(magic.primary)
+            poster.setBackgroundColor(magic.accent)
             collapsingToolbar.setContentScrimColor(magic.primary)
             fab.backgroundTintList = ColorStateList.valueOf(magic.accent)
         }
