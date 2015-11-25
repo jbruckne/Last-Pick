@@ -34,12 +34,20 @@ data class Movie(
         val voteAverage: Double,
         @SerializedName("vote_count")
         val voteCount: Int,
-        val videos: Video.ListWrapper
+        val videos: Video.ListWrapper,
+        val releases: Release.ListWrapper
 ) {
 
     fun fullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
 
     fun fullBackdropPath(): String = BASE_URL + BACKDROP_SIZE + backdropPath
+
+    fun simpleMpaa(): String {
+        releases.countries.forEach { release ->
+            if (release.country == "US") return release.certification
+        }
+        return releases.countries[0].certification
+    }
 
     companion object {
         private val BASE_URL = "http://image.tmdb.org/t/p/"

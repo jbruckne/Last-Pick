@@ -10,7 +10,7 @@ class MovieViewHolder(view: View) {
     val summary: TextView
     val cast: TextView
     val year: TextView
-    //val rating: TextView
+    val mpaa: TextView
     val vote: TextView
     val length: TextView
     var movie: Movie? = null
@@ -19,7 +19,7 @@ class MovieViewHolder(view: View) {
            summary.text    = m?.overview
            cast.text       = m?.credits?.toString()
            year.text       = m?.releaseDate?.substring(0,4)
-           //rating.text     = m?.voteAverage.toString()
+           mpaa.text       = m?.simpleMpaa()
            vote.text       = formatVote(m?.voteAverage ?: 0.0)
            length.text     = formatLength(m?.runtime ?: 0)
         }
@@ -29,8 +29,8 @@ class MovieViewHolder(view: View) {
         summary = view.findViewById(R.id.overview)  as TextView
         cast    = view.findViewById(R.id.cast)      as TextView
         year    = view.findViewById(R.id.year)      as TextView
-        //rating  = view.findViewById(R.id.rating)    as TextView
-        vote = view.findViewById(R.id.popularity) as TextView
+        mpaa  = view.findViewById(R.id.mpaa)        as TextView
+        vote = view.findViewById(R.id.popularity)   as TextView
         length  = view.findViewById(R.id.runtime)   as TextView
     }
 
