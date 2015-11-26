@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.graphics.Palette
 import android.util.Log
 import com.bumptech.glide.Glide
@@ -71,4 +72,21 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
         }
         return false
     }
+
+    override fun enableFab() {
+        fab.show(object: FloatingActionButton.OnVisibilityChangedListener() {
+            override fun onShown(f: FloatingActionButton?) {
+                if (!fab.isEnabled) disableFab()
+            }
+        })
+    }
+
+    override fun disableFab() {
+        fab.hide(object: FloatingActionButton.OnVisibilityChangedListener() {
+            override fun onHidden(f: FloatingActionButton?) {
+                if (fab.isEnabled) enableFab()
+            }
+        })
+    }
+
 }

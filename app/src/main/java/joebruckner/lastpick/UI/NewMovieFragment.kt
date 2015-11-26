@@ -21,12 +21,14 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
 
     override fun showLoading() {
         isLoading = true
+        parent.disableFab()
         updateViews(View.GONE, View.VISIBLE, View.GONE)
         Log.d("Loading", "...")
     }
 
     override fun showContent(movie: Movie) {
         isLoading = false
+        parent.enableFab()
         holder.movie = movie
         parent.setTitle(movie.title)
         parent.setBackdrop(movie.fullBackdropPath())
@@ -37,6 +39,7 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
 
     override fun showError(errorMessage: String) {
         isLoading = false
+        parent.enableFab()
         updateViews(View.GONE, View.GONE, View.VISIBLE)
         Log.e("Error", errorMessage)
     }

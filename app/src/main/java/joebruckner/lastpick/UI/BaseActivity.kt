@@ -18,6 +18,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun setPoster(imagePath: String);
 
+    abstract fun enableFab();
+
+    abstract fun disableFab();
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
