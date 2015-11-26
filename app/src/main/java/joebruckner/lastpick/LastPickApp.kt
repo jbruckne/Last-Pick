@@ -7,7 +7,7 @@ import joebruckner.lastpick.network.MovieManager
 
 class LastPickApp : Application() {
     val bus = Bus()
-    val movieManager = MovieManager(bus, "en", 40)
+    val movieManager = MovieManager(bus, "en", 40, this)
     val APP_NAME = "Last Pick"
 
     override fun onCreate() {

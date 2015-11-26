@@ -24,8 +24,8 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
         parent.disableFab()
         parent.clearBackdrop()
         parent.clearPoster()
-        parent.setTitle("")
-        updateViews(View.GONE, View.VISIBLE, View.GONE)
+        parent.setTitle(" ")
+        updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
         Log.d("Loading", "...")
     }
 
@@ -36,7 +36,7 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
         parent.setTitle(movie.title)
         parent.setBackdrop(movie.fullBackdropPath())
         parent.setPoster(movie.fullPosterPath())
-        updateViews(View.VISIBLE, View.GONE, View.GONE)
+        updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
         Log.d("Content", movie.toString())
     }
 
@@ -45,15 +45,16 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
         parent.enableFab()
         parent.clearBackdrop()
         parent.clearPoster()
-        parent.setTitle("")
-        updateViews(View.GONE, View.GONE, View.VISIBLE)
+        parent.setTitle(" ")
+        error.text = errorMessage
+        updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
         Log.e("Error", errorMessage)
     }
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
         content.visibility = contentState
         loading.visibility = loadingState
-        error.visibility = errorState
+        error.visibility   = errorState
     }
 
     override fun onStart() {
