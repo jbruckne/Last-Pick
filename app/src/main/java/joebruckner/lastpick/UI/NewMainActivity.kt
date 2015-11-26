@@ -23,6 +23,8 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
     override val menuId = R.menu.menu_main
     lateinit var blur: BitmapTransformation
 
+    private var fabIsEnabled = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
@@ -74,19 +76,29 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
     }
 
     override fun enableFab() {
+        fabIsEnabled = true
         fab.show(object: FloatingActionButton.OnVisibilityChangedListener() {
             override fun onShown(f: FloatingActionButton?) {
-                if (!fab.isEnabled) disableFab()
+                if (!fabIsEnabled) disableFab()
             }
         })
     }
 
     override fun disableFab() {
+        fabIsEnabled = false
         fab.hide(object: FloatingActionButton.OnVisibilityChangedListener() {
             override fun onHidden(f: FloatingActionButton?) {
-                if (fab.isEnabled) enableFab()
+                if (fabIsEnabled) enableFab()
             }
         })
+    }
+
+    override fun clearBackdrop() {
+        backdrop.setImageResource(android.R.color.transparent)
+    }
+
+    override fun clearPoster() {
+        poster.setImageResource(android.R.color.transparent)
     }
 
 }

@@ -9,18 +9,23 @@ import android.view.Menu
 import joebruckner.lastpick.events.Action
 
 abstract class BaseActivity : AppCompatActivity() {
+
     abstract val layoutId: Int
     abstract val menuId: Int
 
-    abstract fun setTitle(title: String);
+    abstract fun setTitle(title: String)
 
-    abstract fun setBackdrop(imagePath: String);
+    abstract fun setBackdrop(imagePath: String)
 
-    abstract fun setPoster(imagePath: String);
+    abstract fun setPoster(imagePath: String)
 
-    abstract fun enableFab();
+    abstract fun clearBackdrop()
 
-    abstract fun disableFab();
+    abstract fun clearPoster()
+
+    abstract fun enableFab()
+
+    abstract fun disableFab()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
