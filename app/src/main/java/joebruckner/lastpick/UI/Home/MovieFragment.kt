@@ -1,5 +1,6 @@
-package joebruckner.lastpick.ui
+package joebruckner.lastpick.ui.home
 
+import android.support.v7.graphics.Palette
 import android.util.Log
 import android.view.View
 import com.squareup.otto.Bus
@@ -9,43 +10,47 @@ import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
-import kotlinx.android.synthetic.fragment_new_movie.content
-import kotlinx.android.synthetic.fragment_new_movie.error
-import kotlinx.android.synthetic.fragment_new_movie.loading
+import joebruckner.lastpick.ui.common.BaseFragment
+import joebruckner.lastpick.ui.MovieViewHolder
+import joebruckner.lastpick.ui.common.DetailActivity
+import kotlinx.android.synthetic.fragment_movie.content
+import kotlinx.android.synthetic.fragment_movie.error
+import kotlinx.android.synthetic.fragment_movie.loading
 
-class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
-    override val layoutId = R.layout.fragment_new_movie
+class MovieFragment : BaseFragment(), MoviePresenter.MovieView {
+    override val layoutId = R.layout.fragment_movie
     override var isLoading = true
     lateinit var presenter: MoviePresenter
     lateinit var holder: MovieViewHolder
+    lateinit var detailParent: DetailActivity
 
     override fun showLoading() {
         isLoading = true
-        parent.disableFab()
-        parent.clearBackdrop()
-        parent.clearPoster()
-        parent.setTitle(" ")
+        detailParent.disableFab()
+        detailParent.clearBackdrop()
+        detailParent.clearPoster()
+        detailParent.setTitle(" ")
         updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
         Log.d("Loading", "...")
     }
 
     override fun showContent(movie: Movie) {
         isLoading = false
-        parent.enableFab()
+        detailParent.enableFab()
         holder.movie = movie
-        parent.setTitle(movie.title)
-        parent.setBackdrop(movie.fullBackdropPath())
-        parent.setPoster(movie.fullPosterPath())
+        detailParent.setTitle(movie.title)
+        detailParent.setBackdrop(movie.fullBackdropPath())
+        detailParent.setPoster(movie.fullPosterPath())
         updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
         Log.d("Content", movie.toString())
     }
 
     override fun showError(errorMessage: String) {
         isLoading = false
-        parent.enableFab()
-        parent.clearBackdrop()
-        parent.clearPoster()
-        parent.setTitle(" ")
+        detailParent.enableFab()
+        detailParent.clearBackdrop()
+        detailParent.clearPoster()
+        detailParent.setTitle(" ")
         error.text = errorMessage
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
         Log.e("Error", errorMessage)
@@ -59,8 +64,9 @@ class NewMovieFragment : BaseFragment(), MoviePresenter.MovieView {
 
     override fun onStart() {
         super.onStart()
+        detailParent = parent as DetailActivity
         holder = MovieViewHolder(view)
-        val bus: Bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
+        val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
         presenter = MoviePresenterImpl(bus)
         presenter.attachActor(this)
         presenter.shuffleMovie()

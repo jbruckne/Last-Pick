@@ -26,4 +26,6 @@
     <string name="popularity">popularity</string>
     <string name="date">date</string>
     <string name="clock">clock</string>
+    <string name="action_history">history</string>
+    <string name="title_activity_history">HistoryActivity</string>
 </resources>

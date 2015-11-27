@@ -3,11 +3,15 @@ package joebruckner.lastpick
 import android.app.Application
 import android.util.Log
 import com.squareup.otto.Bus
+import joebruckner.lastpick.network.HistoryManager
 import joebruckner.lastpick.network.MovieManager
+import joebruckner.lastpick.network.ServiceManager
 
 class LastPickApp : Application() {
     val bus = Bus()
-    val movieManager = MovieManager(bus, "en", 40, this)
+    val service = ServiceManager(this, bus)
+    val history = HistoryManager(bus, 15)
+    val movies = MovieManager(bus, 50)
     val APP_NAME = "Last Pick"
 
     override fun onCreate() {

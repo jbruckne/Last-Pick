@@ -1,3 +1,4 @@
 package joebruckner.lastpick.events
 
-class Request()
+class MovieEvent
+{}

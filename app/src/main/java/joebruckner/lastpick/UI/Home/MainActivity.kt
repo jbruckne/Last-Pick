@@ -1,6 +1,7 @@
-package joebruckner.lastpick.ui
+package joebruckner.lastpick.ui.home
 
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.os.Build
@@ -8,18 +9,21 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.graphics.Palette
 import android.util.Log
+import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import joebruckner.lastpick.R
 import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.ui.common.DetailActivity
+import joebruckner.lastpick.ui.history.HistoryActivity
 import joebruckner.lastpick.widgets.ImageBlur
 import joebruckner.lastpick.widgets.PaletteMagic
-import kotlinx.android.synthetic.activity_new_main.*
+import kotlinx.android.synthetic.activity_main.*
 
-class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
-    override val layoutId = R.layout.activity_new_main
+class MainActivity : DetailActivity(), RequestListener<String, Bitmap> {
+    override val layoutId = R.layout.activity_main
     override val menuId = R.menu.menu_main
     lateinit var blur: BitmapTransformation
 
@@ -29,7 +33,7 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
         fab.setOnClickListener({ sendAction(Action.SHUFFLE) });
-        replaceFrame(R.id.frame, NewMovieFragment())
+        replaceFrame(R.id.frame, MovieFragment(), true)
         blur = ImageBlur(this, 20f)
         appBar.addOnOffsetChangedListener { layout, i ->
             poster.elevation = if(layout.y < -40) 0f else 4f
@@ -101,4 +105,17 @@ class NewMainActivity : BaseActivity(), RequestListener<String, Bitmap> {
         poster.setImageResource(android.R.color.transparent)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_history -> {
+                showHistory()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showHistory() {
+        startActivity(Intent(this, javaClass<HistoryActivity>()))
+    }
 }

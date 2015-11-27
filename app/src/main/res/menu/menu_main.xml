@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
 
       <item
-            android:id="@+id/action_settings"
-            android:title="@string/action_settings"
-            app:showAsAction="never"/>
+            android:id="@+id/action_history"
+            android:title="@string/action_history"
+            app:showAsAction="ifRoom"/>
 </menu>

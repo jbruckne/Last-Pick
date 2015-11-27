@@ -1,4 +1,4 @@
-package joebruckner.lastpick.ui
+package joebruckner.lastpick.ui.common
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.ui.common.BaseActivity
 
 abstract class BaseFragment : Fragment() {
     abstract val layoutId: Int
@@ -22,7 +23,7 @@ abstract class BaseFragment : Fragment() {
         return inflater.inflate(layoutId, container, false)
     }
 
-    abstract fun handleAction(action: Action): Unit
+    open fun handleAction(action: Action): Unit {}
 
 
 }

@@ -6,4 +6,5 @@
     <dimen name="toolbar_z">4dp</dimen>
     <dimen name="detail_spacing">16dp</dimen>
     <dimen name="detail_icon_size">26dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
