@@ -16,7 +16,7 @@ class HistoryFragment : BaseFragment(), HistoryPresenter.HistoryView {
     override val layoutId = R.layout.fragment_history
     override var isLoading = false
     lateinit var presenter: HistoryPresenter
-    val adapter = SimpleMovieAdapter()
+    lateinit var adapter: SimpleMovieAdapter
 
     override fun showContent(movies: List<Movie>) {
         adapter.setNewMovies(movies)
@@ -29,6 +29,7 @@ class HistoryFragment : BaseFragment(), HistoryPresenter.HistoryView {
     override fun onStart() {
         super.onStart()
         Log.d(this.javaClass.simpleName, "Starting")
+        adapter = SimpleMovieAdapter(context)
         content.layoutManager = LinearLayoutManager(activity)
         content.adapter = adapter
         val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus

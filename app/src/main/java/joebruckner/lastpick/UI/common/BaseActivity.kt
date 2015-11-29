@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.ui.common.BaseFragment
 
 abstract class BaseActivity : AppCompatActivity() {
-
     abstract val layoutId: Int
     abstract val menuId: Int
 

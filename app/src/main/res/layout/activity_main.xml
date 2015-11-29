@@ -42,7 +42,7 @@
                 android:layout_margin="10dp"
                 android:scaleType="fitXY"
                 android:background="?attr/colorAccent"
-                android:contentDescription="@string/poster_description"
+                android:contentDescription="@string/poster"
                 />
 
             <android.support.v7.widget.Toolbar
