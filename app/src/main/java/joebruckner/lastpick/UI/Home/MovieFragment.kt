@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.home
 
+import android.os.Bundle
 import android.support.v7.graphics.Palette
 import android.util.Log
 import android.view.View
@@ -62,14 +63,23 @@ class MovieFragment : BaseFragment(), MoviePresenter.MovieView {
         error.visibility   = errorState
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         detailParent = parent as DetailActivity
         holder = MovieViewHolder(view)
         val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
         presenter = MoviePresenterImpl(bus)
-        presenter.attachActor(this)
         presenter.shuffleMovie()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.attachActor(this)
+    }
+
+    override fun onPause() {
+        presenter.detachActor()
+        super.onPause()
     }
 
     override fun handleAction(action: Action) {

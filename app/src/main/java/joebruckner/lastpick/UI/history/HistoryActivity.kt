@@ -2,6 +2,7 @@ package joebruckner.lastpick.ui.history
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 
 import joebruckner.lastpick.R
 import joebruckner.lastpick.ui.common.BaseActivity
@@ -18,5 +19,15 @@ class HistoryActivity : BaseActivity() {
         toolbar.title = "History"
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }
