@@ -101,7 +101,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
 
     override fun onStart() {
         super.onStart()
-
+        presenter?.attachActor(this)
     }
 
     override fun onPause() {
