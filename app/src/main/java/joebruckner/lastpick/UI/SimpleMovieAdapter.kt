@@ -2,6 +2,7 @@ package joebruckner.lastpick.ui
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -11,6 +12,7 @@ import java.util.*
 
 class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovieViewHolder>() {
     var movies = listOf<Movie>()
+    var onItemClickListeners = ArrayList<(Int) -> Unit>()
 
     override fun getItemCount(): Int {
         return movies.size
@@ -28,10 +30,21 @@ class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovie
                 .load(movies[position].fullPosterPath())
                 .crossFade()
                 .into(holder.poster)
+        holder.view.setOnClickListener {
+            onItemClickListeners.forEach { it.invoke(position) }
+        }
+    }
+
+    fun addOnItemClickListener(listener: (Int) -> Unit) {
+        onItemClickListeners.add(listener)
     }
 
     public fun setNewMovies(movies: List<Movie>) {
         this.movies = movies
         notifyDataSetChanged()
+    }
+
+    public interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 }

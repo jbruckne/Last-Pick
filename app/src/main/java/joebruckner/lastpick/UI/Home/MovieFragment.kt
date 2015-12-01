@@ -3,7 +3,10 @@ package joebruckner.lastpick.ui.home
 import android.os.Bundle
 import android.support.v7.graphics.Palette
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import com.google.gson.Gson
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
@@ -18,43 +21,55 @@ import kotlinx.android.synthetic.fragment_movie.content
 import kotlinx.android.synthetic.fragment_movie.error
 import kotlinx.android.synthetic.fragment_movie.loading
 
-class MovieFragment : BaseFragment(), MoviePresenter.MovieView {
+class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.MovieView {
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
-    lateinit var presenter: MoviePresenter
     lateinit var holder: MovieViewHolder
     lateinit var detailParent: DetailActivity
+    var presenter: MoviePresenter? = null
+
+    init {
+        val args = Bundle()
+        args.putString("movie", movie)
+        arguments = args
+    }
 
     override fun showLoading() {
         isLoading = true
+        clearMovie()
         detailParent.disableFab()
-        detailParent.clearBackdrop()
-        detailParent.clearPoster()
-        detailParent.setTitle(" ")
         updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
         Log.d("Loading", "...")
     }
 
+    override fun showError(errorMessage: String) {
+        isLoading = false
+        clearMovie()
+        detailParent.enableFab()
+        error.text = errorMessage
+        updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
+        Log.e("Error", errorMessage)
+    }
+
     override fun showContent(movie: Movie) {
         isLoading = false
+        showMovie(movie)
         detailParent.enableFab()
-        holder.movie = movie
-        detailParent.setTitle(movie.title)
-        detailParent.setBackdrop(movie.fullBackdropPath())
-        detailParent.setPoster(movie.fullPosterPath())
         updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
         Log.d("Content", movie.toString())
     }
 
-    override fun showError(errorMessage: String) {
-        isLoading = false
-        detailParent.enableFab()
+    private fun clearMovie() {
         detailParent.clearBackdrop()
         detailParent.clearPoster()
         detailParent.setTitle(" ")
-        error.text = errorMessage
-        updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
-        Log.e("Error", errorMessage)
+    }
+
+    private fun showMovie(movie: Movie) {
+        holder.movie = movie
+        detailParent.setTitle(movie.title)
+        detailParent.setBackdrop(movie.fullBackdropPath())
+        detailParent.setPoster(movie.fullPosterPath())
     }
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
@@ -67,25 +82,36 @@ class MovieFragment : BaseFragment(), MoviePresenter.MovieView {
         super.onActivityCreated(savedInstanceState)
         detailParent = parent as DetailActivity
         holder = MovieViewHolder(view)
-        val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
-        presenter = MoviePresenterImpl(bus)
-        presenter.shuffleMovie()
+
+        val movieString = arguments?.getString("movie")
+        val movie = Gson().fromJson(movieString, javaClass<Movie>())
+
+        if (movie == null) {
+            menuId = R.menu.menu_history
+            val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
+            presenter = MoviePresenterImpl(bus)
+            presenter?.attachActor(this)
+            presenter?.shuffleMovie()
+        } else {
+            detailParent.disableFab()
+            updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
+            showMovie(movie)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        presenter.attachActor(this)
+
     }
 
     override fun onPause() {
-        presenter.detachActor()
+        presenter?.detachActor()
         super.onPause()
     }
 
     override fun handleAction(action: Action) {
         when (action.name) {
-            Action.SHUFFLE -> presenter.shuffleMovie()
-            Action.UNDO -> presenter.undoShuffle()
+            Action.SHUFFLE -> presenter?.shuffleMovie()
         }
     }
 }

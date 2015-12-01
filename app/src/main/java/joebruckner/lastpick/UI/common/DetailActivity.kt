@@ -1,8 +1,5 @@
 package joebruckner.lastpick.ui.common
 
-/**
- * Created by joebruckner on 11/27/15.
- */
 abstract class DetailActivity: BaseActivity() {
 
     abstract fun setTitle(title: String)
@@ -18,4 +15,6 @@ abstract class DetailActivity: BaseActivity() {
     abstract fun enableFab()
 
     abstract fun disableFab()
+
+    abstract fun removeFab()
 }

@@ -8,6 +8,6 @@ data class Credits(
         val str = StringBuilder()
         val size = if (cast.size > 3) 3 else cast.size
         for (i in 0..size-1) str.append(", ${cast[i].name}")
-        return str.toString().substring(2)
+        return if (cast.size > 0) str.toString().substring(2) else str.toString()
     }
 }

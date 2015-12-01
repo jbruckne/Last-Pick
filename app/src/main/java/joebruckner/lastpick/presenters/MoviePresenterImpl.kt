@@ -15,13 +15,13 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
     var view: MovieView? = null
 
     override fun attachActor(view: MovieView) {
+        if (this.view == null) bus.register(this)
         this.view = view
-        bus.register(this)
     }
 
     override fun detachActor() {
-        this.view = null
         bus.unregister(this)
+        this.view = null
     }
 
     override fun shuffleMovie() {

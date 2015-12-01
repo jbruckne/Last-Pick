@@ -9,12 +9,13 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import joebruckner.lastpick.R
 import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.ui.common.BaseFragment
 
 abstract class BaseActivity : AppCompatActivity() {
     abstract val layoutId: Int
-    abstract val menuId: Int
+    open val menuId: Int = R.menu.menu_empty
 
     val logTag = javaClass.simpleName
 
@@ -46,5 +47,9 @@ abstract class BaseActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= 23)
             return ContextCompat.getColor(this, colorRes)
         return resources.getColor(colorRes)
+    }
+
+    fun displayHomeAsUp(homeAsUp: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(homeAsUp)
     }
 }

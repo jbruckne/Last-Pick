@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.graphics.Palette
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.request.RequestListener
@@ -24,7 +25,6 @@ import kotlinx.android.synthetic.activity_main.*
 
 class MainActivity : DetailActivity(), RequestListener<String, Bitmap> {
     override val layoutId = R.layout.activity_main
-    override val menuId = R.menu.menu_main
     lateinit var blur: BitmapTransformation
 
     private var fabIsEnabled = true
@@ -32,8 +32,12 @@ class MainActivity : DetailActivity(), RequestListener<String, Bitmap> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
+
+        val movie = intent.extras?.getString("movie") ?: null
+        val fragment = MovieFragment(movie)
+
         fab.setOnClickListener({ sendAction(Action.SHUFFLE) });
-        replaceFrame(R.id.frame, MovieFragment(), true)
+        replaceFrame(R.id.frame, fragment, false)
         blur = ImageBlur(this, 20f)
         appBar.addOnOffsetChangedListener { layout, i ->
             poster.elevation = if(layout.y < -40) 0f else 4f
@@ -95,6 +99,10 @@ class MainActivity : DetailActivity(), RequestListener<String, Bitmap> {
                 if (fabIsEnabled) enableFab()
             }
         })
+    }
+
+    override fun removeFab() {
+        fab.visibility = View.GONE
     }
 
     override fun clearBackdrop() {
