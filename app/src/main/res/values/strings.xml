@@ -27,4 +27,31 @@
     <string name="clock">clock</string>
     <string name="action_history">history</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="about">About</string>
+    <string name="tmdb">The Movie Database</string>
+    <string name="logo">logo</string>
+
+    <string name="app_description">A simple movie discovery app.</string>
+
+    <!-- LICENCES -->
+    <string name="licence_glide">
+        <a href="https://github.com/bumptech/glide">Glide</a> by Sam Judd under BSD
+    </string>
+    <string name="licence_gson">
+        <a href="https://github.com/google/gson">Gson</a> by Google Inc. under AP2
+    </string>
+    <string name="licence_okhttp">
+        <a href="https://github.com/square/okhttp">Okhttp</a> by Square, Inc. under AP2
+    </string>
+    <string name="licence_picasso">
+        <a href="https://github.com/square/picasso">Picasso</a> by Square, Inc. under AP2
+    </string>
+    <string name="licence_retrofit">
+        <a href="https://github.com/square/retrofit">Retrofit</a> by Square, Inc. under AP2
+    </string>
+    <string name="licence_tmdb">
+        This product uses the TMDb API but is not endorsed or certified by TMDb.
+    </string>
+
+    <string name="third_party_libraries">Third-party libraries</string>
 </resources>

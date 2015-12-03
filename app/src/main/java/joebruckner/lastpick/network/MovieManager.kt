@@ -15,7 +15,6 @@ class MovieManager(val bus: Bus, val scope: Int) {
     }
 
     @Subscribe public fun newMovieEvent(event: MovieEvent) {
-        Log.d("MovieManager", "Creating new request")
         if (idList.isEmpty())
             bus.post(PageRequest(randomPage(1..scope)))
         else
@@ -28,7 +27,6 @@ class MovieManager(val bus: Bus, val scope: Int) {
     }
 
     @Subscribe fun movieResponse(response: MovieResponse) {
-        Log.d("MovieManager", "Movie sent")
         bus.post(response.movie)
     }
 

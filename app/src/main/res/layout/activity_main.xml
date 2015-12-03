@@ -29,7 +29,6 @@
                 android:id="@+id/backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="?attr/colorPrimary"
                 android:contentDescription="@string/backdrop"
                 android:alpha="0.40"
                 android:scaleType="fitXY"
@@ -41,7 +40,6 @@
                 android:layout_height="180dp"
                 android:layout_margin="10dp"
                 android:scaleType="fitXY"
-                android:background="?attr/colorAccent"
                 android:contentDescription="@string/poster"
                 />
 

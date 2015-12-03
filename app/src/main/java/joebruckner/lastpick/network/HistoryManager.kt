@@ -15,7 +15,6 @@ class HistoryManager(val bus: Bus, val amount: Int) {
 
     @Subscribe fun movieAvailable(movie: Movie) {
         history.add(0, movie)
-        Log.d("History", "new movie added")
     }
 
     @Subscribe fun historyRequested(event: HistoryEvent) {

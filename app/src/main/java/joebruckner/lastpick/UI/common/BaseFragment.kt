@@ -48,6 +48,4 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun handleAction(action: Action): Unit {}
-
-
 }

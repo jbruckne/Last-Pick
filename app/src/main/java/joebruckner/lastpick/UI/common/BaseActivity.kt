@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.common
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,13 +10,15 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import joebruckner.lastpick.R
 import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.common.BaseFragment
 
 abstract class BaseActivity : AppCompatActivity() {
     abstract val layoutId: Int
-    open val menuId: Int = R.menu.menu_empty
+    open val menuId: Int = R.menu.menu_about
 
     val logTag = javaClass.simpleName
 
@@ -29,6 +32,18 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(menuId, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_about -> {
+                startActivity(Intent(this, javaClass<AboutActivity>()))
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     fun sendAction(action: String) {

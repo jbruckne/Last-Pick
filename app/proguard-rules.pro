@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#-dontwarn android.support.v4.app.*
+#-dontwarn kotlin.dom.*
+#-dontwarn okio.*
+#-dontwarn retrofit.Platform$Java8

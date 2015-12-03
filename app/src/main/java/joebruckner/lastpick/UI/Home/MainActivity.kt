@@ -75,6 +75,8 @@ class MainActivity : DetailActivity(), RequestListener<String, Bitmap> {
             val magic = PaletteMagic(palette)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 window.statusBarColor = magic.dark
+            appBar.setBackgroundColor(magic.primary)
+            collapsingToolbar.setBackgroundColor(magic.primary)
             backdrop.setBackgroundColor(magic.primary)
             poster.setBackgroundColor(magic.accent)
             collapsingToolbar.setContentScrimColor(magic.primary)

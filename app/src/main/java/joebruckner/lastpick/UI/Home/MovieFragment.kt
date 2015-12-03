@@ -39,7 +39,6 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
         clearMovie()
         detailParent.disableFab()
         updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
-        Log.d("Loading", "...")
     }
 
     override fun showError(errorMessage: String) {
@@ -48,7 +47,6 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
         detailParent.enableFab()
         error.text = errorMessage
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
-        Log.e("Error", errorMessage)
     }
 
     override fun showContent(movie: Movie) {
@@ -56,7 +54,6 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
         showMovie(movie)
         detailParent.enableFab()
         updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
-        Log.d("Content", movie.toString())
     }
 
     private fun clearMovie() {
@@ -73,6 +70,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
     }
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
+        if (view == null) return
         content.visibility = contentState
         loading.visibility = loadingState
         error.visibility   = errorState
@@ -99,7 +97,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
         }
     }
 
-    override fun onStart() {
+    override fun onResume() {
         super.onStart()
         presenter?.attachActor(this)
     }

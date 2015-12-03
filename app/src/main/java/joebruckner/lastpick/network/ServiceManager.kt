@@ -23,7 +23,6 @@ class ServiceManager(val app: LastPickApp, val bus: Bus) {
     }
 
     @Subscribe fun getMovieRequest(request: MovieRequest) {
-        Log.d("ServiceManager", "New movie requested")
         if (!isConnected()) {
             bus.post(RequestError("Not connected to internet", 408))
             return
@@ -37,7 +36,6 @@ class ServiceManager(val app: LastPickApp, val bus: Bus) {
     }
 
     @Subscribe fun getPageRequest(request: PageRequest) {
-        Log.d("ServiceManager", "New page requested")
         if (!isConnected()) {
             bus.post(RequestError("Not connected to internet", 408))
             return

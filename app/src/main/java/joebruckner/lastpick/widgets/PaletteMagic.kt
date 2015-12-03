@@ -16,7 +16,6 @@ class PaletteMagic(val palette: Palette) {
         dark = Color.parseColor("#263238");
         accent = Color.parseColor("#607D8B");
         if (muted != null) {
-            Log.d("Palette", "Muted swatch used");
             primary = palette.getMutedColor(Color.BLACK);
             val hsl = muted.hsl;
             hsl[2] *= 0.9f;
@@ -24,13 +23,12 @@ class PaletteMagic(val palette: Palette) {
             hsl[2] *= 1.8f;
             accent = Color.HSVToColor(hsl);
         } else if (vibrant != null) {
-            Log.d("Palette", "Vibrant swatch used");
             primary = palette.getVibrantColor(Color.BLACK);
             val hsl = vibrant.hsl;
             hsl[2] *= 0.9f;
             dark = Color.HSVToColor(hsl);
             hsl[2] *= 1.8f;
             accent = Color.HSVToColor(hsl);
-        } else Log.d("Palette", "Default swatch used");
+        }
     }
 }

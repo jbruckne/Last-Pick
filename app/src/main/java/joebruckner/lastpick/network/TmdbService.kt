@@ -17,4 +17,7 @@ public interface TmdbService {
     @GET("movie/{id}?api_key=${BuildConfig.TMDB_API_KEY}&append_to_response=credits,releases")
     fun getMovie(@Path("id") id: Int): Call<Movie>
 
+    @GET("discover/movie?api_key=${BuildConfig.TMDB_API_KEY}&primary_release_date.lte=1960-12-31")
+    fun discoverOldMovies(): Call<MovieSet>
+
 }

@@ -13,15 +13,18 @@ import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
 
     var view: MovieView? = null
+    var registered = false
 
     override fun attachActor(view: MovieView) {
-        if (this.view == null) bus.register(this)
         this.view = view
+        if (!registered) bus.register(this)
+        registered = true
     }
 
     override fun detachActor() {
         bus.unregister(this)
         this.view = null
+        registered = false
     }
 
     override fun shuffleMovie() {

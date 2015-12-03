@@ -24,11 +24,9 @@ class HistoryPresenterImpl(val bus: Bus): HistoryPresenter {
 
     override fun getHistory() {
         bus.post(HistoryEvent())
-        Log.d("Presenter", "requesting history")
     }
 
     @Subscribe fun historyAvailable(movies: ArrayList<Movie>) {
         view?.showContent(movies)
-        Log.d("Presenter", "history set")
     }
 }

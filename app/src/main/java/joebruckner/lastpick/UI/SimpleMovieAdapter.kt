@@ -43,8 +43,4 @@ class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovie
         this.movies = movies
         notifyDataSetChanged()
     }
-
-    public interface OnItemClickListener {
-        fun onItemClick(position: Int)
-    }
 }

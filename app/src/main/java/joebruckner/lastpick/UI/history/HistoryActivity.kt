@@ -13,7 +13,6 @@ class HistoryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("Test", "Created!!!!")
         replaceFrame(R.id.frame, HistoryFragment())
         toolbar.title = "History"
         setSupportActionBar(toolbar)
