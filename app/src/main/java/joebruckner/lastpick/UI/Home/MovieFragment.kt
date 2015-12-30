@@ -1,11 +1,16 @@
 package joebruckner.lastpick.ui.home
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.graphics.Palette
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.request.RequestListener
 import com.google.gson.Gson
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
@@ -16,17 +21,23 @@ import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.ui.MovieViewHolder
-import joebruckner.lastpick.ui.common.DetailActivity
+import joebruckner.lastpick.widgets.ImageBlur
+import joebruckner.lastpick.widgets.PaletteMagic
 import kotlinx.android.synthetic.fragment_movie.content
 import kotlinx.android.synthetic.fragment_movie.error
 import kotlinx.android.synthetic.fragment_movie.loading
+import com.bumptech.glide.request.target.Target
 
-class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.MovieView {
+class MovieFragment(val movie: String? = null) : BaseFragment(),
+        MoviePresenter.MovieView, RequestListener<String, Bitmap> {
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
     lateinit var holder: MovieViewHolder
-    lateinit var detailParent: DetailActivity
     var presenter: MoviePresenter? = null
+
+    lateinit var poster: ImageView
+    lateinit var backdrop: ImageView
+    lateinit var blur: BitmapTransformation
 
     init {
         val args = Bundle()
@@ -37,14 +48,14 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
     override fun showLoading() {
         isLoading = true
         clearMovie()
-        detailParent.disableFab()
+        parent.disableFab()
         updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
     }
 
     override fun showError(errorMessage: String) {
         isLoading = false
         clearMovie()
-        detailParent.enableFab()
+        parent.enableFab()
         error.text = errorMessage
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
     }
@@ -52,21 +63,21 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
     override fun showContent(movie: Movie) {
         isLoading = false
         showMovie(movie)
-        detailParent.enableFab()
+        parent.enableFab()
         updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
     }
 
     private fun clearMovie() {
-        detailParent.clearBackdrop()
-        detailParent.clearPoster()
-        detailParent.setTitle("")
+        backdrop.setImageResource(android.R.color.transparent)
+        poster.setImageResource(android.R.color.transparent)
+        parent.title = ""
     }
 
     private fun showMovie(movie: Movie) {
         holder.movie = movie
-        detailParent.setTitle(movie.title)
-        detailParent.setBackdrop(movie.fullBackdropPath())
-        detailParent.setPoster(movie.fullPosterPath())
+        parent.title = movie.title
+        setBackdrop(movie.fullBackdropPath())
+        setPoster(movie.fullPosterPath())
     }
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
@@ -76,14 +87,51 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
         error.visibility   = errorState
     }
 
+    fun setBackdrop(imagePath: String) {
+        Glide.with(this).load(imagePath)
+                .asBitmap()
+                .listener(this)
+                .transform(blur)
+                .into(backdrop)
+    }
+
+    fun setPoster(imagePath: String) {
+        Glide.with(this).load(imagePath)
+                .crossFade()
+                .into(poster)
+    }
+
+    override fun onException(e: Exception, model: String,
+                             target: Target<Bitmap>, isFirstResource: Boolean): Boolean {
+        Log.e("Glide", e.toString());
+        return false;
+    }
+
+    override fun onResourceReady(resource: Bitmap, model: String, target: Target<Bitmap>,
+                                 isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+        Palette.from(resource).generate { palette ->
+            val magic = PaletteMagic(palette)
+            parent.setTheme(magic.primary, magic.dark, magic.accent)
+        }
+        return false
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         parent.setToolbarStubLayout(R.layout.backdrop_movie)
-        detailParent = parent as DetailActivity
         holder = MovieViewHolder(view)
 
         val movieString = arguments?.getString("movie")
         val movie = Gson().fromJson(movieString, javaClass<Movie>())
+
+        backdrop = parent.root.findViewById(R.id.backdrop) as ImageView
+        poster = parent.root.findViewById(R.id.poster) as ImageView
+
+        blur = ImageBlur(context, 20f)
+        parent.appBar.addOnOffsetChangedListener { layout, i ->
+            poster.elevation = if(layout.y < -40) 0f else 4f
+            poster.alpha = (100 + layout.y) / 100
+        }
 
         if (movie == null) {
             menuId = R.menu.menu_history
@@ -92,7 +140,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
             presenter?.attachActor(this)
             presenter?.shuffleMovie()
         } else {
-            detailParent.disableFab()
+            parent.disableFab()
             updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
             showMovie(movie)
         }

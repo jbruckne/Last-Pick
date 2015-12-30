@@ -16,7 +16,6 @@ class HistoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         replaceFrame(R.id.frame, HistoryFragment())
         toolbar.title = "History"
-        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
