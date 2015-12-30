@@ -59,7 +59,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
     private fun clearMovie() {
         detailParent.clearBackdrop()
         detailParent.clearPoster()
-        detailParent.setTitle(" ")
+        detailParent.setTitle("")
     }
 
     private fun showMovie(movie: Movie) {
@@ -78,6 +78,7 @@ class MovieFragment(val movie: String? = null) : BaseFragment(), MoviePresenter.
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        parent.setToolbarStubLayout(R.layout.backdrop_movie)
         detailParent = parent as DetailActivity
         holder = MovieViewHolder(view)
 

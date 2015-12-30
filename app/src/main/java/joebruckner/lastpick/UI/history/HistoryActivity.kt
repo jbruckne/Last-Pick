@@ -9,6 +9,7 @@ import joebruckner.lastpick.ui.common.BaseActivity
 import kotlinx.android.synthetic.activity_history.*
 
 class HistoryActivity : BaseActivity() {
+    override val toolbarId = R.id.toolbar
     override val layoutId = R.layout.activity_history
 
     override fun onCreate(savedInstanceState: Bundle?) {

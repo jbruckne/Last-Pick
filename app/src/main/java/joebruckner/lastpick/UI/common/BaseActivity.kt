@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewStub
 import joebruckner.lastpick.R
 import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.ui.about.AboutActivity
@@ -18,15 +20,19 @@ import joebruckner.lastpick.ui.common.BaseFragment
 
 abstract class BaseActivity : AppCompatActivity() {
     abstract val layoutId: Int
+    abstract val toolbarId: Int
+    abstract val stubId: Int
     open val menuId: Int = R.menu.menu_about
 
     val logTag = javaClass.simpleName
 
+    lateinit var toolbarStub: ViewStub
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
-        if (savedInstanceState == null) Log.d(logTag, "Initial Creation!!!")
-        else Log.d(logTag, "Returning!!!")
+
+        toolbarStub = findViewById(stubId) as ViewStub
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -56,6 +62,11 @@ abstract class BaseActivity : AppCompatActivity() {
         var transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
         if (backstack) transaction.addToBackStack(null).commit()
         else transaction.commit()
+    }
+
+    fun setToolbarStubLayout(layoutId: Int) {
+        toolbarStub.layoutResource = layoutId
+        toolbarStub.inflate()
     }
 
     fun color(colorRes: Int): Int {
