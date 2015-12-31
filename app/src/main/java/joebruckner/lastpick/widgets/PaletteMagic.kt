@@ -2,7 +2,6 @@ package joebruckner.lastpick.widgets
 
 import android.graphics.Color
 import android.support.v7.graphics.Palette
-import android.util.Log
 
 class PaletteMagic(val palette: Palette) {
     var primary: Int

@@ -1,11 +1,9 @@
 package joebruckner.lastpick.presenters
 
-import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.events.HistoryEvent
-import joebruckner.lastpick.network.HistoryManager
 import joebruckner.lastpick.presenters.HistoryPresenter.HistoryView
 import java.util.*
 

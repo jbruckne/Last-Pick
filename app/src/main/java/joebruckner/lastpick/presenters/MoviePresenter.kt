@@ -5,7 +5,7 @@ import joebruckner.lastpick.data.Movie
 interface MoviePresenter {
     fun attachActor(view: MovieView)
     fun detachActor()
-    fun shuffleMovie()
+    fun updateMovie()
     fun undoShuffle()
 
     interface MovieView {

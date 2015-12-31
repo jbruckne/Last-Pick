@@ -1,6 +1,5 @@
 package joebruckner.lastpick.network
 
-import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.Movie
@@ -14,7 +13,7 @@ class HistoryManager(val bus: Bus, val amount: Int) {
     }
 
     @Subscribe fun movieAvailable(movie: Movie) {
-        history.add(0, movie)
+        if (!history.contains(movie)) history.add(0, movie)
     }
 
     @Subscribe fun historyRequested(event: HistoryEvent) {

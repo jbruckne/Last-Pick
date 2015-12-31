@@ -12,24 +12,27 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.home.MainActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:name=".ui.home.MovieShuffleActivity"
+            android:label="@string/title_activity_movie_shuffle"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.history.HistoryActivity"
             android:label="@string/title_activity_history"
-            android:parentActivityName=".ui.home.MainActivity">
+            android:parentActivityName=".ui.home.MovieShuffleActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.MainActivity" />
+                android:value="joebruckner.lastpick.ui.home.MovieShuffleActivity" />
         </activity>
-        <activity android:name=".ui.about.AboutActivity"/>
+        <activity android:name=".ui.about.AboutActivity" />
+        <activity
+            android:name=".ui.common.MovieActivity"
+            android:label="@string/title_activity_movie"/>
     </application>
 
 </manifest>

@@ -1,7 +1,6 @@
 package joebruckner.lastpick
 
 import android.app.Application
-import android.util.Log
 import com.squareup.otto.Bus
 import joebruckner.lastpick.network.HistoryManager
 import joebruckner.lastpick.network.MovieManager

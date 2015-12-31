@@ -54,4 +54,6 @@
     </string>
 
     <string name="third_party_libraries">Third-party libraries</string>
+    <string name="title_activity_movie">MovieActivity</string>
+    <string name="title_activity_movie_shuffle">Movie Shuffle</string>
 </resources>

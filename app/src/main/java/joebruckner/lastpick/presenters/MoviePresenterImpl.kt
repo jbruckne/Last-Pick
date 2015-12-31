@@ -1,13 +1,10 @@
 package joebruckner.lastpick.presenters
 
-import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.events.MovieEvent
-import joebruckner.lastpick.events.MovieRequest
 import joebruckner.lastpick.events.RequestError
-import joebruckner.lastpick.network.MovieManager
 import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 
 class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
@@ -27,7 +24,7 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
         registered = false
     }
 
-    override fun shuffleMovie() {
+    override fun updateMovie() {
         view?.showLoading()
         bus.post(MovieEvent())
     }

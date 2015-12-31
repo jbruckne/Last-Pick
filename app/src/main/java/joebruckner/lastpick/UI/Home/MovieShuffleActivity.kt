@@ -9,31 +9,29 @@ import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
 
-class MainActivity : BaseActivity() {
-    override val layoutId = R.layout.activity_main
+class MovieShuffleActivity : BaseActivity() {
+    override val layoutId = R.layout.activity_movie_shuffle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Home"
 
-        val movie = intent.extras?.getString("movie")
-        val fragment = MovieFragment(movie)
+        replaceFrame(R.id.frame, MovieFragment(), false)
+    }
 
-        replaceFrame(R.id.frame, fragment, false)
-
-        fab?.setOnClickListener({ sendAction(Action.SHUFFLE) });
+    override fun onStart() {
+        super.onStart()
+        sendAction(Action.UPDATE)
+        fab?.setOnClickListener({ sendAction(Action.UPDATE) });
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_history -> {
-                showHistory()
+                startActivity(Intent(this, javaClass<HistoryActivity>()))
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun showHistory() {
-        startActivity(Intent(this, javaClass<HistoryActivity>()))
     }
 }

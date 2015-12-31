@@ -5,7 +5,7 @@ data class Action(
 ) {
 
     companion object {
-        const val SHUFFLE = "shuffle"
+        const val UPDATE = "shuffle"
         const val UNDO = "undo"
     }
 }
