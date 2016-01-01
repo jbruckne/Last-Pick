@@ -23,27 +23,27 @@ class ServiceManager(val app: LastPickApp, val bus: Bus) {
 
     @Subscribe fun getMovieRequest(request: MovieRequest) {
         if (!isConnected()) {
-            bus.post(RequestError("Not connected to internet", 408))
+            bus.post(RequestErrorEvent("Not connected to internet", 408))
             return
         }
         service.getMovie(request.id).enqueue { response, retrofit ->
             if (response.isSuccess && response.code() == 200)
-                bus.post(MovieResponse(response.body()))
+                bus.post(MovieEvent(response.body()))
             else
-                bus.post(RequestError("Unable to fetch movie ${request.id}", response.code()))
+                bus.post(RequestErrorEvent("Unable to fetch movie ${request.id}", response.code()))
         }
     }
 
     @Subscribe fun getPageRequest(request: PageRequest) {
         if (!isConnected()) {
-            bus.post(RequestError("Not connected to internet", 408))
+            bus.post(RequestErrorEvent("Not connected to internet", 408))
             return
         }
         service.getTopRatedMovies(request.page).enqueue { response, retrofit ->
             if (response.isSuccess && response.code() == 200)
-                bus.post(PageResponse(response.body()))
+                bus.post(PageEvent(response.body()))
             else
-                bus.post(RequestError("Unable to fetch page ${request.page}", response.code()))
+                bus.post(RequestErrorEvent("Unable to fetch page ${request.page}", response.code()))
         }
     }
 

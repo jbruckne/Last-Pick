@@ -11,9 +11,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".ui.home.MovieShuffleActivity"
-            android:label="@string/title_activity_movie_shuffle"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -21,18 +21,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.history.HistoryActivity"
-            android:label="@string/title_activity_history"
             android:parentActivityName=".ui.home.MovieShuffleActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="joebruckner.lastpick.ui.home.MovieShuffleActivity" />
         </activity>
-        <activity android:name=".ui.about.AboutActivity" />
+
         <activity
-            android:name=".ui.common.MovieActivity"
-            android:label="@string/title_activity_movie"/>
+            android:name=".ui.bookmarks.BookmarksActivity"
+            android:parentActivityName=".ui.home.MovieShuffleActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="joebruckner.lastpick.ui.home.MovieShuffleActivity" />
+        </activity>
+
+        <activity android:name=".ui.about.AboutActivity" />
+        <activity android:name=".ui.common.MovieActivity" />
     </application>
 
 </manifest>

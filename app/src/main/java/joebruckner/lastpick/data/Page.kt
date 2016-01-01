@@ -2,7 +2,7 @@ package joebruckner.lastpick.data
 
 import com.google.gson.JsonArray
 
-data class MovieSet(
+data class Page(
         val page: Int,
         val results: JsonArray
 ) {

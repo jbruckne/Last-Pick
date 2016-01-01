@@ -3,8 +3,7 @@ package joebruckner.lastpick.presenters
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.MovieEvent
-import joebruckner.lastpick.events.RequestError
+import joebruckner.lastpick.events.*
 import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 
 class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
@@ -26,20 +25,27 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
 
     override fun updateMovie() {
         view?.showLoading()
-        bus.post(MovieEvent())
+        bus.post(RandomMovieRequest())
     }
 
-    override fun undoShuffle() {
-        throw UnsupportedOperationException()
+    override fun updateBookmark(movie: Movie, isAdding: Boolean) {
+        bus.post(BookmarkUpdateRequest(movie, isAdding))
     }
 
-    @Subscribe fun movieAvailable(movie: Movie) {
+    @Subscribe fun bookmarkChanged(event: BookmarkUpdateEvent) {
+        val id = view?.getContent()?.id
+        if (id != event.movie.id) return
+        if (event.isSuccess) view?.showBookmarkUpdate(event.movie.isBookmarked)
+        else view?.showBookmarkError(event.movie.isBookmarked)
+    }
+
+    @Subscribe fun newMovie(event: MovieEvent) {
         if (view?.isLoading ?: false)
-            view?.showContent(movie)
+            view?.showContent(event.movie)
     }
 
-    @Subscribe fun errorThrown(error: RequestError) {
+    @Subscribe fun errorThrown(event: RequestErrorEvent) {
         if (view?.isLoading ?: false)
-            view?.showError(error.message)
+            view?.showError(event.message)
     }
 }

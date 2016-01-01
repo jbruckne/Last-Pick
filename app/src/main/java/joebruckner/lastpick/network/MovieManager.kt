@@ -12,20 +12,16 @@ class MovieManager(val bus: Bus, val scope: Int) {
         bus.register(this)
     }
 
-    @Subscribe public fun newMovieEvent(event: MovieEvent) {
+    @Subscribe public fun newMovieEvent(request: RandomMovieRequest) {
         if (idList.isEmpty())
             bus.post(PageRequest(randomPage(1..scope)))
         else
             bus.post(MovieRequest(idList.removeAt(0)))
     }
 
-    @Subscribe fun pageReponse(response: PageResponse) {
-        idList.addAll(response.set.getIds())
+    @Subscribe fun pageReponse(event: PageEvent) {
+        idList.addAll(event.page.getIds())
         bus.post(MovieRequest(idList.removeAt(0)))
-    }
-
-    @Subscribe fun movieResponse(response: MovieResponse) {
-        bus.post(response.movie)
     }
 
     private fun randomPage(range: Range<Int>): Int {

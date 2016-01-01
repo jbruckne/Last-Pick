@@ -16,7 +16,7 @@ class AboutActivity : AppCompatActivity() {
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        supportActionBar?.setTitle(R.string.about);
+        supportActionBar?.setTitle(R.string.action_about);
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val method = LinkMovementMethod.getInstance()

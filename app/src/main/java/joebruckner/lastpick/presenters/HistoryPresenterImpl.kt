@@ -2,10 +2,9 @@ package joebruckner.lastpick.presenters
 
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.HistoryEvent
+import joebruckner.lastpick.events.RecentHistoryEvent
+import joebruckner.lastpick.events.RecentHistoryRequest
 import joebruckner.lastpick.presenters.HistoryPresenter.HistoryView
-import java.util.*
 
 class HistoryPresenterImpl(val bus: Bus): HistoryPresenter {
     var view: HistoryView? = null
@@ -21,10 +20,10 @@ class HistoryPresenterImpl(val bus: Bus): HistoryPresenter {
     }
 
     override fun getHistory() {
-        bus.post(HistoryEvent())
+        bus.post(RecentHistoryRequest())
     }
 
-    @Subscribe fun historyAvailable(movies: ArrayList<Movie>) {
-        view?.showContent(movies)
+    @Subscribe fun newRecentHistory(event: RecentHistoryEvent) {
+        view?.showContent(event.history)
     }
 }

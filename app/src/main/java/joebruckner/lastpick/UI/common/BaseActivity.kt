@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.support.v7.widget.ViewStubCompat
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -31,6 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
     val logTag = javaClass.simpleName
 
     var fab: FloatingActionButton? = null
+    var menu: Menu? = null
     lateinit var root: View
     lateinit var appBar: AppBarLayout
     lateinit var toolbar: Toolbar
@@ -60,8 +62,15 @@ abstract class BaseActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onResume() {
+        super.onResume()
+        supportInvalidateOptionsMenu()
+        Log.d(logTag, "resuming")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(menuId, menu)
+        this.menu = menu
         return super.onCreateOptionsMenu(menu)
     }
 

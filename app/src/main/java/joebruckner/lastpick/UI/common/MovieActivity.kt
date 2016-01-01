@@ -7,7 +7,8 @@ import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.RequestError
+import joebruckner.lastpick.events.MovieEvent
+import joebruckner.lastpick.events.RequestErrorEvent
 import joebruckner.lastpick.ui.home.MovieFragment
 
 class MovieActivity : BaseActivity() {
@@ -15,9 +16,9 @@ class MovieActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = "Movie"
+        title = " "
 
-        replaceFrame(R.id.frame, MovieFragment(), false)
+        replaceFrame(R.id.frame, MovieFragment())
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
@@ -28,8 +29,8 @@ class MovieActivity : BaseActivity() {
         val movieString = intent.extras?.getString("movie")
         val movie = Gson().fromJson(movieString, javaClass<Movie>())
         val bus = application.getSystemService(LastPickApp.BUS) as Bus
-        if (movie != null) bus.post(movie)
-        else bus.post(RequestError("Couldn't find movie", 0))
+        if (movie != null) bus.post(MovieEvent(movie))
+        else bus.post(RequestErrorEvent("Couldn't find movie", 0))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

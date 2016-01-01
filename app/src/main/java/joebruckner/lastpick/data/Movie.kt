@@ -35,8 +35,14 @@ data class Movie(
         @SerializedName("vote_count")
         val voteCount: Int,
         val videos: Video.ListWrapper,
-        val releases: Release.ListWrapper
+        val releases: Release.ListWrapper,
+        var isBookmarked: Boolean = false
 ) {
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Movie) return false
+        return this.id == other.id
+    }
 
     fun fullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
 

@@ -3,5 +3,6 @@
 
     <style name="AppTheme" parent="Base.AppTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:colorControlHighlight">@color/md_white_1000</item>
     </style>
 </resources>

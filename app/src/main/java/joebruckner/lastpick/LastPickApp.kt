@@ -2,6 +2,7 @@ package joebruckner.lastpick
 
 import android.app.Application
 import com.squareup.otto.Bus
+import joebruckner.lastpick.network.BookmarkManager
 import joebruckner.lastpick.network.HistoryManager
 import joebruckner.lastpick.network.MovieManager
 import joebruckner.lastpick.network.ServiceManager
@@ -9,6 +10,7 @@ import joebruckner.lastpick.network.ServiceManager
 class LastPickApp : Application() {
     val bus = Bus()
     val service = ServiceManager(this, bus)
+    val bookmarks = BookmarkManager(bus)
     val history = HistoryManager(bus, 15)
     val movies = MovieManager(bus, 50)
     val APP_NAME = "Last Pick"

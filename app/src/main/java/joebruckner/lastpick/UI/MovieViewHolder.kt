@@ -15,7 +15,7 @@ class MovieViewHolder(view: View) {
     val length: TextView
     var movie: Movie? = null
         set(m: Movie?) {
-           //title.text = "Hello"
+           field = m
            summary.text    = m?.overview
            cast.text       = m?.credits?.toString()
            year.text       = m?.releaseDate?.substring(0,4)

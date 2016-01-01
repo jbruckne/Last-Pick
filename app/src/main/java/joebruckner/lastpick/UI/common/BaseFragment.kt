@@ -8,9 +8,9 @@ import joebruckner.lastpick.R
 import joebruckner.lastpick.events.Action
 
 abstract class BaseFragment : Fragment() {
+    open val menuId: Int = R.menu.menu_empty
     abstract val layoutId: Int
     lateinit var parent: BaseActivity
-    var menuId: Int = R.menu.menu_empty
 
     val logTag = javaClass.simpleName
 

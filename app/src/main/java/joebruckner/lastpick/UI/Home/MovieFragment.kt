@@ -2,8 +2,11 @@ package joebruckner.lastpick.ui.home
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.graphics.Palette
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -25,6 +28,7 @@ import kotlinx.android.synthetic.fragment_movie.*
 
 class MovieFragment() : BaseFragment(),
         MoviePresenter.MovieView, RequestListener<String, Bitmap> {
+    override val menuId = R.menu.menu_movie
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
     lateinit var holder: MovieViewHolder
@@ -59,7 +63,7 @@ class MovieFragment() : BaseFragment(),
     private fun clearMovie() {
         backdrop.setImageResource(android.R.color.transparent)
         poster.setImageResource(android.R.color.transparent)
-        parent.title = ""
+        parent.title = " "
     }
 
     private fun showMovie(movie: Movie) {
@@ -67,7 +71,34 @@ class MovieFragment() : BaseFragment(),
         parent.title = movie.title
         setBackdrop(movie.fullBackdropPath())
         setPoster(movie.fullPosterPath())
+        val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
+        item.setChecked(movie.isBookmarked)
+        item.setIcon(
+                if (movie.isBookmarked) R.drawable.ic_bookmark_24dp
+                else R.drawable.ic_bookmark_outline_24dp
+        )
     }
+
+    override fun showBookmarkUpdate(isBookmarked: Boolean) {
+        holder.movie?.isBookmarked = isBookmarked
+        val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
+        item.setChecked(isBookmarked)
+        item.setIcon(
+                if (isBookmarked) R.drawable.ic_bookmark_24dp
+                else R.drawable.ic_bookmark_outline_24dp
+        )
+        Snackbar.make(view,
+                if (isBookmarked) "Bookmark added"
+                else "Bookmark removed", Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun showBookmarkError(isBookmarked: Boolean) {
+        Snackbar.make(view,
+                if (isBookmarked) "Failed to add bookmark"
+                else "Failed to remove bookmark", Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun getContent() = holder.movie
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
         if (view == null) return
@@ -119,7 +150,6 @@ class MovieFragment() : BaseFragment(),
             poster.alpha = (100 + layout.y) / 100
         }
 
-        menuId = R.menu.menu_history
         val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
         presenter = MoviePresenterImpl(bus)
         presenter?.attachActor(this)
@@ -133,6 +163,29 @@ class MovieFragment() : BaseFragment(),
     override fun onPause() {
         presenter?.detachActor()
         super.onPause()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_bookmark -> {
+                val movie = holder.movie ?: return true
+                presenter?.updateBookmark(movie, !movie.isBookmarked)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val isBookmarked = holder.movie?.isBookmarked ?: false
+        val item = menu.findItem(R.id.action_bookmark)
+        item.setChecked(isBookmarked)
+        item.setIcon(
+                if (isBookmarked) R.drawable.ic_bookmark_24dp
+                else R.drawable.ic_bookmark_outline_24dp
+        )
+        Log.d(logTag, "preparing menu for ${holder.movie}")
     }
 
     override fun handleAction(action: Action) {

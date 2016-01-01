@@ -21,7 +21,8 @@
             android:id="@+id/star"
             android:layout_width="@dimen/detail_icon_size"
             android:layout_height="@dimen/detail_icon_size"
-            android:src="@drawable/ic_action_favorite"
+            android:padding="2dp"
+            android:src="@drawable/ic_star_24dp"
             android:contentDescription="@string/popularity"
             />
 
@@ -34,10 +35,11 @@
 
         <ImageView
             android:id="@+id/calendar"
-            android:layout_width="@dimen/detail_icon_size"
-            android:layout_height="@dimen/detail_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
             android:layout_marginStart="@dimen/detail_spacing"
-            android:src="@drawable/ic_date"
+            android:src="@drawable/ic_date_24dp"
             android:contentDescription="@string/date"
             />
 
@@ -50,10 +52,11 @@
 
         <ImageView
             android:id="@+id/clock"
-            android:layout_width="@dimen/detail_icon_size"
-            android:layout_height="@dimen/detail_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
             android:layout_marginStart="@dimen/detail_spacing"
-            android:src="@drawable/ic_time"
+            android:src="@drawable/ic_time_24dp"
             android:contentDescription="@string/clock"
             />
 
