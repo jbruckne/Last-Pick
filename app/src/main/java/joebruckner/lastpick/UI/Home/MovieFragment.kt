@@ -185,7 +185,6 @@ class MovieFragment() : BaseFragment(),
                 if (isBookmarked) R.drawable.ic_bookmark_24dp
                 else R.drawable.ic_bookmark_outline_24dp
         )
-        Log.d(logTag, "preparing menu for ${holder.movie}")
     }
 
     override fun handleAction(action: Action) {

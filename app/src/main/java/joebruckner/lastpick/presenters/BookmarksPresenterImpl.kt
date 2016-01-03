@@ -24,6 +24,8 @@ class BookmarksPresenterImpl(val bus: Bus): BookmarksPresenter {
     }
 
     @Subscribe fun newBookmarkedMovies(event: BookmarkedMoviesEvent) {
-        view?.showContent(event.bookmarked)
+        view?.showContent(event.bookmarked.sortedBy {
+            it.title.first().toUpperCase() - 'A'
+        })
     }
 }

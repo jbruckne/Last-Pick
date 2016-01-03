@@ -1,22 +1,23 @@
 package joebruckner.lastpick
 
 import android.app.Application
+import android.util.Log
 import com.squareup.otto.Bus
-import joebruckner.lastpick.network.BookmarkManager
-import joebruckner.lastpick.network.HistoryManager
-import joebruckner.lastpick.network.MovieManager
-import joebruckner.lastpick.network.ServiceManager
+import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.network.*
 
 class LastPickApp : Application() {
     val bus = Bus()
     val service = ServiceManager(this, bus)
-    val bookmarks = BookmarkManager(bus)
-    val history = HistoryManager(bus, 15)
-    val movies = MovieManager(bus, 50)
+    val jsonFileManager = JsonFileManager(this)
+    val bookmarkManager = BookmarkManager(bus, jsonFileManager)
+    val historyManager = HistoryManager(bus, 15)
+    val movieManager = MovieManager(bus, 50)
     val APP_NAME = "Last Pick"
 
     override fun onCreate() {
         super.onCreate()
+        bookmarkManager.loadSavedBookmarks()
     }
 
     override fun getSystemService(name: String): Any? {

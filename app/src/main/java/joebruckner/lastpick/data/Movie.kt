@@ -28,7 +28,7 @@ data class Movie(
         val originalLanguage: String,
         @SerializedName("original_title")
         val originalTitle: String,
-        val revenue: Int,
+        val revenue: Long,
         val status: String,
         @SerializedName("vote_average")
         val voteAverage: Double,
