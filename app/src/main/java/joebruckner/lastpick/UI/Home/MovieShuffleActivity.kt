@@ -1,11 +1,12 @@
 package joebruckner.lastpick.ui.home
 
-
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.MenuItem
 import joebruckner.lastpick.R
-import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.ui.bookmarks.BookmarksActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
@@ -13,6 +14,9 @@ import joebruckner.lastpick.ui.history.HistoryActivity
 class MovieShuffleActivity : BaseActivity() {
     override val layoutId = R.layout.activity_movie_shuffle
     override val menuId = R.menu.menu_shuffle_movie
+
+    val genres = Genre.getAll()
+    val bools = BooleanArray(genres.size)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,12 +27,19 @@ class MovieShuffleActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        sendAction(Action.UPDATE)
-        fab?.setOnClickListener({ sendAction(Action.UPDATE) });
+        fab?.setOnClickListener {
+            (getFragment(R.id.frame) as MovieFragment).callForUpdate()
+        }
+
+        if (isFirstStart) (getFragment(R.id.frame) as MovieFragment).callForUpdate()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_filter -> {
+                showFilterDialog()
+                return true
+            }
             R.id.action_history -> {
                 startActivity(Intent(this, javaClass<HistoryActivity>()))
                 return true
@@ -39,5 +50,34 @@ class MovieShuffleActivity : BaseActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    fun showFilterDialog() {
+        val selectedGenres = arrayListOf<Genre>()
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Genres")
+                .setMultiChoiceItems(
+                genres.map{ it.name }.toTypedArray(),
+                bools,
+                { dialog, which, isChecked -> bools[which] = isChecked })
+                .setOnDismissListener { dialog -> dialog.dismiss() }
+                .setNegativeButton("Cancel", { dialog, id -> dialog.cancel() })
+                .setPositiveButton("Save", { dialog, id ->
+                    for ((i, bool) in bools.withIndex()) {
+                        if (bool) selectedGenres.add(genres[i])
+                    }
+                    Log.d(logTag, selectedGenres.toString())
+                    val fragment = supportFragmentManager.findFragmentById(R.id.frame)
+                    if (fragment is MovieFragment) {
+                        if (selectedGenres.isEmpty()) {
+                            fragment.filter = null
+                        } else if (selectedGenres.first().id == 0) {
+                            genres.drop(0)
+                            fragment.filter = genres
+                        } else {
+                            fragment.filter = selectedGenres
+                        }
+                    }
+                }).create().show()
     }
 }

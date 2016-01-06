@@ -2,8 +2,8 @@ package joebruckner.lastpick.presenters
 
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import joebruckner.lastpick.events.RecentHistoryEvent
-import joebruckner.lastpick.events.RecentHistoryRequest
+import joebruckner.lastpick.data.RecentHistoryEvent
+import joebruckner.lastpick.data.RecentHistoryRequest
 import joebruckner.lastpick.presenters.HistoryPresenter.HistoryView
 
 class HistoryPresenterImpl(val bus: Bus): HistoryPresenter {

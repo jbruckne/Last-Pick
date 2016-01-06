@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.home
 
+import android.animation.Animator
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -11,13 +12,15 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
+import joebruckner.lastpick.data.Action
+import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.Action
 import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.MovieViewHolder
@@ -26,8 +29,7 @@ import joebruckner.lastpick.widgets.ImageBlur
 import joebruckner.lastpick.widgets.PaletteMagic
 import kotlinx.android.synthetic.fragment_movie.*
 
-class MovieFragment() : BaseFragment(),
-        MoviePresenter.MovieView, RequestListener<String, Bitmap> {
+class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val menuId = R.menu.menu_movie
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
@@ -37,6 +39,14 @@ class MovieFragment() : BaseFragment(),
     lateinit var poster: ImageView
     lateinit var backdrop: ImageView
     lateinit var blur: BitmapTransformation
+
+    public var filter: List<Genre>? = null
+
+    private val ALPHA_CLEAR = 0f
+    private val ALPHA_FULL = 1f
+    private val ALPHA_HALF = 0.4f
+    private val OUT_DURATION: Long = 250
+    private val IN_DURATION: Long = 350
 
     override fun showLoading() {
         isLoading = true
@@ -61,7 +71,7 @@ class MovieFragment() : BaseFragment(),
     }
 
     private fun clearMovie() {
-        backdrop.setImageResource(android.R.color.transparent)
+        backdrop.animate().alpha(ALPHA_CLEAR).setDuration(OUT_DURATION)
         poster.setImageResource(android.R.color.transparent)
         parent.title = " "
     }
@@ -69,8 +79,8 @@ class MovieFragment() : BaseFragment(),
     private fun showMovie(movie: Movie) {
         holder.movie = movie
         parent.title = movie.title
-        setBackdrop(movie.fullBackdropPath())
-        setPoster(movie.fullPosterPath())
+        loadBackdrop(movie.fullBackdropPath())
+        loadPoster(movie.fullPosterPath())
         val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
         item.setChecked(movie.isBookmarked)
         item.setIcon(
@@ -107,33 +117,38 @@ class MovieFragment() : BaseFragment(),
         error.visibility   = errorState
     }
 
-    fun setBackdrop(imagePath: String) {
+    fun loadBackdrop(imagePath: String) {
         Glide.with(this).load(imagePath)
                 .asBitmap()
-                .listener(this)
+                .listener(object: RequestListener<String, Bitmap> {
+                    override fun onResourceReady(resource: Bitmap?, model: String?,
+                                                 target: Target<Bitmap>?,
+                                                 isFromMemoryCache: Boolean,
+                                                 isFirstResource: Boolean): Boolean {
+                        Palette.from(resource).generate { palette ->
+                            val magic = PaletteMagic(palette)
+                            parent.setTheme(magic.primary, magic.dark, magic.accent)
+                        }
+                        backdrop.animate().alpha(ALPHA_HALF).setDuration(IN_DURATION)
+                        return false
+                    }
+
+                    override fun onException(e: Exception?, model: String?,
+                                             target: Target<Bitmap>?,
+                                             isFirstResource: Boolean): Boolean {
+                        e?.printStackTrace()
+                        return false
+                    }
+
+                })
                 .transform(blur)
                 .into(backdrop)
     }
 
-    fun setPoster(imagePath: String) {
+    fun loadPoster(imagePath: String) {
         Glide.with(this).load(imagePath)
-                .crossFade()
+                .crossFade(IN_DURATION.toInt())
                 .into(poster)
-    }
-
-    override fun onException(e: Exception, model: String,
-                             target: Target<Bitmap>, isFirstResource: Boolean): Boolean {
-        Log.e("Glide", e.toString());
-        return false;
-    }
-
-    override fun onResourceReady(resource: Bitmap, model: String, target: Target<Bitmap>,
-                                 isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
-        Palette.from(resource).generate { palette ->
-            val magic = PaletteMagic(palette)
-            parent.setTheme(magic.primary, magic.dark, magic.accent)
-        }
-        return false
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -143,6 +158,7 @@ class MovieFragment() : BaseFragment(),
 
         backdrop = parent.root.findViewById(R.id.backdrop) as ImageView
         poster = parent.root.findViewById(R.id.poster) as ImageView
+        backdrop.alpha = ALPHA_HALF
 
         blur = ImageBlur(context, 20f)
         parent.appBar.addOnOffsetChangedListener { layout, i ->
@@ -187,9 +203,7 @@ class MovieFragment() : BaseFragment(),
         )
     }
 
-    override fun handleAction(action: Action) {
-        when (action.name) {
-            Action.UPDATE -> presenter?.updateMovie()
-        }
+    fun callForUpdate() {
+        presenter?.updateMovie(filter)
     }
 }

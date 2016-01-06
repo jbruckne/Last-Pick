@@ -22,7 +22,8 @@
         <android.support.v7.widget.ViewStubCompat
             android:id="@+id/stub"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            app:layout_collapseMode="parallax" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

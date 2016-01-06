@@ -2,8 +2,8 @@ package joebruckner.lastpick.presenters
 
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import joebruckner.lastpick.events.BookmarkedMoviesEvent
-import joebruckner.lastpick.events.BookmarkedMoviesRequest
+import joebruckner.lastpick.data.BookmarkedMoviesEvent
+import joebruckner.lastpick.data.BookmarkedMoviesRequest
 import joebruckner.lastpick.presenters.BookmarksPresenter.BookmarksView
 
 class BookmarksPresenterImpl(val bus: Bus): BookmarksPresenter {

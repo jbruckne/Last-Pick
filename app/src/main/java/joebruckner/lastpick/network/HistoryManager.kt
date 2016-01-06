@@ -1,12 +1,11 @@
 package joebruckner.lastpick.network
 
-import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.MovieEvent
-import joebruckner.lastpick.events.RecentHistoryEvent
-import joebruckner.lastpick.events.RecentHistoryRequest
+import joebruckner.lastpick.data.MovieEvent
+import joebruckner.lastpick.data.RecentHistoryEvent
+import joebruckner.lastpick.data.RecentHistoryRequest
 
 class HistoryManager(val bus: Bus, val amount: Int) {
     val history = arrayListOf<Movie>()

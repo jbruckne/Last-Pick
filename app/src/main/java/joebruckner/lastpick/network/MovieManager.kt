@@ -1,30 +1,63 @@
 package joebruckner.lastpick.network
 
+import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import joebruckner.lastpick.events.*
+import joebruckner.lastpick.data.*
 import java.util.*
 
-class MovieManager(val bus: Bus, val scope: Int) {
-    val idList = arrayListOf<Int>()
+class MovieManager(val bus: Bus, val serviceManager: ServiceManager) {
+    val idCache = arrayListOf<Int>()
+    val cacheType = arrayListOf<Genre>()
+    var scope = 0
 
     init {
         bus.register(this)
     }
 
-    @Subscribe public fun newMovieEvent(request: RandomMovieRequest) {
-        if (idList.isEmpty())
-            bus.post(PageRequest(randomPage(1..scope)))
-        else
-            bus.post(MovieRequest(idList.removeAt(0)))
+    @Subscribe fun onMovieRequest(request: MovieRequest) = getMovie(request.genres)
+
+    fun getMovie(genres: List<Genre>?) {
+        AsyncTask.execute {
+            // Check if cache is still valid
+            if (scope == 0)
+                invalidateCache(null)
+            if (genres != null && !genres.equals(cacheType))
+                invalidateCache(genres)
+            if (genres == null && cacheType.isNotEmpty())
+                invalidateCache(null)
+
+            // Refill cache if needed, then get a random movie
+            var movie: Movie? = null
+            while (movie == null) {
+                if (idCache.isEmpty()) {
+                    if (scope == 0) break
+                    val page = serviceManager.fetchPage(random(1..scope), genres)
+                    if (page == null || page.results.size() == 0) break
+                    else idCache.addAll(page.getIds())
+                }
+                movie = serviceManager.fetchMovie(idCache.removeAt(random(0..idCache.size-1)))
+            }
+
+            Handler(Looper.getMainLooper()).post {
+                if (movie == null) bus.post(ErrorEvent("Couldn't find any movies", 400))
+                else bus.post(MovieEvent(movie as Movie))
+            }
+        }
     }
 
-    @Subscribe fun pageReponse(event: PageEvent) {
-        idList.addAll(event.page.getIds())
-        bus.post(MovieRequest(idList.removeAt(0)))
+    fun invalidateCache(genres: List<Genre>?) {
+        idCache.clear()
+        cacheType.clear()
+        val initialPage = serviceManager.fetchPage(1, genres)
+        scope = initialPage?.totalPages ?: 0
+        cacheType.addAll(genres ?: emptyList())
     }
 
-    private fun randomPage(range: Range<Int>): Int {
+    private fun random(range: Range<Int>): Int {
+        if (range.end <= 1) return range.end
         val random = Random(System.currentTimeMillis())
         return random.nextInt(range.end - range.start) + range.start
     }

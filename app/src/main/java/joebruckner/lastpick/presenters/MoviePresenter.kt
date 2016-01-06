@@ -1,11 +1,12 @@
 package joebruckner.lastpick.presenters
 
+import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
 
 interface MoviePresenter {
     fun attachActor(view: MovieView)
     fun detachActor()
-    fun updateMovie()
+    fun updateMovie(filter: List<Genre>?)
     fun updateBookmark(movie: Movie, isAdding: Boolean)
 
     interface MovieView {

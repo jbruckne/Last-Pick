@@ -19,7 +19,7 @@ class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleMovieViewHolder? {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_recent, parent, false)
+                .inflate(R.layout.card_simple_recent, parent, false)
         return SimpleMovieViewHolder(view)
     }
 

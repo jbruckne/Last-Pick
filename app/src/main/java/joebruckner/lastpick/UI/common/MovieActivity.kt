@@ -7,8 +7,8 @@ import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.MovieEvent
-import joebruckner.lastpick.events.RequestErrorEvent
+import joebruckner.lastpick.data.MovieEvent
+import joebruckner.lastpick.data.ErrorEvent
 import joebruckner.lastpick.ui.home.MovieFragment
 
 class MovieActivity : BaseActivity() {
@@ -30,7 +30,7 @@ class MovieActivity : BaseActivity() {
         val movie = Gson().fromJson(movieString, javaClass<Movie>())
         val bus = application.getSystemService(LastPickApp.BUS) as Bus
         if (movie != null) bus.post(MovieEvent(movie))
-        else bus.post(RequestErrorEvent("Couldn't find movie", 0))
+        else bus.post(ErrorEvent("Couldn't find movie", 0))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -3,12 +3,11 @@ package joebruckner.lastpick.network
 import android.content.Context
 import android.net.ConnectivityManager
 import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import joebruckner.lastpick.LastPickApp
-import joebruckner.lastpick.enqueue
-import joebruckner.lastpick.events.*
+import joebruckner.lastpick.data.*
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
+import java.net.SocketTimeoutException
 
 class ServiceManager(val app: LastPickApp, val bus: Bus) {
     val service = Retrofit.Builder()
@@ -21,30 +20,29 @@ class ServiceManager(val app: LastPickApp, val bus: Bus) {
         bus.register(this)
     }
 
-    @Subscribe fun getMovieRequest(request: MovieRequest) {
-        if (!isConnected()) {
-            bus.post(RequestErrorEvent("Not connected to internet", 408))
-            return
-        }
-        service.getMovie(request.id).enqueue { response, retrofit ->
-            if (response.isSuccess && response.code() == 200)
-                bus.post(MovieEvent(response.body()))
-            else
-                bus.post(RequestErrorEvent("Unable to fetch movie ${request.id}", response.code()))
+    fun fetchMovie(id: Int): Movie? {
+        if (!isConnected()) return null
+        try {
+            val response = service.getMovie(id).execute()
+            return if (response.isSuccess && response.code() == 200) response.body()
+            else null
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            return null
         }
     }
 
-    @Subscribe fun getPageRequest(request: PageRequest) {
-        if (!isConnected()) {
-            bus.post(RequestErrorEvent("Not connected to internet", 408))
-            return
-        }
-        service.getTopRatedMovies(request.page).enqueue { response, retrofit ->
-            if (response.isSuccess && response.code() == 200)
-                bus.post(PageEvent(response.body()))
-            else
-                bus.post(RequestErrorEvent("Unable to fetch page ${request.page}", response.code()))
-        }
+    fun fetchPage(page: Int, genres: List<Genre>?): Page? {
+        if (!isConnected()) return null
+        val genreIds = genres?.map { genre -> genre.id }
+        val formattedIds = StringBuilder()
+        genreIds?.forEach { id -> formattedIds.append("""%7C$id""") }
+        val response = service.discoverMovies(page,
+                if (genres == null) null
+                else formattedIds.substring(3)
+        ).execute()
+        return if (response.isSuccess && response.code() == 200) response.body()
+               else null
     }
 
     private fun isConnected(): Boolean {

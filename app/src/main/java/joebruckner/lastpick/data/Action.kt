@@ -1,4 +1,4 @@
-package joebruckner.lastpick.events
+package joebruckner.lastpick.data
 
 data class Action(
         val name: String

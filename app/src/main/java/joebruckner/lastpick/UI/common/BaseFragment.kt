@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import joebruckner.lastpick.R
-import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.data.Action
 
 abstract class BaseFragment : Fragment() {
     open val menuId: Int = R.menu.menu_empty
@@ -37,6 +37,4 @@ abstract class BaseFragment : Fragment() {
         inflater?.inflate(menuId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
-
-    open fun handleAction(action: Action): Unit {}
 }

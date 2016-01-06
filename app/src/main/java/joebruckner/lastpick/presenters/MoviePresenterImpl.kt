@@ -2,8 +2,7 @@ package joebruckner.lastpick.presenters
 
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.events.*
+import joebruckner.lastpick.data.*
 import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 
 class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
@@ -23,9 +22,9 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
         registered = false
     }
 
-    override fun updateMovie() {
+    override fun updateMovie(filter: List<Genre>?) {
         view?.showLoading()
-        bus.post(RandomMovieRequest())
+        bus.post(MovieRequest(filter))
     }
 
     override fun updateBookmark(movie: Movie, isAdding: Boolean) {
@@ -39,12 +38,12 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
         else view?.showBookmarkError(event.movie.isBookmarked)
     }
 
-    @Subscribe fun newMovie(event: MovieEvent) {
+    @Subscribe fun onNewMovie(event: MovieEvent) {
         if (view?.isLoading ?: false)
             view?.showContent(event.movie)
     }
 
-    @Subscribe fun errorThrown(event: RequestErrorEvent) {
+    @Subscribe fun errorThrown(event: ErrorEvent) {
         if (view?.isLoading ?: false)
             view?.showError(event.message)
     }

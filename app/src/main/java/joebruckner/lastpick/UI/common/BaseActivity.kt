@@ -1,12 +1,16 @@
 package joebruckner.lastpick.ui.common
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.animation.ValueAnimatorCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -17,8 +21,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import joebruckner.lastpick.R
-import joebruckner.lastpick.events.Action
+import joebruckner.lastpick.data.Action
 import joebruckner.lastpick.ui.about.AboutActivity
+import java.util.*
 
 abstract class BaseActivity : AppCompatActivity() {
     abstract val layoutId: Int
@@ -31,6 +36,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     val logTag = javaClass.simpleName
 
+    var isFirstStart: Boolean = true
+
     var fab: FloatingActionButton? = null
     var menu: Menu? = null
     lateinit var root: View
@@ -38,6 +45,10 @@ abstract class BaseActivity : AppCompatActivity() {
     lateinit var toolbar: Toolbar
     lateinit var toolbarStub: ViewStubCompat
     lateinit var collapsingToolbar: CollapsingToolbarLayout
+
+    var colorPrimary: Int = Color.GRAY
+    var colorPrimaryDark: Int = Color.GRAY
+    var colorAccent: Int = Color.GRAY
 
     var title: String = ""
         set(new: String) {
@@ -68,6 +79,11 @@ abstract class BaseActivity : AppCompatActivity() {
         Log.d(logTag, "resuming")
     }
 
+    override fun onPause() {
+        super.onPause()
+        isFirstStart = false
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(menuId, menu)
         this.menu = menu
@@ -86,16 +102,14 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun sendAction(action: String) {
-        supportFragmentManager.fragments.forEach {
-            if (it is BaseFragment) it.handleAction(Action(action))
-        }
-    }
-
     fun replaceFrame(frameId: Int, fragment: Fragment, backstack: Boolean = false) {
         var transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
         if (backstack) transaction.addToBackStack(null).commit()
         else transaction.commit()
+    }
+
+    fun getFragment(id: Int): Fragment {
+        return supportFragmentManager.findFragmentById(id)
     }
 
     fun setToolbarStubLayout(layoutId: Int) {
@@ -103,13 +117,50 @@ abstract class BaseActivity : AppCompatActivity() {
         toolbarStub.inflate()
     }
 
+    fun resetTheme() {
+        val theme = getThemeMap()
+        setTheme(
+                theme["colorPrimary"] ?: Color.BLACK,
+                theme["colorPrimaryDark"] ?: Color.BLACK,
+                theme["colorAccent"] ?: Color.BLACK
+        )
+    }
+
     fun setTheme(primary: Int, dark: Int, accent: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            window.statusBarColor = dark
-        appBar.setBackgroundColor(primary)
-        collapsingToolbar.setBackgroundColor(primary)
-        collapsingToolbar.setContentScrimColor(primary)
+        val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, primary)
+        primaryAnimator.addUpdateListener { animator ->
+            appBar.setBackgroundColor(animator.animatedValue as Int)
+            collapsingToolbar.setBackgroundColor(animator.animatedValue as Int)
+            collapsingToolbar.setContentScrimColor(animator.animatedValue as Int)
+        }
+        primaryAnimator.setDuration(250)
+        primaryAnimator.start()
+        val darkAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimaryDark, dark)
+        darkAnimator.addUpdateListener { animator ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                window.statusBarColor = animator.animatedValue as Int
+        }
+        darkAnimator.setDuration(250)
+        darkAnimator.start()
         fab?.backgroundTintList = ColorStateList.valueOf(accent)
+        colorPrimary = primary
+        colorPrimaryDark = dark
+        colorAccent = accent
+    }
+
+    fun getThemeMap(): HashMap<String, Int> {
+        val attr = arrayOf(
+                R.attr.colorPrimary,
+                R.attr.colorPrimaryDark,
+                R.attr.colorAccent
+        )
+        val array = obtainStyledAttributes(R.style.AppTheme, attr.toIntArray())
+        val map = hashMapOf<String, Int>()
+        map.put("colorPrimary", array.getColor(0, Color.BLACK))
+        map.put("colorPrimaryDark", array.getColor(1, Color.BLACK))
+        map.put("colorAccent", array.getColor(2, Color.BLACK))
+        array.recycle()
+        return map
     }
 
     fun color(colorRes: Int): Int {
@@ -138,9 +189,5 @@ abstract class BaseActivity : AppCompatActivity() {
                 if (fabIsEnabled) enableFab()
             }
         })
-    }
-
-    fun removeFab() {
-        fab?.visibility = View.GONE
     }
 }

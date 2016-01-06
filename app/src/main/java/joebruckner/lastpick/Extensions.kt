@@ -1,5 +1,9 @@
 package joebruckner.lastpick
 
+import com.bumptech.glide.DrawableRequestBuilder
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import retrofit.Call
 import retrofit.Callback
 import retrofit.Response
