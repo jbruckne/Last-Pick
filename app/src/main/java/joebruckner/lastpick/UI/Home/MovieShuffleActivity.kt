@@ -10,6 +10,7 @@ import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.ui.bookmarks.BookmarksActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
+import java.util.*
 
 class MovieShuffleActivity : BaseActivity() {
     override val layoutId = R.layout.activity_movie_shuffle
@@ -29,6 +30,14 @@ class MovieShuffleActivity : BaseActivity() {
         super.onStart()
         fab?.setOnClickListener {
             (getFragment(R.id.frame) as MovieFragment).callForUpdate()
+            fab?.setImageResource(when (Random().nextInt(5)) {
+                1 -> R.drawable.ic_dice_one_48dp
+                2 -> R.drawable.ic_dice_two_48dp
+                3 -> R.drawable.ic_dice_three_48dp
+                4 -> R.drawable.ic_dice_four_48dp
+                5 -> R.drawable.ic_dice_five_48dp
+                else -> R.drawable.ic_dice_six_48dp
+            })
         }
 
         if (isFirstStart) (getFragment(R.id.frame) as MovieFragment).callForUpdate()

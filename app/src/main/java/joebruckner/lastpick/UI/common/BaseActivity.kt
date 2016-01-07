@@ -76,7 +76,6 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         supportInvalidateOptionsMenu()
-        Log.d(logTag, "resuming")
     }
 
     override fun onPause() {

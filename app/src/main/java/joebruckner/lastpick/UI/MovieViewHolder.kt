@@ -3,6 +3,7 @@ package joebruckner.lastpick.ui
 import android.view.View
 import android.widget.TextView
 import joebruckner.lastpick.R
+import joebruckner.lastpick.data.Credits
 import joebruckner.lastpick.data.Movie
 
 class MovieViewHolder(view: View) {
@@ -17,9 +18,9 @@ class MovieViewHolder(view: View) {
         set(m: Movie?) {
            field = m
            summary.text    = m?.overview
-           cast.text       = m?.credits?.toString()
+           cast.text       = formatCredits(m?.credits)
            year.text       = m?.releaseDate?.substring(0,4)
-           mpaa.text       = m?.simpleMpaa()
+           mpaa.text       = m?.getSimpleMpaa()
            vote.text       = formatVote(m?.voteAverage ?: 0.0)
            length.text     = formatLength(m?.runtime ?: 0)
         }
@@ -32,6 +33,24 @@ class MovieViewHolder(view: View) {
         mpaa  = view.findViewById(R.id.mpaa)        as TextView
         vote = view.findViewById(R.id.popularity)   as TextView
         length  = view.findViewById(R.id.runtime)   as TextView
+    }
+
+    fun formatCredits(credits: Credits?): String {
+        if (credits == null) return ""
+
+        val text = StringBuilder()
+        val director = credits.getDirector()
+        if (director != null)
+            text.appendln("Directed by ${director.name}\n")
+        for (i in 0..4) {
+            if (credits.cast.size > i)
+                text.appendln(
+                        "${credits.cast[i].name}" +
+                        " as " +
+                        "${credits.cast[i].firstCharacter()}"
+                )
+        }
+        return text.toString()
     }
 
     fun formatLength(runtime: Int): String {

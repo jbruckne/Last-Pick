@@ -1,5 +1,6 @@
 package joebruckner.lastpick.presenters
 
+import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.*
@@ -39,6 +40,7 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
     }
 
     @Subscribe fun onNewMovie(event: MovieEvent) {
+        Log.d("MoviePresenter", event.movie.toString())
         if (view?.isLoading ?: false)
             view?.showContent(event.movie)
     }

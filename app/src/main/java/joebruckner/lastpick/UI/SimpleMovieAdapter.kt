@@ -26,7 +26,7 @@ class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovie
     override fun onBindViewHolder(holder: SimpleMovieViewHolder, position: Int) {
         holder.title.text = movies[position].title
         Glide.with(context)
-                .load(movies[position].fullPosterPath())
+                .load(movies[position].getFullPosterPath())
                 .crossFade()
                 .into(holder.poster)
         holder.view.setOnClickListener {

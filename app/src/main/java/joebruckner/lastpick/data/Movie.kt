@@ -34,7 +34,7 @@ data class Movie(
         val voteAverage: Double,
         @SerializedName("vote_count")
         val voteCount: Int,
-        val videos: Video.ListWrapper,
+        val videos: Video.ListWrapper?,
         val releases: Release.ListWrapper,
         var isBookmarked: Boolean = false
 ) {
@@ -44,15 +44,22 @@ data class Movie(
         return this.id == other.id
     }
 
-    fun fullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
+    fun getFullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
 
-    fun fullBackdropPath(): String = BASE_URL + BACKDROP_SIZE + backdropPath
+    fun getFullBackdropPath(): String = BASE_URL + BACKDROP_SIZE + backdropPath
 
-    fun simpleMpaa(): String {
+    fun getSimpleMpaa(): String {
         releases.countries.forEach { release ->
             if (release.country == "US") return release.certification
         }
         return releases.countries[0].certification
+    }
+
+    fun getYoutubeTrailer(): String? {
+        videos?.results?.forEach { video ->
+            if (video.site == "YouTube") return video.key
+        }
+        return null
     }
 
     companion object {

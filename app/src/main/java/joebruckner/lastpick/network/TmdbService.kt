@@ -1,5 +1,6 @@
 package joebruckner.lastpick.network
 
+import com.google.gson.JsonObject
 import joebruckner.lastpick.BuildConfig
 import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
@@ -15,7 +16,7 @@ public interface TmdbService {
     fun getTopRatedMovies(@Query("page") page: Int): Call<Page>
 
     @GET("movie/{id}?api_key=${BuildConfig.TMDB_API_KEY}" +
-            "&append_to_response=credits,releases")
+            "&append_to_response=credits,releases,videos")
     fun getMovie(@Path("id") id: Int): Call<Movie>
 
     @GET("discover/movie?api_key=${BuildConfig.TMDB_API_KEY}" +

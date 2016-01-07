@@ -2,6 +2,7 @@ package joebruckner.lastpick.network
 
 import android.content.Context
 import android.net.ConnectivityManager
+import com.google.gson.Gson
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.data.*

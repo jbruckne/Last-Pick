@@ -1,24 +1,22 @@
 package joebruckner.lastpick.ui.home
 
-import android.animation.Animator
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.graphics.Palette
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Action
 import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.presenters.MoviePresenter
@@ -28,6 +26,7 @@ import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.widgets.ImageBlur
 import joebruckner.lastpick.widgets.PaletteMagic
 import kotlinx.android.synthetic.fragment_movie.*
+import kotlinx.android.synthetic.card_movie.*
 
 class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val menuId = R.menu.menu_movie
@@ -79,8 +78,8 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     private fun showMovie(movie: Movie) {
         holder.movie = movie
         parent.title = movie.title
-        loadBackdrop(movie.fullBackdropPath())
-        loadPoster(movie.fullPosterPath())
+        loadBackdrop(movie.getFullBackdropPath())
+        loadPoster(movie.getFullPosterPath())
         val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
         item.setChecked(movie.isBookmarked)
         item.setIcon(
@@ -159,6 +158,13 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         backdrop = parent.root.findViewById(R.id.backdrop) as ImageView
         poster = parent.root.findViewById(R.id.poster) as ImageView
         backdrop.alpha = ALPHA_HALF
+
+        trailer.setOnClickListener {
+            val id = holder.movie?.getYoutubeTrailer() ?: return@setOnClickListener
+            val uri = Uri.parse("https://www.youtube.com/watch?v=$id")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
 
         blur = ImageBlur(context, 20f)
         parent.appBar.addOnOffsetChangedListener { layout, i ->

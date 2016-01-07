@@ -70,6 +70,8 @@
     <string name="scrolling_view">@string/appbar_scrolling_view_behavior</string>
     <string name="app_description">A simple movie discovery app.</string>
     <string name="third_party_libraries">Third-party libraries</string>
+    <string name="youtube">YouTube</string>
+    <string name="trailer">See Trailer</string>
 
 
 </resources>

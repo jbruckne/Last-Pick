@@ -15,10 +15,6 @@ class BookmarkManager(val bus: Bus, val jsonFileManager: JsonFileManager) {
 
     fun loadSavedBookmarks() {
         val savedBookmarks = jsonFileManager.load<Array<Movie>>(BOOKMARK_FILE)
-        Log.d("BookmarkManager",
-                if (savedBookmarks != null) savedBookmarks.toString()
-                else "Bookmarks not found"
-        )
         bookmarks.addAll(savedBookmarks?.toList() ?: emptyList())
     }
 

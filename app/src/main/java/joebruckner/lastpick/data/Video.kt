@@ -1,7 +1,7 @@
 package joebruckner.lastpick.data
 
 data class Video(
-        val id: Int,
+        val id: String,
         val key: String,
         val name: String,
         val site: String,
@@ -10,6 +10,6 @@ data class Video(
 ) {
 
     data class ListWrapper(
-            val results: List<Video>
+            val results: List<Video> = arrayListOf()
     )
 }
