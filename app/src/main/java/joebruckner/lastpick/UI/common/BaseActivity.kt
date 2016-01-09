@@ -10,40 +10,38 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.animation.ValueAnimatorCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.support.v7.widget.ViewStubCompat
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Action
 import joebruckner.lastpick.ui.about.AboutActivity
 import java.util.*
 
 abstract class BaseActivity : AppCompatActivity() {
-    abstract val layoutId: Int
-    open val fabId = R.id.fab
-    open val appBarId = R.id.appBar
-    open val toolbarId = R.id.toolbar
-    open val toolbarStubId: Int = R.id.stub
-    open val collapsingToolbarId: Int = R.id.collapsingToolbar
-    open val menuId: Int = R.menu.menu_about
+    protected abstract val layoutId: Int
+    protected open val fabId = R.id.fab
+    protected open val appBarId = R.id.appBar
+    protected open val toolbarId = R.id.toolbar
+    protected open val toolbarStubId: Int = R.id.stub
+    protected open val collapsingToolbarId: Int = R.id.collapsingToolbar
+    protected open val menuId: Int = R.menu.menu_about
 
     val logTag = javaClass.simpleName
 
     var isFirstStart: Boolean = true
 
+
+    var toolbarStub: ViewStubCompat? = null
     var fab: FloatingActionButton? = null
     var menu: Menu? = null
     lateinit var root: View
     lateinit var appBar: AppBarLayout
     lateinit var toolbar: Toolbar
-    lateinit var toolbarStub: ViewStubCompat
     lateinit var collapsingToolbar: CollapsingToolbarLayout
 
     var colorPrimary: Int = Color.GRAY
@@ -112,8 +110,9 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun setToolbarStubLayout(layoutId: Int) {
-        toolbarStub.layoutResource = layoutId
-        toolbarStub.inflate()
+        toolbarStub?.layoutResource = layoutId
+        toolbarStub?.inflate()
+        toolbarStub = null
     }
 
     fun resetTheme() {

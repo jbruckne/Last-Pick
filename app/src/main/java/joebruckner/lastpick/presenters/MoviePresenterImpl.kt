@@ -8,8 +8,8 @@ import joebruckner.lastpick.presenters.MoviePresenter.MovieView
 
 class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
 
-    var view: MovieView? = null
-    var registered = false
+    private var view: MovieView? = null
+    private var registered = false
 
     override fun attachActor(view: MovieView) {
         this.view = view
@@ -40,7 +40,6 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
     }
 
     @Subscribe fun onNewMovie(event: MovieEvent) {
-        Log.d("MoviePresenter", event.movie.toString())
         if (view?.isLoading ?: false)
             view?.showContent(event.movie)
     }

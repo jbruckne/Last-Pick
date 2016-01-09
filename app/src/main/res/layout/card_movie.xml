@@ -12,7 +12,6 @@
         android:id="@+id/details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -76,10 +75,22 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/genres"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/details"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:dividerPadding="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"/>
+
+    <LinearLayout
         android:id="@+id/summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/details"
+        android:layout_below="@id/genres"
         android:orientation="vertical">
 
         <TextView
@@ -106,7 +117,9 @@
         android:id="@+id/trailer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
         android:layout_below="@id/summary"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
@@ -115,7 +128,7 @@
             android:id="@+id/youtube"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
             android:background="@mipmap/ic_youtube"
             android:contentDescription="@string/youtube" />
 

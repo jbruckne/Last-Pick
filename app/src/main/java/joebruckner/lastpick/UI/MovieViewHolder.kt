@@ -41,11 +41,11 @@ class MovieViewHolder(view: View) {
         val text = StringBuilder()
         val director = credits.getDirector()
         if (director != null)
-            text.appendln("Directed by ${director.name}\n")
+            text.appendln("Directed by ${director.name}")
         for (i in 0..4) {
             if (credits.cast.size > i)
-                text.appendln(
-                        "${credits.cast[i].name}" +
+                text.append(
+                        "\n${credits.cast[i].name}" +
                         " as " +
                         "${credits.cast[i].firstCharacter()}"
                 )

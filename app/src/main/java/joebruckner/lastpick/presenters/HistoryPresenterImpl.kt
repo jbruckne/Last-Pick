@@ -7,7 +7,7 @@ import joebruckner.lastpick.data.RecentHistoryRequest
 import joebruckner.lastpick.presenters.HistoryPresenter.HistoryView
 
 class HistoryPresenterImpl(val bus: Bus): HistoryPresenter {
-    var view: HistoryView? = null
+    private var view: HistoryView? = null
 
     override fun attachView(view: HistoryView) {
         this.view = view

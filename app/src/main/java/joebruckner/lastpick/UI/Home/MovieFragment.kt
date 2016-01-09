@@ -9,8 +9,12 @@ import android.support.v7.graphics.Palette
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -42,6 +46,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     public var filter: List<Genre>? = null
 
     private val ALPHA_CLEAR = 0f
+
     private val ALPHA_FULL = 1f
     private val ALPHA_HALF = 0.4f
     private val OUT_DURATION: Long = 250
@@ -80,6 +85,18 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         parent.title = movie.title
         loadBackdrop(movie.getFullBackdropPath())
         loadPoster(movie.getFullPosterPath())
+        if (view != null) {
+            trailer.visibility = if (movie.getYoutubeTrailer() == null) View.GONE
+            else View.VISIBLE
+            genres.removeAllViews()
+            movie.genres.forEach { genre ->
+                val card = parent.layoutInflater.inflate(R.layout.card_filter, null)
+                val name = card.findViewById(R.id.name) as TextView
+                name.text = genre.name
+                genres.addView(card)
+                (card.layoutParams as ViewGroup.MarginLayoutParams).setMargins(0, 0, 16, 0)
+            }
+        }
         val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
         item.setChecked(movie.isBookmarked)
         item.setIcon(
@@ -117,9 +134,9 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     }
 
     fun loadBackdrop(imagePath: String) {
-        Glide.with(this).load(imagePath)
-                .asBitmap()
-                .listener(object: RequestListener<String, Bitmap> {
+        Glide.with(parent.applicationContext).load(imagePath)
+                ?.asBitmap()
+                ?.listener(object: RequestListener<String, Bitmap> {
                     override fun onResourceReady(resource: Bitmap?, model: String?,
                                                  target: Target<Bitmap>?,
                                                  isFromMemoryCache: Boolean,
@@ -140,14 +157,14 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
                     }
 
                 })
-                .transform(blur)
-                .into(backdrop)
+                ?.transform(blur)
+                ?.into(backdrop)
     }
 
     fun loadPoster(imagePath: String) {
-        Glide.with(this).load(imagePath)
-                .crossFade(IN_DURATION.toInt())
-                .into(poster)
+        Glide.with(parent.applicationContext).load(imagePath)
+                ?.crossFade(IN_DURATION.toInt())
+                ?.into(poster)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -172,7 +189,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
             poster.alpha = (100 + layout.y) / 100
         }
 
-        val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
+        val bus: Bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
         presenter = MoviePresenterImpl(bus)
         presenter?.attachActor(this)
     }

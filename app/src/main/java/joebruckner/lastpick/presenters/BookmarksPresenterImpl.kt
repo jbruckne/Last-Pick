@@ -7,7 +7,7 @@ import joebruckner.lastpick.data.BookmarkedMoviesRequest
 import joebruckner.lastpick.presenters.BookmarksPresenter.BookmarksView
 
 class BookmarksPresenterImpl(val bus: Bus): BookmarksPresenter {
-    var view: BookmarksView? = null
+    private var view: BookmarksView? = null
 
     override fun attachView(view: BookmarksView) {
         this.view = view
