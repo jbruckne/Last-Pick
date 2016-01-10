@@ -47,7 +47,7 @@
 
     <!-- ACTIONS -->
     <string name="action_bookmark">Bookmark</string>
-    <string name="action_filter">filter</string>
+    <string name="action_filter">Filter</string>
     <string name="action_history">History</string>
     <string name="action_all_bookmark">View Bookmarks</string>
     <string name="action_settings">Settings</string>

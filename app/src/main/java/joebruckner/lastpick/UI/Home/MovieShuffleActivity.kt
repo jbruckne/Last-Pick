@@ -30,7 +30,7 @@ class MovieShuffleActivity : BaseActivity() {
         super.onStart()
         fab?.setOnClickListener {
             (getFragment(R.id.frame) as MovieFragment).callForUpdate()
-            fab?.setImageResource(when (Random().nextInt(5)) {
+            fab?.setImageResource(when (Random().nextInt(6) + 1) {
                 1 -> R.drawable.ic_dice_one_48dp
                 2 -> R.drawable.ic_dice_two_48dp
                 3 -> R.drawable.ic_dice_three_48dp

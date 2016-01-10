@@ -49,9 +49,9 @@ abstract class BaseActivity : AppCompatActivity() {
     var colorAccent: Int = Color.GRAY
 
     var title: String = ""
-        set(new: String) {
-            field = new
-            collapsingToolbar.title = new
+        set(newTitle: String) {
+            field = newTitle
+            collapsingToolbar.title = newTitle
         }
 
     private var fabIsEnabled = true
@@ -69,6 +69,7 @@ abstract class BaseActivity : AppCompatActivity() {
         collapsingToolbar = findViewById(collapsingToolbarId) as CollapsingToolbarLayout
 
         setSupportActionBar(toolbar)
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.Transparent)
     }
 
     override fun onResume() {

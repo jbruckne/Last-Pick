@@ -41,6 +41,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
 
     lateinit var poster: ImageView
     lateinit var backdrop: ImageView
+    lateinit var backdropTitle: TextView
     lateinit var blur: BitmapTransformation
 
     public var filter: List<Genre>? = null
@@ -83,6 +84,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     private fun showMovie(movie: Movie) {
         holder.movie = movie
         parent.title = movie.title
+        backdropTitle.text = movie.title
         loadBackdrop(movie.getFullBackdropPath())
         loadPoster(movie.getFullPosterPath())
         if (view != null) {
@@ -174,6 +176,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
 
         backdrop = parent.root.findViewById(R.id.backdrop) as ImageView
         poster = parent.root.findViewById(R.id.poster) as ImageView
+        backdropTitle = parent.root.findViewById(R.id.backdrop_title) as TextView
         backdrop.alpha = ALPHA_HALF
 
         trailer.setOnClickListener {
