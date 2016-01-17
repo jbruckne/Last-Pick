@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="joebruckner.lastpick">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="joebruckner.lastpick"
+    >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,8 +16,7 @@
 
         <activity
             android:name=".ui.home.MovieShuffleActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,6 +25,7 @@
 
         <activity
             android:name=".ui.history.HistoryActivity"
+            android:label="History"
             android:parentActivityName=".ui.home.MovieShuffleActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,6 +34,7 @@
 
         <activity
             android:name=".ui.bookmarks.BookmarksActivity"
+            android:label="Bookmarks"
             android:parentActivityName=".ui.home.MovieShuffleActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -39,7 +42,7 @@
         </activity>
 
         <activity android:name=".ui.about.AboutActivity" />
-        <activity android:name=".ui.common.MovieActivity" />
+        <activity android:name=".ui.movie.MovieActivity" />
     </application>
 
 </manifest>

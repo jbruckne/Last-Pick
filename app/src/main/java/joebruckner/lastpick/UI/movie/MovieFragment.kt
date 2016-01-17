@@ -1,8 +1,9 @@
-package joebruckner.lastpick.ui.home
+package joebruckner.lastpick.ui.movie
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.graphics.Palette
@@ -91,7 +92,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
             trailer.visibility = if (movie.getYoutubeTrailer() == null) View.GONE
             else View.VISIBLE
             genres.removeAllViews()
-            movie.genres.forEach { genre ->
+            movie.genres.slice(0..Math.min(movie.genres.size-1, 2)).forEach { genre ->
                 val card = parent.layoutInflater.inflate(R.layout.card_filter, null)
                 val name = card.findViewById(R.id.name) as TextView
                 name.text = genre.name
@@ -188,7 +189,8 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
 
         blur = ImageBlur(context, 20f)
         parent.appBar.addOnOffsetChangedListener { layout, i ->
-            poster.elevation = if(layout.y < -40) 0f else 4f
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                poster.elevation = if(layout.y < -40) 0f else 4f
             poster.alpha = (100 + layout.y) / 100
         }
 

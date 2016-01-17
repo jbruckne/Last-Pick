@@ -10,6 +10,7 @@ import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.ui.bookmarks.BookmarksActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
+import joebruckner.lastpick.ui.movie.MovieFragment
 import java.util.*
 
 class MovieShuffleActivity : BaseActivity() {
@@ -21,7 +22,6 @@ class MovieShuffleActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = "Home"
 
         replaceFrame(R.id.frame, MovieFragment(), false)
     }

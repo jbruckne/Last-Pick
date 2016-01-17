@@ -1,4 +1,4 @@
-package joebruckner.lastpick.ui.common
+package joebruckner.lastpick.ui.movie
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -9,14 +9,14 @@ import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.data.MovieEvent
 import joebruckner.lastpick.data.ErrorEvent
-import joebruckner.lastpick.ui.home.MovieFragment
+import joebruckner.lastpick.ui.common.BaseActivity
+import joebruckner.lastpick.ui.movie.MovieFragment
 
 class MovieActivity : BaseActivity() {
     override val layoutId: Int = R.layout.activity_movie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = " "
 
         replaceFrame(R.id.frame, MovieFragment())
 

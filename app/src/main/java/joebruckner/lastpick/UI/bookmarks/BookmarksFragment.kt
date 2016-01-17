@@ -12,7 +12,7 @@ import joebruckner.lastpick.presenters.BookmarksPresenter
 import joebruckner.lastpick.presenters.BookmarksPresenterImpl
 import joebruckner.lastpick.ui.SimpleMovieAdapter
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.ui.common.MovieActivity
+import joebruckner.lastpick.ui.movie.MovieActivity
 import kotlinx.android.synthetic.fragment_bookmarks.*
 
 class BookmarksFragment : BaseFragment(), BookmarksPresenter.BookmarksView {
@@ -36,7 +36,6 @@ class BookmarksFragment : BaseFragment(), BookmarksPresenter.BookmarksView {
         val intent = Intent(context, javaClass<MovieActivity>())
         adapter = SimpleMovieAdapter(context)
         adapter.addOnItemClickListener { position ->
-            Log.d(logTag, adapter.movies[position].toString())
             intent.putExtra("movie", Gson().toJson(adapter.movies[position]))
             startActivity(intent)
         }

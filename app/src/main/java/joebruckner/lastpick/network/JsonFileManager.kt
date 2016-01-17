@@ -10,7 +10,6 @@ class JsonFileManager(val context: Context, val gson: Gson = Gson()) {
         try {
             val input = context.openFileInput(fileName)
             val json = input.reader().readText()
-            Log.e("Json", json)
             return gson.fromJson(json, javaClass<T>())
         } catch (e: Exception) {
             e.printStackTrace()

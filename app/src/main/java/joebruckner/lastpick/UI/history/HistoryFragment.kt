@@ -12,7 +12,7 @@ import joebruckner.lastpick.presenters.HistoryPresenter
 import joebruckner.lastpick.presenters.HistoryPresenterImpl
 import joebruckner.lastpick.ui.SimpleMovieAdapter
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.ui.common.MovieActivity
+import joebruckner.lastpick.ui.movie.MovieActivity
 import kotlinx.android.synthetic.fragment_history.*
 
 class HistoryFragment : BaseFragment(), HistoryPresenter.HistoryView {

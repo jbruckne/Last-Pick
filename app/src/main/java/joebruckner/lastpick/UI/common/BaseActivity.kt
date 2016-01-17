@@ -35,7 +35,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     var isFirstStart: Boolean = true
 
-
     var toolbarStub: ViewStubCompat? = null
     var fab: FloatingActionButton? = null
     var menu: Menu? = null
@@ -48,10 +47,11 @@ abstract class BaseActivity : AppCompatActivity() {
     var colorPrimaryDark: Int = Color.GRAY
     var colorAccent: Int = Color.GRAY
 
-    var title: String = ""
+    var title: String = " "
         set(newTitle: String) {
             field = newTitle
             collapsingToolbar.title = newTitle
+            supportActionBar?.title = newTitle
         }
 
     private var fabIsEnabled = true

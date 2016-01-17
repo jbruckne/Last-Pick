@@ -10,11 +10,11 @@ class HistoryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = "History"
 
         replaceFrame(R.id.frame, HistoryFragment())
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        collapsingToolbar.isTitleEnabled = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
