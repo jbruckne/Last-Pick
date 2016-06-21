@@ -5,8 +5,13 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.Snackbar
 import android.support.v7.graphics.Palette
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,23 +20,20 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.MovieViewHolder
 import joebruckner.lastpick.ui.common.BaseFragment
+import joebruckner.lastpick.ui.home.GenreAdapter
 import joebruckner.lastpick.widgets.ImageBlur
 import joebruckner.lastpick.widgets.PaletteMagic
-import kotlinx.android.synthetic.fragment_movie.*
-import kotlinx.android.synthetic.card_movie.*
 
 class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val menuId = R.menu.menu_movie
@@ -45,14 +47,10 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     lateinit var backdropTitle: TextView
     lateinit var blur: BitmapTransformation
 
-    public var filter: List<Genre>? = null
-
-    private val ALPHA_CLEAR = 0f
-
-    private val ALPHA_FULL = 1f
-    private val ALPHA_HALF = 0.4f
-    private val OUT_DURATION: Long = 250
-    private val IN_DURATION: Long = 350
+    val ALPHA_CLEAR = 0f
+    val ALPHA_HALF = 0.4f
+    val OUT_DURATION: Long = 250
+    val IN_DURATION: Long = 350
 
     override fun showLoading() {
         isLoading = true
@@ -65,6 +63,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         isLoading = false
         clearMovie()
         parent.enableFab()
+        val error = view!!.findViewById(R.id.error) as TextView
         error.text = errorMessage
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
     }
@@ -77,7 +76,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     }
 
     private fun clearMovie() {
-        backdrop.animate().alpha(ALPHA_CLEAR).setDuration(OUT_DURATION)
+        backdrop.animate().alpha(ALPHA_CLEAR).duration = OUT_DURATION
         poster.setImageResource(android.R.color.transparent)
         parent.title = " "
     }
@@ -89,8 +88,10 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         loadBackdrop(movie.getFullBackdropPath())
         loadPoster(movie.getFullPosterPath())
         if (view != null) {
+            val trailer = view!!.findViewById(R.id.trailer)
             trailer.visibility = if (movie.getYoutubeTrailer() == null) View.GONE
             else View.VISIBLE
+            val genres = view!!.findViewById(R.id.genres) as LinearLayout
             genres.removeAllViews()
             movie.genres.slice(0..Math.min(movie.genres.size-1, 2)).forEach { genre ->
                 val card = parent.layoutInflater.inflate(R.layout.card_filter, null)
@@ -101,7 +102,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
             }
         }
         val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
-        item.setChecked(movie.isBookmarked)
+        item.isChecked = movie.isBookmarked
         item.setIcon(
                 if (movie.isBookmarked) R.drawable.ic_bookmark_24dp
                 else R.drawable.ic_bookmark_outline_24dp
@@ -111,18 +112,18 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override fun showBookmarkUpdate(isBookmarked: Boolean) {
         holder.movie?.isBookmarked = isBookmarked
         val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
-        item.setChecked(isBookmarked)
+        item.isChecked = isBookmarked
         item.setIcon(
                 if (isBookmarked) R.drawable.ic_bookmark_24dp
                 else R.drawable.ic_bookmark_outline_24dp
         )
-        Snackbar.make(view,
+        Snackbar.make(view!!,
                 if (isBookmarked) "Bookmark added"
                 else "Bookmark removed", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showBookmarkError(isBookmarked: Boolean) {
-        Snackbar.make(view,
+        Snackbar.make(view!!,
                 if (isBookmarked) "Failed to add bookmark"
                 else "Failed to remove bookmark", Snackbar.LENGTH_SHORT).show()
     }
@@ -130,10 +131,12 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override fun getContent() = holder.movie
 
     private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
-        if (view == null) return
-        content.visibility = contentState
-        loading.visibility = loadingState
-        error.visibility   = errorState
+        val content = view?.findViewById(R.id.content)
+        val loading = view?.findViewById(R.id.loading)
+        val error = view?.findViewById(R.id.error)
+        content?.visibility = contentState
+        loading?.visibility = loadingState
+        error?.visibility   = errorState
     }
 
     fun loadBackdrop(imagePath: String) {
@@ -148,7 +151,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
                             val magic = PaletteMagic(palette)
                             parent.setTheme(magic.primary, magic.dark, magic.accent)
                         }
-                        backdrop.animate().alpha(ALPHA_HALF).setDuration(IN_DURATION)
+                        backdrop.animate().alpha(ALPHA_HALF).duration = IN_DURATION
                         return false
                     }
 
@@ -173,13 +176,14 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         parent.setToolbarStubLayout(R.layout.backdrop_movie)
-        holder = MovieViewHolder(view)
+        holder = MovieViewHolder(view!!)
 
         backdrop = parent.root.findViewById(R.id.backdrop) as ImageView
         poster = parent.root.findViewById(R.id.poster) as ImageView
         backdropTitle = parent.root.findViewById(R.id.backdrop_title) as TextView
         backdrop.alpha = ALPHA_HALF
 
+        val trailer = view!!.findViewById(R.id.trailer)
         trailer.setOnClickListener {
             val id = holder.movie?.getYoutubeTrailer() ?: return@setOnClickListener
             val uri = Uri.parse("https://www.youtube.com/watch?v=$id")
@@ -211,6 +215,10 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_filter -> {
+                showFilterSettings()
+                return true
+            }
             R.id.action_bookmark -> {
                 val movie = holder.movie ?: return true
                 presenter?.updateBookmark(movie, !movie.isBookmarked)
@@ -224,7 +232,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         super.onPrepareOptionsMenu(menu)
         val isBookmarked = holder.movie?.isBookmarked ?: false
         val item = menu.findItem(R.id.action_bookmark)
-        item.setChecked(isBookmarked)
+        item.isChecked = isBookmarked
         item.setIcon(
                 if (isBookmarked) R.drawable.ic_bookmark_24dp
                 else R.drawable.ic_bookmark_outline_24dp
@@ -232,6 +240,21 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     }
 
     fun callForUpdate() {
-        presenter?.updateMovie(filter)
+        presenter?.updateMovie()
+    }
+
+    fun showFilterSettings() {
+        val sheet = BottomSheetDialog(activity)
+        val sheetView = activity.layoutInflater.inflate(R.layout.sheet_filter, null)
+        val genreGrid = sheetView.findViewById(R.id.genres) as RecyclerView
+        genreGrid.layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.HORIZONTAL)
+        val adapter = GenreAdapter(presenter?.getSelectedGenres())
+        genreGrid.adapter = adapter
+        sheet.setContentView(sheetView)
+        sheet.setOnDismissListener {
+            Log.d("Movie", "Filter sheet dismissed")
+            presenter?.updateGenreFilter(adapter.selected)
+        }
+        sheet.show()
     }
 }

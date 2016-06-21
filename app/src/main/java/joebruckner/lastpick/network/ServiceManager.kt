@@ -2,10 +2,11 @@ package joebruckner.lastpick.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.google.gson.Gson
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
-import joebruckner.lastpick.data.*
+import joebruckner.lastpick.data.Genre
+import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.data.Page
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import java.net.SocketTimeoutException
@@ -39,7 +40,7 @@ class ServiceManager(val app: LastPickApp, val bus: Bus) {
         val formattedIds = StringBuilder()
         genreIds?.forEach { id -> formattedIds.append("""%7C$id""") }
         val response = service.discoverMovies(page,
-                if (genres == null) null
+                if (genres == null || genres.isEmpty()) null
                 else formattedIds.substring(3)
         ).execute()
         return if (response.isSuccess && response.code() == 200) response.body()

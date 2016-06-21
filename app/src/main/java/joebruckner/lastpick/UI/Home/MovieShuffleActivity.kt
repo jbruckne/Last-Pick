@@ -2,8 +2,6 @@ package joebruckner.lastpick.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.MenuItem
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Genre
@@ -45,48 +43,23 @@ class MovieShuffleActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_filter -> {
-                showFilterDialog()
-                return true
-            }
             R.id.action_history -> {
-                startActivity(Intent(this, javaClass<HistoryActivity>()))
+                startActivity(Intent(this, HistoryActivity::class.java))
                 return true
             }
             R.id.action_view_bookmarks -> {
-                startActivity(Intent(this, javaClass<BookmarksActivity>()))
+                startActivity(Intent(this, BookmarksActivity::class.java))
+                return true
+            }
+            R.id.action_test -> {
+                showFilterSheet()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
-    fun showFilterDialog() {
-        val selectedGenres = arrayListOf<Genre>()
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Genres")
-                .setMultiChoiceItems(
-                genres.map{ it.name }.toTypedArray(),
-                bools,
-                { dialog, which, isChecked -> bools[which] = isChecked })
-                .setOnDismissListener { dialog -> dialog.dismiss() }
-                .setNegativeButton("Cancel", { dialog, id -> dialog.cancel() })
-                .setPositiveButton("Save", { dialog, id ->
-                    for ((i, bool) in bools.withIndex()) {
-                        if (bool) selectedGenres.add(genres[i])
-                    }
-                    Log.d(logTag, selectedGenres.toString())
-                    val fragment = supportFragmentManager.findFragmentById(R.id.frame)
-                    if (fragment is MovieFragment) {
-                        if (selectedGenres.isEmpty()) {
-                            fragment.filter = null
-                        } else if (selectedGenres.first().id == 0) {
-                            genres.drop(0)
-                            fragment.filter = genres
-                        } else {
-                            fragment.filter = selectedGenres
-                        }
-                    }
-                }).create().show()
+    fun showFilterSheet() {
+
     }
 }

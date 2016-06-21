@@ -72,6 +72,9 @@
     <string name="third_party_libraries">Third-party libraries</string>
     <string name="youtube">YouTube</string>
     <string name="trailer">See Trailer</string>
+    <string name="genre">Genre</string>
+    <string name="year">Year</string>
+    <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
 
 
 </resources>

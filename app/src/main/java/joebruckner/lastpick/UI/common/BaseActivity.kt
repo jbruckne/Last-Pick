@@ -91,7 +91,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_about -> {
-                startActivity(Intent(this, javaClass<AboutActivity>()))
+                startActivity(Intent(this, AboutActivity::class.java))
                 return true
             }
             else -> {

@@ -38,7 +38,7 @@ class SimpleMovieAdapter(val context: Context): RecyclerView.Adapter<SimpleMovie
         onItemClickListeners.add(listener)
     }
 
-    public fun setNewMovies(movies: List<Movie>) {
+    fun setNewMovies(movies: List<Movie>) {
         this.movies = movies
         notifyDataSetChanged()
     }

@@ -1,7 +1,6 @@
 package joebruckner.lastpick.network
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 
 class JsonFileManager(val context: Context, val gson: Gson = Gson()) {
@@ -10,7 +9,7 @@ class JsonFileManager(val context: Context, val gson: Gson = Gson()) {
         try {
             val input = context.openFileInput(fileName)
             val json = input.reader().readText()
-            return gson.fromJson(json, javaClass<T>())
+            return gson.fromJson(json, T::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
             return null

@@ -1,6 +1,5 @@
 package joebruckner.lastpick.presenters
 
-import android.util.Log
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import joebruckner.lastpick.data.*
@@ -10,6 +9,8 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
 
     private var view: MovieView? = null
     private var registered = false
+    private val genres = Genre.getAll()
+    private var selected = BooleanArray(genres.size) { true }
 
     override fun attachActor(view: MovieView) {
         this.view = view
@@ -23,13 +24,34 @@ class MoviePresenterImpl(val bus: Bus) : MoviePresenter {
         registered = false
     }
 
-    override fun updateMovie(filter: List<Genre>?) {
+    override fun updateMovie() {
         view?.showLoading()
-        bus.post(MovieRequest(filter))
+        bus.post(MovieRequest(
+                if (selected[0]) null
+                else genres.filter { selected[genres.indexOf(it)] }
+        ))
     }
 
     override fun updateBookmark(movie: Movie, isAdding: Boolean) {
         bus.post(BookmarkUpdateRequest(movie, isAdding))
+    }
+
+    override fun updateGenreFilter(selected: BooleanArray) {
+        this.selected = selected
+    }
+
+    override fun getSelectedGenres() = selected
+
+    fun updateYearFilter() {
+        //TODO
+    }
+
+    fun updateRatingFilter() {
+        //TODO
+    }
+
+    fun updateKeywordFilter() {
+        //TODO
     }
 
     @Subscribe fun bookmarkChanged(event: BookmarkUpdateEvent) {

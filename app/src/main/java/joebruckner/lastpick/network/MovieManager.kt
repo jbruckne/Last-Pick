@@ -56,9 +56,9 @@ class MovieManager(val bus: Bus, val serviceManager: ServiceManager) {
         cacheType.addAll(genres ?: emptyList())
     }
 
-    private fun random(range: Range<Int>): Int {
-        if (range.end <= 1) return range.end
+    private fun random(range: IntRange): Int {
+        if (range.last <= 1) return range.last
         val random = Random(System.currentTimeMillis())
-        return random.nextInt(range.end - range.start) + range.start
+        return random.nextInt(range.last - range.first) + range.first
     }
 }

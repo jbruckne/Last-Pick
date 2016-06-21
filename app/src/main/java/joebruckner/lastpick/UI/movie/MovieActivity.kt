@@ -6,11 +6,10 @@ import com.google.gson.Gson
 import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
+import joebruckner.lastpick.data.ErrorEvent
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.data.MovieEvent
-import joebruckner.lastpick.data.ErrorEvent
 import joebruckner.lastpick.ui.common.BaseActivity
-import joebruckner.lastpick.ui.movie.MovieFragment
 
 class MovieActivity : BaseActivity() {
     override val layoutId: Int = R.layout.activity_movie
@@ -27,7 +26,7 @@ class MovieActivity : BaseActivity() {
         super.onStart()
 
         val movieString = intent.extras?.getString("movie")
-        val movie = Gson().fromJson(movieString, javaClass<Movie>())
+        val movie = Gson().fromJson(movieString, Movie::class.java)
         val bus = application.getSystemService(LastPickApp.BUS) as Bus
         if (movie != null) bus.post(MovieEvent(movie))
         else bus.post(ErrorEvent("Couldn't find movie", 0))
