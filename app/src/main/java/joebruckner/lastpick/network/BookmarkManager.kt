@@ -1,35 +1,36 @@
 package joebruckner.lastpick.network
 
-import android.util.Log
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
-import joebruckner.lastpick.data.*
+import joebruckner.lastpick.data.Movie
+import rx.Observable
 
-class BookmarkManager(val bus: Bus, val jsonFileManager: JsonFileManager) {
-    val bookmarks = arrayListOf<Movie>()
+class BookmarkManager(val jsonFileManager: JsonFileManager) {
+    val bookmarks = mutableSetOf<Movie>()
     val BOOKMARK_FILE = "bookmarks"
 
-    init {
-        bus.register(this)
-    }
-
-    fun loadSavedBookmarks() {
+    fun loadBookmarksFromFile() {
         val savedBookmarks = jsonFileManager.load<Array<Movie>>(BOOKMARK_FILE)
         bookmarks.addAll(savedBookmarks?.toList() ?: emptyList())
     }
 
-    @Subscribe fun onBookmarkedMoviesRequest(request: BookmarkedMoviesRequest) {
-        bus.post(BookmarkedMoviesEvent(bookmarks.toList()))
+    fun addBookmark(movie: Movie): Observable<Movie> {
+        return Observable.create { sub ->
+            bookmarks.add(movie)
+            jsonFileManager.save(BOOKMARK_FILE, bookmarks)
+            sub.onNext(movie)
+            sub.onCompleted()
+        }
     }
 
-    @Subscribe fun onBookmarkUpdateRequest(request: BookmarkUpdateRequest) {
-        request.movie.isBookmarked = request.isAdding
-        if (request.isAdding && !bookmarks.contains(request.movie))
-            bookmarks.add(request.movie)
-        else if (!request.isAdding)
-            bookmarks.remove(request.movie)
-        bus.post(BookmarkUpdateEvent(request.movie, true))
-        jsonFileManager.save(BOOKMARK_FILE, bookmarks)
+    fun removeBookmark(movie: Movie): Observable<Movie> {
+        return Observable.create { sub ->
+            bookmarks.remove(movie)
+            jsonFileManager.save(BOOKMARK_FILE, bookmarks)
+            sub.onNext(movie)
+            sub.onCompleted()
+        }
     }
 
+    fun getBookmarks(): Observable<Set<Movie>> {
+        return Observable.just(bookmarks)
+    }
 }

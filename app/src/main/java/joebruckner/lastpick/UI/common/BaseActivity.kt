@@ -7,7 +7,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -20,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import joebruckner.lastpick.R
 import joebruckner.lastpick.ui.about.AboutActivity
+import joebruckner.lastpick.widgets.ControllableAppBarLayout
 import java.util.*
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -34,12 +34,13 @@ abstract class BaseActivity : AppCompatActivity() {
     val logTag = javaClass.simpleName
 
     var isFirstStart: Boolean = true
+    var toolbarIsCollapsed: Boolean = false
 
     var toolbarStub: ViewStubCompat? = null
     var fab: FloatingActionButton? = null
     var menu: Menu? = null
     lateinit var root: View
-    lateinit var appBar: AppBarLayout
+    lateinit var appBar: ControllableAppBarLayout
     lateinit var toolbar: Toolbar
     lateinit var collapsingToolbar: CollapsingToolbarLayout
 
@@ -50,7 +51,6 @@ abstract class BaseActivity : AppCompatActivity() {
     var title: String = " "
         set(newTitle: String) {
             field = newTitle
-            collapsingToolbar.title = newTitle
             supportActionBar?.title = newTitle
         }
 
@@ -63,13 +63,19 @@ abstract class BaseActivity : AppCompatActivity() {
 
         val f = findViewById(fabId)
         fab = if (f != null) f as FloatingActionButton else null
-        appBar = findViewById(appBarId) as AppBarLayout
+        appBar = findViewById(appBarId) as ControllableAppBarLayout
         toolbar = findViewById(toolbarId) as Toolbar
         toolbarStub = findViewById(toolbarStubId) as ViewStubCompat
         collapsingToolbar = findViewById(collapsingToolbarId) as CollapsingToolbarLayout
 
         setSupportActionBar(toolbar)
-        collapsingToolbar.setExpandedTitleTextAppearance(R.style.Transparent)
+        collapsingToolbar.isTitleEnabled = false
+
+        appBar.addOnOffsetChangedListener { appBarLayout, i ->
+            val collapsedPercentage = Math.abs(i) / appBarLayout.totalScrollRange.toFloat()
+            if (toolbarIsCollapsed && collapsedPercentage >= 0.9) return@addOnOffsetChangedListener
+            toolbarIsCollapsed = collapsedPercentage >= 0.9
+        }
     }
 
     override fun onResume() {
@@ -101,7 +107,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun replaceFrame(frameId: Int, fragment: Fragment, backstack: Boolean = false) {
-        var transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
+        val transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
         if (backstack) transaction.addToBackStack(null).commit()
         else transaction.commit()
     }
@@ -132,14 +138,14 @@ abstract class BaseActivity : AppCompatActivity() {
             collapsingToolbar.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar.setContentScrimColor(animator.animatedValue as Int)
         }
-        primaryAnimator.setDuration(250)
+        primaryAnimator.duration = 250
         primaryAnimator.start()
         val darkAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimaryDark, dark)
         darkAnimator.addUpdateListener { animator ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 window.statusBarColor = animator.animatedValue as Int
         }
-        darkAnimator.setDuration(250)
+        darkAnimator.duration = 250
         darkAnimator.start()
         fab?.backgroundTintList = ColorStateList.valueOf(accent)
         colorPrimary = primary

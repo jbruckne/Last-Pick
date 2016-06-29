@@ -63,8 +63,8 @@ data class Movie(
     }
 
     companion object {
-        private val BASE_URL = "http://image.tmdb.org/t/p/"
-        private val BACKDROP_SIZE = "w1280"
-        private val POSTER_SIZE = "w342"
+        val BASE_URL = "http://image.tmdb.org/t/p/"
+        val BACKDROP_SIZE = "w1280"
+        val POSTER_SIZE = "w342"
     }
 }

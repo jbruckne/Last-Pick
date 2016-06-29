@@ -20,4 +20,6 @@ data class Cast(
         if (text.length > 20) text.replace(20, text.length, "...")
         return text.toString()
     }
+
+    fun getProfilepath() = Movie.BASE_URL + Movie.POSTER_SIZE + profilePath
 }

@@ -106,7 +106,7 @@ class ControllableAppBarLayout : AppBarLayout {
 
     private fun performExpandingWithoutAnimation() {
         if (mParent!!.get() != null) {
-            mBehavior!!.setTopAndBottomOffset(0)
+            mBehavior!!.topAndBottomOffset = 0
         }
     }
 

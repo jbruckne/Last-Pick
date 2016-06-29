@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.ui.bookmarks.BookmarksActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
@@ -14,9 +13,6 @@ import java.util.*
 class MovieShuffleActivity : BaseActivity() {
     override val layoutId = R.layout.activity_movie_shuffle
     override val menuId = R.menu.menu_shuffle_movie
-
-    val genres = Genre.getAll()
-    val bools = BooleanArray(genres.size)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +47,7 @@ class MovieShuffleActivity : BaseActivity() {
                 startActivity(Intent(this, BookmarksActivity::class.java))
                 return true
             }
-            R.id.action_test -> {
-                showFilterSheet()
-                return true
-            }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    fun showFilterSheet() {
-
     }
 }

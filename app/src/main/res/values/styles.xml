@@ -7,8 +7,9 @@
         <item name="colorPrimary">@color/md_blue_grey_300</item>
         <item name="colorPrimaryDark">@color/md_blue_grey_400</item>
         <item name="colorAccent">@color/md_grey_500</item>
-        <item name="titleTextColor">#FFFFFFFF</item>
-        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="titleTextColor">@color/md_white_1000</item>
+        <item name="android:textColorPrimary">@color/md_white_1000</item>
         <item name="android:windowBackground">@color/md_grey_900</item>
         <item name="android:windowNoTitle">true</item>
     </style>

@@ -10,16 +10,9 @@ import android.widget.TextView
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Genre
 
-class GenreAdapter(initSelected: BooleanArray?): RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
+class GenreAdapter(initSelected: BooleanArray): RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
     val genres = Genre.getAll()
-    var selected: BooleanArray
-
-    init {
-        if (initSelected == null)
-            selected = BooleanArray(genres.size) { true }
-        else
-            selected = initSelected
-    }
+    var selected = initSelected
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder? {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.toggle_genre, parent, false)
@@ -36,8 +29,7 @@ class GenreAdapter(initSelected: BooleanArray?): RecyclerView.Adapter<GenreAdapt
                 notifyItemChanged(0)
             }
             if (position == 0) {
-                for (i in 1..selected.size-1)
-                    selected[i] = selected[0]
+                for (i in 1..selected.size-1) selected[i] = selected[0]
                 notifyDataSetChanged()
             }
             setToggle(it, position)

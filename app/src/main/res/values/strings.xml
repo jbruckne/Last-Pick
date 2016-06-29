@@ -75,6 +75,7 @@
     <string name="genre">Genre</string>
     <string name="year">Year</string>
     <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="bar"> - </string>
 
 
 </resources>
