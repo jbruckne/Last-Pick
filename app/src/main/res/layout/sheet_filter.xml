@@ -62,7 +62,7 @@
         app:selectorColor="@color/md_white_1000"
         app:pinRadius="0dp"
         app:tickStart="1920"
-        app:tickEnd="2016"
+        app:tickEnd="2020"
         app:tickInterval="10"/>
 
     <TextView

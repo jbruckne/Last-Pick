@@ -35,14 +35,15 @@ data class Movie(
         @SerializedName("vote_count")
         val voteCount: Int,
         val videos: Video.ListWrapper?,
-        val releases: Release.ListWrapper,
-        var isBookmarked: Boolean = false
+        val releases: Release.ListWrapper
 ) {
 
     override fun equals(other: Any?): Boolean {
         if (other !is Movie) return false
         return this.id == other.id
     }
+
+    fun getFullTrailerPath(): String = BASE_TRAILER_URL + getYoutubeTrailer()
 
     fun getFullPosterPath(): String = BASE_URL + POSTER_SIZE + posterPath
 
@@ -63,6 +64,7 @@ data class Movie(
     }
 
     companion object {
+        val BASE_TRAILER_URL = "https://www.youtube.com/watch?v="
         val BASE_URL = "http://image.tmdb.org/t/p/"
         val BACKDROP_SIZE = "w1280"
         val POSTER_SIZE = "w342"

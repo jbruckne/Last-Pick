@@ -14,6 +14,7 @@ class MoviePresenterImpl(
         val bookmarksManager: BookmarkManager
 ) : MoviePresenter {
     private var view: MovieView? = null
+    private var movie: Movie? = null
     private var filter = Filter()
 
     override fun attachActor(view: MovieView) {
@@ -24,26 +25,28 @@ class MoviePresenterImpl(
         this.view = null
     }
 
-    override fun updateMovie() {
+    override fun getNextMovie() {
         view?.showLoading()
         moviesManager.getNextMovie(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ movie ->
+                .subscribe ({ m ->
+                    movie = m.copy()
                     if (view?.isLoading ?: false) {
-                        view?.showContent(movie)
-                        updateBookmarkView(movie, false)
+                        view?.showContent(movie!!)
+                        updateBookmarkView(movie!!, false)
                     }
                 }, { error ->
                     if (view?.isLoading ?: false) view?.showError(error.toString())
                 })
     }
 
-    override fun updateBookmark(movie: Movie, isAdding: Boolean) {
+    override fun updateBookmark() {
+        if (movie == null) return
         val observable =
-                if (isAdding) bookmarksManager.addBookmark(movie)
-                else bookmarksManager.removeBookmark(movie)
-        observable.subscribe { updateBookmarkView(movie, true) }
+                if (!bookmarksManager.isBookmarked(movie!!)) bookmarksManager.addBookmark(movie!!)
+                else bookmarksManager.removeBookmark(movie!!)
+        observable.subscribe { updateBookmarkView(movie!!, true) }
     }
 
     override fun updateFilter(selected: BooleanArray, yearLte: String, yearGte: String) {
@@ -60,6 +63,10 @@ class MoviePresenterImpl(
                 .toBooleanArray()
     }
 
+    override fun getBookmarkStatus() = bookmarksManager.isBookmarked(movie!!)
+
+    override fun getCurrentMovie() = movie
+
     override fun getLte() = filter.yearLte
 
     override fun getGte() = filter.yearGte
@@ -73,9 +80,7 @@ class MoviePresenterImpl(
     }
 
     fun updateBookmarkView(movie: Movie, notify: Boolean) {
-        bookmarksManager.getBookmarks().subscribe { bookmarks ->
-            if (view?.getContent()?.id != movie.id) return@subscribe
-            view?.showBookmarkUpdate(bookmarks.contains(movie), notify)
-        }
+        if (this.movie?.id != movie.id) return
+        view?.showBookmarkUpdate(bookmarksManager.isBookmarked(movie), notify)
     }
 }

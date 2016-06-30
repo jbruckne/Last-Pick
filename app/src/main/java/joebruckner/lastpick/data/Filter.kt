@@ -9,6 +9,6 @@ data class Filter(
 
     companion object {
         val DEFAULT_GTE = "1920"
-        val DEFAULT_LTE = "2016"
+        val DEFAULT_LTE = "2020"
     }
 }

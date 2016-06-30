@@ -75,6 +75,7 @@ abstract class BaseActivity : AppCompatActivity() {
             val collapsedPercentage = Math.abs(i) / appBarLayout.totalScrollRange.toFloat()
             if (toolbarIsCollapsed && collapsedPercentage >= 0.9) return@addOnOffsetChangedListener
             toolbarIsCollapsed = collapsedPercentage >= 0.9
+            supportActionBar?.setDisplayShowTitleEnabled(toolbarIsCollapsed)
         }
     }
 
@@ -124,15 +125,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun resetTheme() {
         val theme = getThemeMap()
-        setTheme(
-                theme["colorPrimary"] ?: Color.BLACK,
-                theme["colorPrimaryDark"] ?: Color.BLACK,
-                theme["colorAccent"] ?: Color.BLACK
-        )
+        setPrimary(theme["colorPrimary"]!!)
+        setDark(theme["colorPrimaryDark"]!!)
+        setAccent(theme["colorAccent"]!!)
     }
 
-    fun setTheme(primary: Int, dark: Int, accent: Int) {
-        val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, primary)
+    fun setPrimary(color: Int) {
+        val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, color)
         primaryAnimator.addUpdateListener { animator ->
             appBar.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar.setBackgroundColor(animator.animatedValue as Int)
@@ -140,17 +139,32 @@ abstract class BaseActivity : AppCompatActivity() {
         }
         primaryAnimator.duration = 250
         primaryAnimator.start()
-        val darkAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimaryDark, dark)
+        colorPrimary = color
+    }
+
+    fun setDark(color: Int) {
+        val darkAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimaryDark, color)
         darkAnimator.addUpdateListener { animator ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 window.statusBarColor = animator.animatedValue as Int
         }
         darkAnimator.duration = 250
         darkAnimator.start()
-        fab?.backgroundTintList = ColorStateList.valueOf(accent)
-        colorPrimary = primary
-        colorPrimaryDark = dark
-        colorAccent = accent
+        colorPrimaryDark = color
+    }
+
+    fun setAccent(color: Int) {
+        fab?.backgroundTintList = ColorStateList.valueOf(color)
+        colorAccent = color
+    }
+
+    fun setTextColor(color: Int) {
+        val textAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Color.WHITE,  color)
+        textAnimator.addUpdateListener {
+            toolbar.setTitleTextColor(color)
+        }
+        textAnimator.duration = 250
+        textAnimator.start()
     }
 
     fun getThemeMap(): HashMap<String, Int> {

@@ -5,15 +5,13 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.squareup.otto.Bus
 import joebruckner.lastpick.network.*
 
 
 class LastPickApp : Application() {
-    val bus = Bus(com.squareup.otto.ThreadEnforcer.ANY)
     val jsonFileManager = JsonFileManager(this)
     val bookmarkManager = BookmarkManager(jsonFileManager)
-    val historyManager = HistoryManager(bus, 15)
+    val historyManager = HistoryManager()
     lateinit var glide: RequestManager
     lateinit var serviceManager: ServiceManager
     lateinit var movieManager: MovieManager
@@ -24,24 +22,24 @@ class LastPickApp : Application() {
         serviceManager = ServiceManager(
                 getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         )
-        movieManager = MovieManager(serviceManager)
+        movieManager = MovieManager(serviceManager, historyManager)
         bookmarkManager.loadBookmarksFromFile()
     }
 
     override fun getSystemService(name: String): Any? {
         return when (name) {
-            BUS -> bus
             GLIDE -> glide
             BOOKMARKS_MANAGER -> bookmarkManager
+            HISTORY_MANAGER -> historyManager
             MOVIE_MANAGER -> movieManager
             else -> super.getSystemService(name)
         }
     }
 
     companion object {
-        const val BUS = "BUS"
         const val GLIDE = "GLIDE"
         const val BOOKMARKS_MANAGER = "BOOKMARKS_MANAGER"
+        const val HISTORY_MANAGER = "HISTORY_MANAGER"
         const val MOVIE_MANAGER = "MOVIE_MANAGER"
     }
 }

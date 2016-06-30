@@ -4,8 +4,8 @@ import joebruckner.lastpick.data.Movie
 import rx.Observable
 
 class BookmarkManager(val jsonFileManager: JsonFileManager) {
-    val bookmarks = mutableSetOf<Movie>()
-    val BOOKMARK_FILE = "bookmarks"
+    private val bookmarks = mutableSetOf<Movie>()
+    private val BOOKMARK_FILE = "bookmarks"
 
     fun loadBookmarksFromFile() {
         val savedBookmarks = jsonFileManager.load<Array<Movie>>(BOOKMARK_FILE)
@@ -30,7 +30,7 @@ class BookmarkManager(val jsonFileManager: JsonFileManager) {
         }
     }
 
-    fun getBookmarks(): Observable<Set<Movie>> {
-        return Observable.just(bookmarks)
-    }
+    fun isBookmarked(movie: Movie) = bookmarks.contains(movie)
+
+    fun getBookmarks() = bookmarks
 }

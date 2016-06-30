@@ -154,7 +154,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/youtube"
+            android:id="@+id/trailer_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@mipmap/ic_youtube"

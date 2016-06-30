@@ -5,10 +5,12 @@ import joebruckner.lastpick.data.Movie
 interface MoviePresenter {
     fun attachActor(view: MovieView)
     fun detachActor()
-    fun updateMovie()
+    fun getNextMovie()
     fun updateFilter(selected: BooleanArray, yearLte: String, yearGte: String)
-    fun updateBookmark(movie: Movie, isAdding: Boolean)
+    fun updateBookmark()
     fun getSelectedGenres(): BooleanArray
+    fun getBookmarkStatus(): Boolean
+    fun getCurrentMovie(): Movie?
     fun getLte(): String
     fun getGte(): String
 
@@ -18,7 +20,6 @@ interface MoviePresenter {
         fun showError(errorMessage: String)
         fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean)
         fun showBookmarkError(isBookmarked: Boolean)
-        fun getContent(): Movie?
         var isLoading: Boolean
     }
 }

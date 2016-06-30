@@ -5,10 +5,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.google.gson.Gson
-import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.network.BookmarkManager
 import joebruckner.lastpick.presenters.BookmarksPresenter
 import joebruckner.lastpick.presenters.BookmarksPresenterImpl
 import joebruckner.lastpick.ui.SimpleMovieAdapter
@@ -22,7 +22,6 @@ class BookmarksFragment : BaseFragment(), BookmarksPresenter.BookmarksView {
     lateinit var adapter: SimpleMovieAdapter
 
     override fun showContent(movies: List<Movie>) {
-        movies.forEach { Log.d(logTag, it.isBookmarked.toString()) }
         adapter.setNewMovies(movies)
     }
 
@@ -45,8 +44,9 @@ class BookmarksFragment : BaseFragment(), BookmarksPresenter.BookmarksView {
         content.layoutManager = LinearLayoutManager(activity)
         content.adapter = adapter
 
-        val bus = parent.application.getSystemService(LastPickApp.BUS) as Bus
-        presenter = BookmarksPresenterImpl(bus)
+        val bookmarkManager = parent.application
+                .getSystemService(LastPickApp.BOOKMARKS_MANAGER) as BookmarkManager
+        presenter = BookmarksPresenterImpl(bookmarkManager)
         presenter.attachView(this)
         presenter.getBookmarks()
     }

@@ -5,10 +5,10 @@ import joebruckner.lastpick.data.Movie
 import rx.Observable
 import java.util.*
 
-class MovieManager(val serviceManager: ServiceManager) {
-    val idCache = arrayListOf<Int>()
-    var currentFilter = Filter()
-    var scope = 1
+class MovieManager(val serviceManager: ServiceManager, val historyManager: HistoryManager) {
+    private val idCache = arrayListOf<Int>()
+    private var currentFilter = Filter()
+    private var scope = 1
 
     fun getNextMovie(filter: Filter): Observable<Movie> {
         // Check if cache is still valid
@@ -18,7 +18,7 @@ class MovieManager(val serviceManager: ServiceManager) {
         return getCachedIds(filter).flatMap { ids ->
             val id = ids[random(0..ids.size-1)]
             idCache.remove(id)
-            serviceManager.getMovie(id)
+            serviceManager.getMovie(id).doOnNext { historyManager.addMovieToHistory(it) }
         }
 
     }
