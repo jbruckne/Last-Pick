@@ -1,84 +1,95 @@
-<FrameLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.movie.MovieFragment"
-    tools:ignore="UnusedAttribute"
-    >
+    android:overScrollMode="never"
+    tools:targetApi="lollipop"
+    tools:ignore="RtlSymmetry">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nested_scroll_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        >
+        android:layout_height="match_parent">
 
-        <FrameLayout
+        <RelativeLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            android:visibility="visible">
 
-            <RelativeLayout
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="16dp"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/poster"
-                    android:layout_width="98dp"
-                    android:layout_height="140dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:contentDescription="@string/poster"
-                    android:background="@color/md_white_1000"
-                    />
-
-                <TextView
-                    android:id="@+id/phrase"
-                    android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:padding="16dp"
-                    android:layout_toEndOf="@+id/poster"
-                    android:layout_alignBottom="@+id/poster"
-                    android:textSize="18sp"
-                    android:textStyle="italic|bold"
-                    android:fontFamily="sans-serif-condensed"
-                    tools:text="Good vs Evil" />
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="140dp">
-
-                    <include layout="@layout/card_movie" />
-                </FrameLayout>
-
-            </RelativeLayout>
-
-            <android.support.v4.widget.ContentLoadingProgressBar
-                android:id="@+id/loading"
-                style="?android:progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:padding="32dp"
-                android:visibility="invisible"
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="98dp"
+                android:layout_height="140dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/poster"
+                tools:background="@color/md_white_1000"
                 />
 
             <TextView
-                android:id="@+id/error"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/poster"
+                android:layout_above="@+id/phrase"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="bottom"
+                android:textColor="?attr/titleTextColor"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                tools:text="Title"/>
+
+            <TextView
+                android:id="@+id/phrase"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/poster"
+                android:layout_alignBottom="@+id/poster"
+                android:paddingTop="16dp"
+                android:gravity="top"
+                android:textSize="18sp"
+                android:textStyle="italic|bold"
+                android:fontFamily="sans-serif-condensed"
+                tools:text="Good vs Evil" />
+
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:padding="32dp"
-                android:visibility="invisible"
-                />
+                android:layout_marginTop="140dp">
 
-        </FrameLayout>
+                <include layout="@layout/card_movie" />
+            </FrameLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        </RelativeLayout>
 
-</FrameLayout>
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/loading"
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:progressBackgroundTint="@color/md_white_1000"
+            android:padding="32dp"
+            android:visibility="invisible"
+            tools:targetApi="lollipop" />
+
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="32dp"
+            android:visibility="invisible"
+            />
+
+    </FrameLayout>
+
+</android.support.v4.widget.NestedScrollView>

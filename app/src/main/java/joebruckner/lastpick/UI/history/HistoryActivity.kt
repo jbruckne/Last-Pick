@@ -3,6 +3,9 @@ package joebruckner.lastpick.ui.history
 import android.os.Bundle
 import android.view.MenuItem
 import joebruckner.lastpick.R
+import joebruckner.lastpick.consume
+import joebruckner.lastpick.replaceFrame
+import joebruckner.lastpick.sethomeAsUpEnabled
 import joebruckner.lastpick.ui.common.BaseActivity
 
 class HistoryActivity : BaseActivity() {
@@ -12,18 +15,11 @@ class HistoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         replaceFrame(R.id.frame, HistoryFragment())
-
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        collapsingToolbar.isTitleEnabled = false
+        sethomeAsUpEnabled(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        android.R.id.home -> consume { onBackPressed() }
+        else -> super.onOptionsItemSelected(item)
     }
 }

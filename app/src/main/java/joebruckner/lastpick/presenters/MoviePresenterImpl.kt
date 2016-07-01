@@ -32,20 +32,32 @@ class MoviePresenterImpl(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({ m ->
                     movie = m.copy()
-                    if (view?.isLoading ?: false) {
-                        view?.showContent(movie!!)
-                        updateBookmarkView(movie!!, false)
-                    }
+                    showMovie()
                 }, { error ->
+                    error.printStackTrace()
                     if (view?.isLoading ?: false) view?.showError(error.toString())
                 })
+    }
+
+    override fun setMovie(movie: Movie) {
+        this.movie = movie
+        showMovie()
+    }
+
+    private fun showMovie() {
+        if (view?.isLoading ?: false) {
+            view?.showContent(movie!!)
+            updateBookmarkView(movie!!, false)
+        }
     }
 
     override fun updateBookmark() {
         if (movie == null) return
         val observable =
-                if (!bookmarksManager.isBookmarked(movie!!)) bookmarksManager.addBookmark(movie!!)
-                else bookmarksManager.removeBookmark(movie!!)
+                if (!bookmarksManager.isBookmarked(movie!!))
+                    bookmarksManager.addBookmark(movie!!)
+                else
+                    bookmarksManager.removeBookmark(movie!!)
         observable.subscribe { updateBookmarkView(movie!!, true) }
     }
 

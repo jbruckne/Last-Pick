@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import joebruckner.lastpick.R
+import joebruckner.lastpick.consume
+import joebruckner.lastpick.getFragment
+import joebruckner.lastpick.replaceFrame
 import joebruckner.lastpick.ui.bookmarks.BookmarksActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.history.HistoryActivity
@@ -37,17 +40,13 @@ class MovieShuffleActivity : BaseActivity() {
         if (isFirstStart) (getFragment(R.id.frame) as MovieFragment).callForUpdate()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_history -> {
-                startActivity(Intent(this, HistoryActivity::class.java))
-                return true
-            }
-            R.id.action_view_bookmarks -> {
-                startActivity(Intent(this, BookmarksActivity::class.java))
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_history -> consume {
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
+        R.id.action_view_bookmarks -> consume {
+            startActivity(Intent(this, BookmarksActivity::class.java))
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 }

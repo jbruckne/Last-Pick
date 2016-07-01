@@ -1,6 +1,7 @@
 package joebruckner.lastpick.network
 
 import android.net.ConnectivityManager
+import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.data.Filter
 import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
@@ -14,11 +15,11 @@ import java.util.concurrent.TimeUnit
 class ServiceManager(val connectivityManager: ConnectivityManager) {
     val CONTENT_ERROR = "Failed to retrieve content"
     val CONNECTION_ERROR = "Failed to connect to the internet"
-    val client = OkHttpClient.Builder()
+    val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
             .build()
-    val service = Retrofit.Builder()
+    val service: TmdbService = Retrofit.Builder()
             .baseUrl("http://api.themoviedb.org/3/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
@@ -28,7 +29,7 @@ class ServiceManager(val connectivityManager: ConnectivityManager) {
     fun getMovie(id: Int): Observable<Movie> {
         return Observable.create { subscriber ->
             if (!isConnected()) subscriber.onError(Throwable(CONNECTION_ERROR))
-            val response = service.getMovie(id).execute()
+            val response = service.getMovie(id, LastPickApp.TMDB_API_KEY).execute()
             val body = response.body()
             val success = response.isSuccessful && response.code() == 200
             if (success) subscriber.onNext(body)
@@ -38,10 +39,12 @@ class ServiceManager(val connectivityManager: ConnectivityManager) {
 
     }
 
-    fun fetchPage(page: Int, filter: Filter): Observable<Page> {
+    fun getPage(page: Int, filter: Filter): Observable<Page> {
         return Observable.create { subscriber ->
             if (!isConnected()) subscriber.onError(Throwable(CONNECTION_ERROR))
-            val response = service.discoverMovies(page,
+            val response = service.discoverMovies(
+                    LastPickApp.TMDB_API_KEY,
+                    page,
                     if (filter.allGenresSelected()) null
                     else formatGenreIds(filter.genres),
                     filter.yearLte,

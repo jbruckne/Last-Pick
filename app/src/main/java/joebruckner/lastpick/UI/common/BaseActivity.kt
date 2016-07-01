@@ -7,51 +7,43 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.support.v7.widget.ViewStubCompat
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import joebruckner.lastpick.R
+import joebruckner.lastpick.find
 import joebruckner.lastpick.ui.about.AboutActivity
-import joebruckner.lastpick.widgets.ControllableAppBarLayout
-import java.util.*
 
 abstract class BaseActivity : AppCompatActivity() {
     protected abstract val layoutId: Int
     protected open val fabId = R.id.fab
     protected open val appBarId = R.id.appBar
     protected open val toolbarId = R.id.toolbar
-    protected open val toolbarStubId: Int = R.id.stub
-    protected open val collapsingToolbarId: Int = R.id.collapsingToolbar
+    protected open val collapsingToolbarId = R.id.collapsingToolbar
     protected open val menuId: Int = R.menu.menu_about
 
     val logTag = javaClass.simpleName
 
     var isFirstStart: Boolean = true
-    var toolbarIsCollapsed: Boolean = false
 
-    var toolbarStub: ViewStubCompat? = null
-    var fab: FloatingActionButton? = null
+    val fab by lazy { find<FloatingActionButton?>(fabId) }
+    val toolbar by lazy { find<Toolbar?>(toolbarId) }
+    val appBar by lazy { find<AppBarLayout>(appBarId) }
+    val collapsingToolbar by lazy { find<CollapsingToolbarLayout?>(collapsingToolbarId) }
     var menu: Menu? = null
-    lateinit var root: View
-    lateinit var appBar: ControllableAppBarLayout
-    lateinit var toolbar: Toolbar
-    lateinit var collapsingToolbar: CollapsingToolbarLayout
 
     var colorPrimary: Int = Color.GRAY
     var colorPrimaryDark: Int = Color.GRAY
     var colorAccent: Int = Color.GRAY
 
     var title: String = " "
-        set(newTitle: String) {
-            field = newTitle
-            supportActionBar?.title = newTitle
+        set(value: String) {
+            field = value
+            supportActionBar?.title = value
         }
 
     private var fabIsEnabled = true
@@ -59,24 +51,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
-        root = window.decorView.rootView
-
-        val f = findViewById(fabId)
-        fab = if (f != null) f as FloatingActionButton else null
-        appBar = findViewById(appBarId) as ControllableAppBarLayout
-        toolbar = findViewById(toolbarId) as Toolbar
-        toolbarStub = findViewById(toolbarStubId) as ViewStubCompat
-        collapsingToolbar = findViewById(collapsingToolbarId) as CollapsingToolbarLayout
-
         setSupportActionBar(toolbar)
-        collapsingToolbar.isTitleEnabled = false
-
-        appBar.addOnOffsetChangedListener { appBarLayout, i ->
-            val collapsedPercentage = Math.abs(i) / appBarLayout.totalScrollRange.toFloat()
-            if (toolbarIsCollapsed && collapsedPercentage >= 0.9) return@addOnOffsetChangedListener
-            toolbarIsCollapsed = collapsedPercentage >= 0.9
-            supportActionBar?.setDisplayShowTitleEnabled(toolbarIsCollapsed)
-        }
     }
 
     override fun onResume() {
@@ -107,35 +82,23 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun replaceFrame(frameId: Int, fragment: Fragment, backstack: Boolean = false) {
-        val transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
-        if (backstack) transaction.addToBackStack(null).commit()
-        else transaction.commit()
-    }
-
-    fun getFragment(id: Int): Fragment {
-        return supportFragmentManager.findFragmentById(id)
-    }
-
-    fun setToolbarStubLayout(layoutId: Int) {
-        toolbarStub?.layoutResource = layoutId
-        toolbarStub?.inflate()
-        toolbarStub = null
-    }
-
     fun resetTheme() {
-        val theme = getThemeMap()
-        setPrimary(theme["colorPrimary"]!!)
-        setDark(theme["colorPrimaryDark"]!!)
-        setAccent(theme["colorAccent"]!!)
+        val array = obtainStyledAttributes(intArrayOf(
+                R.attr.colorPrimary,
+                R.attr.colorPrimaryDark,
+                R.attr.colorAccent
+        ))
+        setPrimary(array.getColor(0, Color.BLACK))
+        setDark(array.getColor(1, Color.BLACK))
+        setAccent(array.getColor(2, Color.BLACK))
     }
 
     fun setPrimary(color: Int) {
         val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, color)
         primaryAnimator.addUpdateListener { animator ->
             appBar.setBackgroundColor(animator.animatedValue as Int)
-            collapsingToolbar.setBackgroundColor(animator.animatedValue as Int)
-            collapsingToolbar.setContentScrimColor(animator.animatedValue as Int)
+            collapsingToolbar?.setBackgroundColor(animator.animatedValue as Int)
+            collapsingToolbar?.setContentScrimColor(animator.animatedValue as Int)
         }
         primaryAnimator.duration = 250
         primaryAnimator.start()
@@ -158,44 +121,10 @@ abstract class BaseActivity : AppCompatActivity() {
         colorAccent = color
     }
 
-    fun setTextColor(color: Int) {
-        val textAnimator = ValueAnimator.ofObject(ArgbEvaluator(), Color.WHITE,  color)
-        textAnimator.addUpdateListener {
-            toolbar.setTitleTextColor(color)
-        }
-        textAnimator.duration = 250
-        textAnimator.start()
-    }
-
-    fun getThemeMap(): HashMap<String, Int> {
-        val attr = arrayOf(
-                R.attr.colorPrimary,
-                R.attr.colorPrimaryDark,
-                R.attr.colorAccent
-        )
-        val array = obtainStyledAttributes(R.style.AppTheme, attr.toIntArray())
-        val map = hashMapOf<String, Int>()
-        map.put("colorPrimary", array.getColor(0, Color.BLACK))
-        map.put("colorPrimaryDark", array.getColor(1, Color.BLACK))
-        map.put("colorAccent", array.getColor(2, Color.BLACK))
-        array.recycle()
-        return map
-    }
-
-    fun color(colorRes: Int): Int {
-        if (Build.VERSION.SDK_INT >= 23)
-            return ContextCompat.getColor(this, colorRes)
-        return resources.getColor(colorRes)
-    }
-
-    fun displayHomeAsUp(homeAsUp: Boolean) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(homeAsUp)
-    }
-
     fun enableFab() {
         fabIsEnabled = true
         fab?.show(object: FloatingActionButton.OnVisibilityChangedListener() {
-            override fun onShown(f: FloatingActionButton?) {
+            override fun onShown(f: FloatingActionButton) {
                 if (!fabIsEnabled) disableFab()
             }
         })
@@ -204,7 +133,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun disableFab() {
         fabIsEnabled = false
         fab?.hide(object: FloatingActionButton.OnVisibilityChangedListener() {
-            override fun onHidden(f: FloatingActionButton?) {
+            override fun onHidden(f: FloatingActionButton) {
                 if (fabIsEnabled) enableFab()
             }
         })

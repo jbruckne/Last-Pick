@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.google.gson.Gson
-import com.squareup.otto.Bus
 import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
@@ -33,12 +32,11 @@ class HistoryFragment : BaseFragment(), HistoryPresenter.HistoryView {
     override fun onStart() {
         super.onStart()
 
-        val intent = Intent(context, MovieActivity::class.java)
         adapter = SimpleMovieAdapter(context)
         adapter.addOnItemClickListener { position ->
-            Log.d(logTag, adapter.movies[position].toString())
+            val intent = Intent(context, MovieActivity::class.java)
             intent.putExtra("movie", Gson().toJson(adapter.movies[position]))
-            startActivity(intent)
+            activity.startActivity(intent)
         }
 
         val content = view?.findViewById(R.id.content) as RecyclerView

@@ -6,42 +6,67 @@ import rx.Observable
 import java.util.*
 
 class MovieManager(val serviceManager: ServiceManager, val historyManager: HistoryManager) {
-    private val idCache = arrayListOf<Int>()
+    private val unused = arrayListOf<Int>()
     private var currentFilter = Filter()
-    private var scope = 1
+    private var random = Random()
+    private var totalPages = MAX_PAGES
+    private var totalResults = MAX_RESULTS
+    private var resultCounter = 0
 
     fun getNextMovie(filter: Filter): Observable<Movie> {
         // Check if cache is still valid
         if (!filter.equals(currentFilter))
             invalidateCache(filter)
 
-        return getCachedIds(filter).flatMap { ids ->
-            val id = ids[random(0..ids.size-1)]
-            idCache.remove(id)
-            serviceManager.getMovie(id).doOnNext { historyManager.addMovieToHistory(it) }
-        }
+        random = Random(System.currentTimeMillis())
 
+        return doInitialRequest(filter)
+                .flatMap { getRandomPage(filter) }
+                .flatMap { getRandomMovie(it) }
     }
 
-    fun getCachedIds(filter: Filter): Observable<List<Int>> {
-        if (idCache.isNotEmpty()) return Observable.just(idCache)
-        val page = random(1..scope)
-        return serviceManager.fetchPage(page, filter)
+    fun reuseMovies() = invalidateCache(currentFilter)
+
+    private fun getRandomMovie(ids: List<Int>): Observable<Movie> {
+        if (ids.isEmpty()) return Observable.error(Throwable(OUT_OF_MOVIES))
+        val id = ids[random.nextInt(ids.size)]
+        unused.remove(id)
+        return serviceManager.getMovie(id)
                 .doOnNext {
-                    page -> scope = page.totalPages
-                    idCache.addAll(page.getIds())
-                }.flatMap { page -> Observable.just(page.getIds()) }
+                    historyManager.addMovieToHistory(it)
+                    resultCounter++
+                }
     }
 
-    fun invalidateCache(filter: Filter) {
-        idCache.clear()
+    private fun getRandomPage(filter: Filter): Observable<List<Int>> {
+        return if (unused.isNotEmpty()) Observable.just(unused)
+            else if (resultCounter >= totalResults) Observable.error(Throwable(OUT_OF_MOVIES))
+            else serviceManager.getPage(random.nextInt(totalPages) + 1, filter)
+                    .flatMap { page -> Observable.just(page.getIds()) }
+                    .doOnNext { ids -> unused.addAll(ids) }
+    }
+
+    private fun doInitialRequest(filter: Filter): Observable<Nothing?> {
+        return if (resultCounter > 0) Observable.just(null)
+            else serviceManager.getPage(1, filter)
+                .flatMap { page ->
+                    totalPages = page.totalPages
+                    totalResults = page.totalResults
+                    Observable.just(null)
+                }
+    }
+
+    private fun invalidateCache(filter: Filter) {
+        unused.clear()
         currentFilter = filter
-        scope = 1
+        resultCounter = 0
+        totalResults = MAX_RESULTS
+        totalPages = MAX_PAGES
     }
 
-    private fun random(range: IntRange): Int {
-        if (range.last <= 1) return range.last
-        val random = Random(System.currentTimeMillis())
-        return random.nextInt(range.last - range.first) + range.first
+    companion object {
+        val OUT_OF_MOVIES = "End of movies"
+        val MAX_PAGES = 70
+        val MAX_RESULTS = 1440
     }
 }

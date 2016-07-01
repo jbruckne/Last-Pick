@@ -32,9 +32,9 @@ class BookmarksFragment : BaseFragment(), BookmarksPresenter.BookmarksView {
     override fun onStart() {
         super.onStart()
 
-        val intent = Intent(context, MovieActivity::class.java)
         adapter = SimpleMovieAdapter(context)
         adapter.addOnItemClickListener { position ->
+            val intent = Intent(context, MovieActivity::class.java)
             intent.putExtra("movie", Gson().toJson(adapter.movies[position]))
             startActivity(intent)
         }
