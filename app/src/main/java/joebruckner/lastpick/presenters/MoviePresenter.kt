@@ -19,6 +19,7 @@ interface MoviePresenter {
         fun showLoading()
         fun showContent(movie: Movie)
         fun showError(errorMessage: String)
+        fun showMovieRecycleButton()
         fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean)
         fun showBookmarkError(isBookmarked: Boolean)
         var isLoading: Boolean

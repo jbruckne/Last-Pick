@@ -1,15 +1,16 @@
 package joebruckner.lastpick.widgets
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.support.v7.graphics.Palette
 import joebruckner.lastpick.data.Theme
 
 class PaletteTheme(val resource: Bitmap) {
 
     fun generateMutedTheme(listener: (Theme) -> Unit) {
-        var accentSwatch: Palette.Swatch
-        var primarySwatch: Palette.Swatch
-        var primaryDarkSwatch: Palette.Swatch
+        var accentSwatch: Palette.Swatch? = null
+        var primarySwatch: Palette.Swatch? = null
+        var primaryDarkSwatch: Palette.Swatch? = null
         Palette.from(resource).generate { palette ->
             if (palette.mutedSwatch != null && palette.darkMutedSwatch != null) {
                 primarySwatch = palette.mutedSwatch!!
@@ -23,9 +24,6 @@ class PaletteTheme(val resource: Bitmap) {
             } else if (palette.lightVibrantSwatch != null && palette.vibrantSwatch != null) {
                 primarySwatch = palette.lightVibrantSwatch!!
                 primaryDarkSwatch = palette.vibrantSwatch!!
-            } else {
-                primarySwatch = palette.swatches[0]
-                primaryDarkSwatch = palette.swatches[1]
             }
             accentSwatch = if (palette.vibrantSwatch != null) palette.vibrantSwatch!!
             else if (palette.lightVibrantSwatch != null) palette.lightVibrantSwatch!!
@@ -33,10 +31,10 @@ class PaletteTheme(val resource: Bitmap) {
             else if (palette.lightMutedSwatch != null) palette.lightMutedSwatch!!
             else palette.mutedSwatch!!
             val theme = Theme(
-                    primarySwatch.rgb,
-                    accentSwatch.rgb,
-                    primaryDarkSwatch.rgb,
-                    primarySwatch.titleTextColor
+                    primarySwatch?.rgb ?: Color.GRAY,
+                    accentSwatch?.rgb ?: Color.CYAN,
+                    primaryDarkSwatch?.rgb ?: Color.DKGRAY,
+                    primarySwatch?.titleTextColor ?: Color.WHITE
             )
             listener.invoke(theme)
         }

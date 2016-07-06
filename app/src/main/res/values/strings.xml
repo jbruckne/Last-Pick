@@ -76,6 +76,7 @@
     <string name="year">Year</string>
     <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
     <string name="bar"> - </string>
+    <string name="recycle">Recycle</string>
 
 
 </resources>

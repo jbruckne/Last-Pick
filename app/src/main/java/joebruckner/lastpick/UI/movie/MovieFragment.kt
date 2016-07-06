@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.appyvet.rangebar.RangeBar
@@ -27,6 +28,7 @@ import joebruckner.lastpick.ui.home.GenreAdapter
 import joebruckner.lastpick.widgets.ExpandedBottomSheetDialog
 import joebruckner.lastpick.widgets.PaletteTheme
 import joebruckner.lastpick.widgets.SimpleRequestListener
+import kotlinx.android.synthetic.main.fragment_movie.*
 
 class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val menuId = R.menu.menu_movie
@@ -44,7 +46,9 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     // Views
     val content         by lazy { find<View>(R.id.content) }
     val loading         by lazy { find<View>(R.id.loading) }
-    val error           by lazy { find<TextView>(R.id.error) }
+    val error           by lazy { find<View>(R.id.error) }
+    val errorMessage    by lazy { find<TextView>(R.id.error_message) }
+    val recycleButton   by lazy { find<Button>(R.id.recycle_button) }
     val poster          by lazy { find<ImageView>(R.id.poster) }
     val backdrop        by lazy { activity.find<ImageView>(R.id.backdrop) }
     val title           by lazy { activity.find<TextView>(R.id.title) }
@@ -77,9 +81,13 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         isLoading = false
         clearMovie()
         parent.enableFab()
-        error.text = errorMessage
+        error_message.text = errorMessage
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
         parent.appBar.setExpanded(false, true)
+    }
+
+    override fun showMovieRecycleButton() {
+        recycleButton.visibility = View.VISIBLE
     }
 
     override fun showContent(movie: Movie) {
@@ -155,6 +163,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         content.visibility = contentState
         loading.visibility = loadingState
         error.visibility   = errorState
+        recycleButton.visibility = View.GONE
     }
 
     fun loadImage(imagePath: String, imageView: ImageView, alpha: Float, listener: (Theme) -> Unit) {
