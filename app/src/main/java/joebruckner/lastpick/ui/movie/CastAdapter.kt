@@ -23,7 +23,7 @@ class CastAdapter(val context: Context): RecyclerView.Adapter<CastAdapter.CastVi
     override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
         holder.name.text = cast[position].name
         Glide.with(context)
-                .load(cast[position].getProfilepath())
+                .load(cast[position].getFullProfilePath())
                 .centerCrop()
                 .into(holder.profilePicture)
     }

@@ -2,7 +2,6 @@ package joebruckner.lastpick.ui.common
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -13,10 +12,8 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
-import android.view.MenuItem
 import joebruckner.lastpick.R
 import joebruckner.lastpick.find
-import joebruckner.lastpick.ui.about.AboutActivity
 
 abstract class BaseActivity : AppCompatActivity() {
     protected abstract val layoutId: Int
@@ -24,9 +21,9 @@ abstract class BaseActivity : AppCompatActivity() {
     protected open val appBarId = R.id.appBar
     protected open val toolbarId = R.id.toolbar
     protected open val collapsingToolbarId = R.id.collapsingToolbar
-    protected open val menuId: Int = R.menu.menu_about
+    protected open var menuId: Int = R.menu.menu_empty
 
-    val logTag = javaClass.simpleName
+    val logTag = javaClass.simpleName!!
 
     var isFirstStart: Boolean = true
 
@@ -70,27 +67,15 @@ abstract class BaseActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_about -> {
-                startActivity(Intent(this, AboutActivity::class.java))
-                return true
-            }
-            else -> {
-                return super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
     fun resetTheme() {
         val array = obtainStyledAttributes(intArrayOf(
                 R.attr.colorPrimary,
                 R.attr.colorPrimaryDark,
                 R.attr.colorAccent
         ))
-        setPrimary(array.getColor(0, Color.BLACK))
-        setDark(array.getColor(1, Color.BLACK))
-        setAccent(array.getColor(2, Color.BLACK))
+        setPrimary(array.getColor(0, Color.GRAY))
+        setDark(array.getColor(1, Color.DKGRAY))
+        setAccent(array.getColor(2, Color.CYAN))
     }
 
     fun setPrimary(color: Int) {

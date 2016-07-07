@@ -3,40 +3,41 @@ package joebruckner.lastpick.widgets
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v7.graphics.Palette
-import joebruckner.lastpick.data.Theme
 
-class PaletteTheme(val resource: Bitmap) {
+class PaletteTheme(val palette: Palette) {
+    val defaultPrimary = Color.GRAY
+    val defaultPrimaryDark = Color.DKGRAY
+    val defaultAccent = Color.CYAN
 
-    fun generateMutedTheme(listener: (Theme) -> Unit) {
-        var accentSwatch: Palette.Swatch? = null
-        var primarySwatch: Palette.Swatch? = null
-        var primaryDarkSwatch: Palette.Swatch? = null
-        Palette.from(resource).generate { palette ->
-            if (palette.mutedSwatch != null && palette.darkMutedSwatch != null) {
-                primarySwatch = palette.mutedSwatch!!
-                primaryDarkSwatch = palette.darkMutedSwatch!!
-            } else if (palette.vibrantSwatch != null && palette.darkVibrantSwatch != null) {
-                primarySwatch = palette.vibrantSwatch!!
-                primaryDarkSwatch = palette.darkVibrantSwatch!!
-            } else if (palette.lightMutedSwatch != null && palette.mutedSwatch != null) {
-                primarySwatch = palette.lightMutedSwatch!!
-                primaryDarkSwatch = palette.mutedSwatch!!
-            } else if (palette.lightVibrantSwatch != null && palette.vibrantSwatch != null) {
-                primarySwatch = palette.lightVibrantSwatch!!
-                primaryDarkSwatch = palette.vibrantSwatch!!
+    fun getPrimaryColor() = when (true) {
+        palette.mutedSwatch != null        -> palette.mutedSwatch!!.rgb
+        palette.lightMutedSwatch != null   -> palette.lightMutedSwatch!!.rgb
+        palette.vibrantSwatch != null      -> palette.vibrantSwatch!!.rgb
+        palette.lightVibrantSwatch != null -> palette.lightVibrantSwatch!!.rgb
+        else -> defaultPrimary
+    }
+
+    fun getPrimaryDarkColor() = when (true) {
+        palette.darkMutedSwatch != null    -> palette.darkMutedSwatch!!.rgb
+        palette.mutedSwatch != null        -> palette.mutedSwatch!!.rgb
+        palette.darkVibrantSwatch != null  -> palette.darkVibrantSwatch!!.rgb
+        palette.vibrantSwatch != null      -> palette.vibrantSwatch!!.rgb
+        else -> defaultPrimaryDark
+    }
+
+    fun getAccentColor() = when (true) {
+        palette.vibrantSwatch != null      -> palette.vibrantSwatch!!.rgb
+        palette.lightVibrantSwatch != null -> palette.lightVibrantSwatch!!.rgb
+        palette.darkVibrantSwatch != null  -> palette.darkVibrantSwatch!!.rgb
+        palette.lightMutedSwatch != null   -> palette.lightMutedSwatch!!.rgb
+        else -> defaultAccent
+    }
+
+    class Builder(val resource: Bitmap) {
+        fun generateFrom(listener: (PaletteTheme) -> Unit) {
+            Palette.from(resource).generate { palette ->
+                listener(PaletteTheme(palette))
             }
-            accentSwatch = if (palette.vibrantSwatch != null) palette.vibrantSwatch!!
-            else if (palette.lightVibrantSwatch != null) palette.lightVibrantSwatch!!
-            else if (palette.darkVibrantSwatch != null) palette.darkVibrantSwatch!!
-            else if (palette.lightMutedSwatch != null) palette.lightMutedSwatch!!
-            else palette.mutedSwatch!!
-            val theme = Theme(
-                    primarySwatch?.rgb ?: Color.GRAY,
-                    accentSwatch?.rgb ?: Color.CYAN,
-                    primaryDarkSwatch?.rgb ?: Color.DKGRAY,
-                    primarySwatch?.titleTextColor ?: Color.WHITE
-            )
-            listener.invoke(theme)
         }
     }
 }

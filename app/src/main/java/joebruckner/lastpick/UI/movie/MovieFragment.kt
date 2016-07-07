@@ -16,24 +16,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.appyvet.rangebar.RangeBar
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import joebruckner.lastpick.*
 import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.data.Theme
 import joebruckner.lastpick.network.BookmarkManager
 import joebruckner.lastpick.network.MovieManager
 import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.ui.home.GenreAdapter
 import joebruckner.lastpick.widgets.ExpandedBottomSheetDialog
 import joebruckner.lastpick.widgets.PaletteTheme
 import joebruckner.lastpick.widgets.SimpleRequestListener
-import kotlinx.android.synthetic.main.fragment_movie.*
 
 class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val menuId = R.menu.menu_movie
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
+
+    val providedMovie: String? by lazy { arguments.getString("movie", null) }
 
     lateinit var adapter: CastAdapter
     val presenter: MoviePresenter by lazy {
@@ -77,11 +77,11 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         scrollView.smoothScrollTo(0, 0)
     }
 
-    override fun showError(errorMessage: String) {
+    override fun showError(message: String) {
         isLoading = false
         clearMovie()
         parent.enableFab()
-        error_message.text = errorMessage
+        errorMessage.text = message
         updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
         parent.appBar.setExpanded(false, true)
     }
@@ -112,13 +112,13 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         parent.title = movie.title
         title.text = movie.title
         loadImage(movie.getFullBackdropPath(), backdrop, ALPHA_HALF) { theme ->
-            parent.setPrimary(theme.primary)
-            parent.setDark(theme.dark)
+            parent.setPrimary(theme.getPrimaryColor())
+            parent.setDark(theme.getPrimaryDarkColor())
         }
 
         // Set movie detail views
         loadImage(movie.getFullPosterPath(), poster, ALPHA_FULL) { theme ->
-            parent.setAccent(theme.accent)
+            parent.setAccent(theme.getAccentColor())
         }
         summary.text = movie.overview
         year.text = movie.releaseDate.substring(0, 4)
@@ -166,12 +166,13 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         recycleButton.visibility = View.GONE
     }
 
-    fun loadImage(imagePath: String, imageView: ImageView, alpha: Float, listener: (Theme) -> Unit) {
+    fun loadImage(imagePath: String, imageView: ImageView,
+                  alpha: Float, listener: (PaletteTheme) -> Unit) {
         Glide.with(parent.applicationContext)
                 .load(imagePath)
                 ?.asBitmap()
                 ?.listener(SimpleRequestListener { resource ->
-                    PaletteTheme(resource).generateMutedTheme(listener)
+                    PaletteTheme.Builder(resource).generateFrom { listener(it) }
                     imageView.animate().alpha(alpha).duration = IN_DURATION
                 })
                 ?.centerCrop()
@@ -199,6 +200,9 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
 
         // Initialization of presenter
         presenter.attachActor(this)
+
+        if (providedMovie == null) presenter.getNextMovie()
+        else presenter.setMovie(Gson().fromJson(providedMovie, Movie::class.java))
     }
 
     override fun onResume() {
@@ -271,5 +275,15 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
             )
         }
         sheet.show()
+    }
+
+    companion object {
+        fun newInstance(movieJson: String? = null): MovieFragment {
+            val fragment = MovieFragment()
+            val args = Bundle()
+            args.putString("movie", movieJson)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

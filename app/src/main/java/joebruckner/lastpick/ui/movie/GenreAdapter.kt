@@ -1,4 +1,4 @@
-package joebruckner.lastpick.ui.home
+package joebruckner.lastpick.ui.movie
 
 import android.graphics.Color
 import android.support.v7.widget.CardView

@@ -31,7 +31,7 @@ fun FragmentActivity.getFragment(id: Int): Fragment {
     return supportFragmentManager.findFragmentById(id)
 }
 
-fun AppCompatActivity.sethomeAsUpEnabled(isEnabled: Boolean) {
+fun AppCompatActivity.setHomeAsUpEnabled(isEnabled: Boolean) {
     supportActionBar?.setDisplayHomeAsUpEnabled(isEnabled)
 }
 

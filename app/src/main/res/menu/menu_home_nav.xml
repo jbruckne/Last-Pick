@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <group
+        android:id="@+id/section_main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_home"
+            android:title="@string/action_home"
+            android:icon="@drawable/ic_home_24dp"/>
+        <item
+            android:id="@+id/action_history"
+            android:title="@string/action_history"
+            android:icon="@drawable/ic_history_24dp" />
+        <item
+            android:id="@+id/action_bookmarks"
+            android:title="@string/action_all_bookmark"
+            android:icon="@drawable/ic_bookmark_collection_24dp" />
+    </group>
+
+    <group
+        android:id="@+id/section_other"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_settings"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/action_send_feedback"
+            android:title="@string/action_send_feedback" />
+        <item
+            android:id="@+id/action_about"
+            android:title="@string/action_about" />
+    </group>
+</menu>

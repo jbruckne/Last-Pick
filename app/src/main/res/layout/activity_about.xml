@@ -92,14 +92,6 @@
                 android:padding="2dp"
                 android:textSize="18sp"
                 android:text="@string/licence_retrofit"/>
-
-            <TextView
-                android:id="@+id/picasso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:textSize="18sp"
-                android:text="@string/licence_picasso"/>
         </LinearLayout>
 
         <TextView

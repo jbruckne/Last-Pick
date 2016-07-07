@@ -2,14 +2,11 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.movie.MovieActivity">
+    android:layout_height="match_parent">
 
-    <joebruckner.lastpick.widgets.ControllableAppBarLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +34,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"/>
         </android.support.design.widget.CollapsingToolbarLayout>
-    </joebruckner.lastpick.widgets.ControllableAppBarLayout>
+    </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/frame"
@@ -47,5 +44,4 @@
         app:layout_behavior="@string/scrolling_view"
         app:behavior_overlapTop="80dp"
         />
-
 </android.support.design.widget.CoordinatorLayout>

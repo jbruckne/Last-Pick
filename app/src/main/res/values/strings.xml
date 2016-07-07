@@ -49,7 +49,7 @@
     <string name="action_bookmark">Bookmark</string>
     <string name="action_filter">Filter</string>
     <string name="action_history">History</string>
-    <string name="action_all_bookmark">View Bookmarks</string>
+    <string name="action_all_bookmark">Bookmarks</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
     <!-- END ACTIONS -->
@@ -77,6 +77,12 @@
     <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
     <string name="bar"> - </string>
     <string name="recycle">Recycle</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="section_main">Main</string>
+    <string name="section_other">Other</string>
+    <string name="action_send_feedback">Send Feedback</string>
+    <string name="action_home">Home</string>
 
 
 </resources>

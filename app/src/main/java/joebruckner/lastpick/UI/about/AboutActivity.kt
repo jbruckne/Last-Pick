@@ -23,14 +23,12 @@ class AboutActivity : AppCompatActivity() {
         val gson = findViewById(R.id.gson) as TextView
         val okhttp = findViewById(R.id.okhttp) as TextView
         val retrofit = findViewById(R.id.retrofit) as TextView
-        val picasso = findViewById(R.id.picasso) as TextView
 
         val method = LinkMovementMethod.getInstance()
         glide.movementMethod = method
         gson.movementMethod = method
         okhttp.movementMethod = method
         retrofit.movementMethod = method
-        picasso.movementMethod = method
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

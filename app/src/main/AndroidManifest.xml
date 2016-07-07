@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.home.MovieShuffleActivity"
+            android:name=".ui.home.HomeActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,26 +23,19 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.history.HistoryActivity"
-            android:label="History"
-            android:parentActivityName=".ui.home.MovieShuffleActivity">
+        <activity android:name=".ui.about.AboutActivity"
+            android:parentActivityName=".ui.home.HomeActivity">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.MovieShuffleActivity" />
+              android:name="android.support.PARENT_ACTIVITY"
+                android:value="joebruckner.lastpick.ui.home.HomeActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.bookmarks.BookmarksActivity"
-            android:label="Bookmarks"
-            android:parentActivityName=".ui.home.MovieShuffleActivity">
+        <activity android:name=".ui.movie.MovieActivity"
+            android:parentActivityName=".ui.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.MovieShuffleActivity" />
+                android:value="joebruckner.lastpick.ui.home.HomeActivity" />
         </activity>
 
-        <activity android:name=".ui.about.AboutActivity" />
-        <activity android:name=".ui.movie.MovieActivity" />
     </application>
-
 </manifest>
