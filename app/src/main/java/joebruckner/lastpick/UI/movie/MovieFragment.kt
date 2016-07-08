@@ -1,12 +1,10 @@
 package joebruckner.lastpick.ui.movie
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,9 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.appyvet.rangebar.RangeBar
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import joebruckner.lastpick.*
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.network.BookmarkManager
@@ -24,7 +20,7 @@ import joebruckner.lastpick.network.MovieManager
 import joebruckner.lastpick.presenters.MoviePresenter
 import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.widgets.ExpandedBottomSheetDialog
+import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
 import joebruckner.lastpick.widgets.PaletteTheme
 import joebruckner.lastpick.widgets.SimpleRequestListener
 
@@ -33,7 +29,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override val layoutId = R.layout.fragment_movie
     override var isLoading = true
 
-    val providedMovie: String? by lazy { arguments.getString("movie", null) }
+    val providedMovieId: Int by lazy { arguments.getInt("movie", -1) }
 
     lateinit var adapter: CastAdapter
     val presenter: MoviePresenter by lazy {
@@ -201,8 +197,8 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         // Initialization of presenter
         presenter.attachActor(this)
 
-        if (providedMovie == null) presenter.getNextMovie()
-        else presenter.setMovie(Gson().fromJson(providedMovie, Movie::class.java))
+        if (providedMovieId < 0) presenter.getNextMovie()
+        else presenter.getMovieById(providedMovieId)
     }
 
     override fun onResume() {
@@ -215,23 +211,39 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         super.onPause()
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val item = menu?.findItem(R.id.action_bookmark)
         try {
-            item?.setIcon(
+            val bookmark = menu.findItem(R.id.action_bookmark)
+            bookmark?.setIcon(
                     if (presenter.getBookmarkStatus()) R.drawable.ic_bookmark_24dp
                     else R.drawable.ic_bookmark_outline_24dp
             )
+            val watched = menu.findItem(R.id.action_watched)
+            watched?.setIcon(
+                    if (presenter.getBookmarkStatus()) R.drawable.ic_visibility_off_24dp
+                    else R.drawable.ic_visibility_24dp
+            )
         } catch (e: Exception) {
-            item?.setIcon(R.drawable.ic_bookmark_outline_24dp)
+
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_filter -> consume { showFilterSettings() }
         R.id.action_bookmark -> consume { presenter.updateBookmark() }
+        R.id.action_watched -> consume {  }
+        R.id.action_share -> consume { share() }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    fun share() {
+        val link = "http://www.themoviedb.org/movie/${presenter.getCurrentMovie()?.id}"
+        val intent = Intent(android.content.Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Check out this movie!")
+        intent.putExtra(Intent.EXTRA_TEXT, link)
+        startActivity(Intent.createChooser(intent, "Share with"))
     }
 
     fun callForUpdate() {
@@ -239,49 +251,21 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     }
 
     fun showFilterSettings() {
-        // Create sheet view
-        val sheetView = activity.layoutInflater.inflate(R.layout.sheet_filter, null)
-
-        // Set up genre picker
-        val recyclerView = sheetView.find<RecyclerView>(R.id.genres)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.HORIZONTAL)
-        val adapter = GenreAdapter(presenter.getSelectedGenres())
-        recyclerView.adapter = adapter
-
-        // Set up release year range bar
-        val rangeBar = sheetView.find<RangeBar>(R.id.years)
-        val gteText = sheetView.find<TextView>(R.id.year_gte)
-        val lteText = sheetView.find<TextView>(R.id.year_lte)
-        gteText.text = presenter.getGte()
-        lteText.text = presenter.getLte()
-        rangeBar.setRangePinsByValue(
-                presenter.getGte().toFloat(),
-                presenter.getLte().toFloat()
-        )
-        rangeBar.setOnRangeBarChangeListener { rangeBar, l, r, lv, rv ->
-            gteText.text = lv
-            lteText.text = rv
-        }
-
-        // Set up filter bottom sheet dialog
-        val sheet = ExpandedBottomSheetDialog(activity)
-        sheet.setContentView(sheetView)
-        sheet.setOnDismissListener {
-            Log.d("Movie", "Filter sheet dismissed")
-            presenter.updateFilter(
-                    adapter.selected,
-                    rangeBar.rightPinValue,
-                    rangeBar.leftPinValue
-            )
-        }
-        sheet.show()
+        FilterSheetDialogBuilder(
+                context,
+                presenter.getSelectedGenres(),
+                presenter.getGte(),
+                presenter.getLte()
+        ) { selected, gte, lte -> presenter.updateFilter(selected, lte, gte) }
+        .create()
+        .show()
     }
 
     companion object {
-        fun newInstance(movieJson: String? = null): MovieFragment {
+        fun newInstance(movieId: Int? = null): MovieFragment {
             val fragment = MovieFragment()
             val args = Bundle()
-            args.putString("movie", movieJson)
+            if (movieId != null) args.putInt("movie", movieId)
             fragment.arguments = args
             return fragment
         }

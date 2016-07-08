@@ -83,6 +83,8 @@
     <string name="section_other">Other</string>
     <string name="action_send_feedback">Send Feedback</string>
     <string name="action_home">Home</string>
+    <string name="action_watched">Watched</string>
+    <string name="action_share">Share</string>
 
 
 </resources>

@@ -10,4 +10,19 @@
         android:orderInCategory="0"
         app:showAsAction="ifRoom"
         android:checkable="true" />
+
+    <item
+        android:id="@+id/action_watched"
+        android:title="@string/action_watched"
+        android:icon="@drawable/ic_visibility_off_24dp"
+        android:orderInCategory="10"
+        app:showAsAction="ifRoom"
+        android:checkable="true" />
+
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/action_share"
+        android:icon="@drawable/ic_share_24dp"
+        android:orderInCategory="20"
+        app:showAsAction="ifRoom" />
 </menu>

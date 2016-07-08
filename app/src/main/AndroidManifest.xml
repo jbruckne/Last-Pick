@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="joebruckner.lastpick"
     >
 
@@ -35,6 +36,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="joebruckner.lastpick.ui.home.HomeActivity" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.themoviedb.org" />
+                <data android:scheme="https" android:host="www.themoviedb.org" />
+            </intent-filter>
         </activity>
 
     </application>

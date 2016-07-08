@@ -13,6 +13,10 @@ class MovieManager(val serviceManager: ServiceManager, val historyManager: Histo
     private var totalResults = MAX_RESULTS
     private var resultCounter = 0
 
+    fun getMovie(id: Int): Observable<Movie> {
+        return serviceManager.getMovie(id)
+    }
+
     fun getNextMovie(filter: Filter): Observable<Movie> {
         // Check if cache is still valid
         if (!filter.equals(currentFilter))

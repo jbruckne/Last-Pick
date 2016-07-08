@@ -39,6 +39,20 @@ class MoviePresenterImpl(
                 })
     }
 
+    override fun getMovieById(id: Int) {
+        view?.showLoading()
+        moviesManager.getMovie(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({ m ->
+                    movie = m.copy()
+                    showMovie()
+                }, { error ->
+                    error.printStackTrace()
+                    if (view?.isLoading ?: false) view?.showError(error.toString())
+                })
+    }
+
     override fun setMovie(movie: Movie) {
         this.movie = movie
         showMovie()

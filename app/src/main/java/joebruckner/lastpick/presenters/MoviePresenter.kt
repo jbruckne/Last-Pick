@@ -6,6 +6,7 @@ interface MoviePresenter {
     fun attachActor(view: MovieView)
     fun detachActor()
     fun getNextMovie()
+    fun getMovieById(id: Int)
     fun setMovie(movie: Movie)
     fun updateFilter(selected: BooleanArray, yearLte: String, yearGte: String)
     fun updateBookmark()

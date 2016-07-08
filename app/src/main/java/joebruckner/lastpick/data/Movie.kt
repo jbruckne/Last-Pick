@@ -64,6 +64,7 @@ data class Movie(
     }
 
     companion object {
+        val LINK_PREFIX = "http://www.themoviedb.com/movie/"
         val BASE_TRAILER_URL = "https://www.youtube.com/watch?v="
         val BASE_URL = "http://image.tmdb.org/t/p/"
         val BACKDROP_SIZE = "w1280"
