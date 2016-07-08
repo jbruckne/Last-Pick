@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.bumptech.glide.RequestManager
 import joebruckner.lastpick.network.*
+import jonathanfinerty.once.Once
 
 
 class LastPickApp : Application() {
@@ -22,6 +23,7 @@ class LastPickApp : Application() {
         )
         movieManager = MovieManager(serviceManager, historyManager)
         bookmarkManager.loadBookmarksFromFile()
+        Once.initialise(this)
     }
 
     override fun getSystemService(name: String): Any? {

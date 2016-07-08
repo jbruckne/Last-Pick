@@ -54,8 +54,8 @@ class FilterSheetDialogBuilder(
                 sheet.setOnDismissListener {
                         listener(
                                 adapter.selected,
-                                rangeBar.rightPinValue,
-                                rangeBar.leftPinValue
+                                rangeBar.leftPinValue,
+                                rangeBar.rightPinValue
                         )
                 }
                 return sheet

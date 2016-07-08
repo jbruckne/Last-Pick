@@ -15,6 +15,7 @@ class MoviePresenterImpl(
 ) : MoviePresenter {
     private var view: MovieView? = null
     private var movie: Movie? = null
+    private var id: Int? = null
     private var filter = Filter()
 
     override fun attachActor(view: MovieView) {
@@ -25,31 +26,34 @@ class MoviePresenterImpl(
         this.view = null
     }
 
+    override fun reloadMovie() {
+        moviesManager.getCachedMovie()?.let { setMovie(it) }
+        ?: if (view?.isLoading ?: false) view?.showError("Failed to reload movie")
+    }
+
     override fun getNextMovie() {
+        this.id = null
         view?.showLoading()
         moviesManager.getNextMovie(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({ m ->
-                    movie = m.copy()
-                    showMovie()
+                    setMovie(m)
                 }, { error ->
-                    error.printStackTrace()
-                    if (view?.isLoading ?: false) view?.showError(error.toString())
+                    showError(error)
                 })
     }
 
     override fun getMovieById(id: Int) {
+        this.id = id
         view?.showLoading()
         moviesManager.getMovie(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({ m ->
-                    movie = m.copy()
-                    showMovie()
+                    setMovie(m)
                 }, { error ->
-                    error.printStackTrace()
-                    if (view?.isLoading ?: false) view?.showError(error.toString())
+                    showError(error)
                 })
     }
 
@@ -65,6 +69,26 @@ class MoviePresenterImpl(
         }
     }
 
+    private fun showError(error: Throwable) {
+        error.printStackTrace()
+        if (!(view?.isLoading ?: false)) return
+        when (error.message) {
+            MovieManager.OUT_OF_MOVIES -> {
+                view?.showError("Oops! We've run out of movies to suggest.")
+                view?.showMovieErrorButton("Reshow movies") {
+                    moviesManager.reuseMovies()
+                    getNextMovie()
+                }
+            }
+            else -> {
+                view?.showError("Oops! We were not able to get the last movie.")
+                view?.showMovieErrorButton("Retry") {
+                    id?.let { getMovieById(it) } ?: getNextMovie()
+                }
+            }
+        }
+    }
+
     override fun updateBookmark() {
         if (movie == null) return
         val observable =
@@ -75,7 +99,7 @@ class MoviePresenterImpl(
         observable.subscribe { updateBookmarkView(movie!!, true) }
     }
 
-    override fun updateFilter(selected: BooleanArray, yearLte: String, yearGte: String) {
+    override fun updateFilter(selected: BooleanArray, yearGte: String, yearLte: String) {
         filter = Filter(
                 Genre.getAll().filterIndexed { i, genre -> selected[i] },
                 yearGte,

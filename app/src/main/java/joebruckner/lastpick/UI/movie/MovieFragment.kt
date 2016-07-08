@@ -30,6 +30,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override var isLoading = true
 
     val providedMovieId: Int by lazy { arguments.getInt("movie", -1) }
+    val isConfigChange: Boolean by lazy { arguments.getBoolean("isConfigChange", false) }
 
     lateinit var adapter: CastAdapter
     val presenter: MoviePresenter by lazy {
@@ -44,7 +45,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     val loading         by lazy { find<View>(R.id.loading) }
     val error           by lazy { find<View>(R.id.error) }
     val errorMessage    by lazy { find<TextView>(R.id.error_message) }
-    val recycleButton   by lazy { find<Button>(R.id.recycle_button) }
+    val errorButton     by lazy { find<Button>(R.id.error_button) }
     val poster          by lazy { find<ImageView>(R.id.poster) }
     val backdrop        by lazy { activity.find<ImageView>(R.id.backdrop) }
     val title           by lazy { activity.find<TextView>(R.id.title) }
@@ -82,8 +83,10 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         parent.appBar.setExpanded(false, true)
     }
 
-    override fun showMovieRecycleButton() {
-        recycleButton.visibility = View.VISIBLE
+    override fun showMovieErrorButton(message: String, listener: () -> Unit) {
+        errorButton.text = message
+        errorButton.setOnClickListener { listener() }
+        errorButton.visibility = View.VISIBLE
     }
 
     override fun showContent(movie: Movie) {
@@ -91,7 +94,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         showMovie(movie)
         parent.enableFab()
         updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
-        parent.appBar.setExpanded(true, true)
+        parent.appBar.setExpanded(true, false)
     }
 
     private fun clearMovie() {
@@ -159,7 +162,7 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         content.visibility = contentState
         loading.visibility = loadingState
         error.visibility   = errorState
-        recycleButton.visibility = View.GONE
+        errorButton.visibility = View.GONE
     }
 
     fun loadImage(imagePath: String, imageView: ImageView,
@@ -197,8 +200,9 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
         // Initialization of presenter
         presenter.attachActor(this)
 
-        if (providedMovieId < 0) presenter.getNextMovie()
-        else presenter.getMovieById(providedMovieId)
+        if (isConfigChange) presenter.reloadMovie()
+        else if (providedMovieId > 0) presenter.getMovieById(providedMovieId)
+        else  presenter.getNextMovie()
     }
 
     override fun onResume() {
@@ -256,15 +260,16 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
                 presenter.getSelectedGenres(),
                 presenter.getGte(),
                 presenter.getLte()
-        ) { selected, gte, lte -> presenter.updateFilter(selected, lte, gte) }
+        ) { selected, gte, lte -> presenter.updateFilter(selected, gte, lte) }
         .create()
         .show()
     }
 
     companion object {
-        fun newInstance(movieId: Int? = null): MovieFragment {
+        fun newInstance(isConfigChange: Boolean, movieId: Int? = null): MovieFragment {
             val fragment = MovieFragment()
             val args = Bundle()
+            args.putBoolean("isConfigChange", isConfigChange)
             if (movieId != null) args.putInt("movie", movieId)
             fragment.arguments = args
             return fragment

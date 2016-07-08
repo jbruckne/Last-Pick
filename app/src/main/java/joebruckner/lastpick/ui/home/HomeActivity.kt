@@ -10,6 +10,9 @@ import joebruckner.lastpick.*
 import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.movie.MovieFragment
+import jonathanfinerty.once.Once
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.util.*
 
 class HomeActivity : BaseActivity() {
@@ -24,8 +27,33 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        replaceFrame(R.id.frame, MovieFragment.newInstance(), false)
+        if (!Once.beenDone(Once.THIS_APP_INSTALL, "onboarding")) {
+            startActivity(Intent(this, IntroActivity::class.java))
+            Once.markDone("onboarding")
+        }
+
+        replaceFrame(R.id.frame, MovieFragment.newInstance(savedInstanceState != null), false)
         setupNavDrawer()
+
+        if (!Once.beenDone(Once.THIS_APP_VERSION, "showcase")) {
+            setupShowcase()
+        }
+    }
+
+    fun setupShowcase() {
+        val sequence = MaterialShowcaseSequence(this, "4815")
+        sequence.addSequenceItem(
+                MaterialShowcaseView.Builder(this)
+                        .setTarget(fab)
+                        .setContentText("Click this to shuffle the movie results")
+                        .setDismissText("GOT IT")
+                        .setShapePadding(20)
+                        .setDelay(1000)
+                        .build()
+        )
+        //sequence.addSequenceItem(find<View>(R.id.action_filter), "Use these tools to bookmark, share, or filter movie results", "GOT IT")
+        //sequence.addSequenceItem(find<View>(android.R.id.home), "Navigate to your results history, stored bookmarks, or other pages through here", "GOT IT")
+        sequence.start()
     }
 
     fun setupNavDrawer() {
@@ -47,7 +75,7 @@ class HomeActivity : BaseActivity() {
             when (item.itemId) {
                 R.id.action_home -> consume {
                     setupHomePage()
-                    replaceFrame(R.id.frame, MovieFragment.newInstance(), false)
+                    replaceFrame(R.id.frame, MovieFragment.newInstance(false), false)
                 }
                 R.id.action_history -> consume {
                     setupDefaultPage()

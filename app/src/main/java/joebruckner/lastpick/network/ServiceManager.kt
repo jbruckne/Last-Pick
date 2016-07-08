@@ -13,8 +13,6 @@ import rx.Observable
 import java.util.concurrent.TimeUnit
 
 class ServiceManager(val connectivityManager: ConnectivityManager) {
-    val CONTENT_ERROR = "Failed to retrieve content"
-    val CONNECTION_ERROR = "Failed to connect to the internet"
     val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
@@ -25,6 +23,11 @@ class ServiceManager(val connectivityManager: ConnectivityManager) {
             .client(client)
             .build()
             .create(TmdbService::class.java)
+
+    companion object {
+        val CONTENT_ERROR = "Failed to retrieve content"
+        val CONNECTION_ERROR = "Failed to connect to the internet"
+    }
 
     fun getMovie(id: Int): Observable<Movie> {
         return Observable.create { subscriber ->

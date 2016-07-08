@@ -12,9 +12,12 @@ class MovieManager(val serviceManager: ServiceManager, val historyManager: Histo
     private var totalPages = MAX_PAGES
     private var totalResults = MAX_RESULTS
     private var resultCounter = 0
+    private var cachedMovie: Movie? = null
+
+    fun getCachedMovie() = cachedMovie
 
     fun getMovie(id: Int): Observable<Movie> {
-        return serviceManager.getMovie(id)
+        return serviceManager.getMovie(id).doOnNext { cachedMovie = it }
     }
 
     fun getNextMovie(filter: Filter): Observable<Movie> {
@@ -27,6 +30,7 @@ class MovieManager(val serviceManager: ServiceManager, val historyManager: Histo
         return doInitialRequest(filter)
                 .flatMap { getRandomPage(filter) }
                 .flatMap { getRandomMovie(it) }
+                .doOnNext { cachedMovie = it }
     }
 
     fun reuseMovies() = invalidateCache(currentFilter)
