@@ -1,34 +1,40 @@
-package joebruckner.lastpick.presenters
+package joebruckner.lastpick.ui.movie
 
 import joebruckner.lastpick.data.Filter
 import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.data.State
 import joebruckner.lastpick.network.BookmarkManager
 import joebruckner.lastpick.network.MovieManager
-import joebruckner.lastpick.presenters.MoviePresenter.MovieView
+import joebruckner.lastpick.ui.movie.MovieContract.View
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-class MoviePresenterImpl(
+class MoviePresenter(
         val moviesManager: MovieManager,
         val bookmarksManager: BookmarkManager
-) : MoviePresenter {
-    private var view: MovieView? = null
+) : MovieContract.Presenter {
+    private var view: View? = null
     private var movie: Movie? = null
     private var id: Int? = null
     private var filter = Filter()
 
-    override fun attachActor(view: MovieView) {
+    private fun checkViewIsLoading(): Boolean = view?.state == State.LOADING
+
+    override fun attachView(view: View) {
         this.view = view
     }
 
-    override fun detachActor() {
+    override fun detachView() {
         this.view = null
     }
 
     override fun reloadMovie() {
         moviesManager.getCachedMovie()?.let { setMovie(it) }
-        ?: if (view?.isLoading ?: false) view?.showError("Failed to reload movie")
+        ?: if (checkViewIsLoading())
+            view?.showError("Oops! Ran into some connection issues", "Try again") {
+                reloadMovie()
+            }
     }
 
     override fun getNextMovie() {
@@ -37,8 +43,8 @@ class MoviePresenterImpl(
         moviesManager.getNextMovie(filter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ m ->
-                    setMovie(m)
+                .subscribe ({ movie ->
+                    setMovie(movie)
                 }, { error ->
                     showError(error)
                 })
@@ -50,8 +56,8 @@ class MoviePresenterImpl(
         moviesManager.getMovie(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe ({ m ->
-                    setMovie(m)
+                .subscribe ({ movie ->
+                    setMovie(movie)
                 }, { error ->
                     showError(error)
                 })
@@ -63,7 +69,7 @@ class MoviePresenterImpl(
     }
 
     private fun showMovie() {
-        if (view?.isLoading ?: false) {
+        if (checkViewIsLoading()) {
             view?.showContent(movie!!)
             updateBookmarkView(movie!!, false)
         }
@@ -71,18 +77,16 @@ class MoviePresenterImpl(
 
     private fun showError(error: Throwable) {
         error.printStackTrace()
-        if (!(view?.isLoading ?: false)) return
+        if (!checkViewIsLoading()) return
         when (error.message) {
             MovieManager.OUT_OF_MOVIES -> {
-                view?.showError("Oops! We've run out of movies to suggest.")
-                view?.showMovieErrorButton("Reshow movies") {
+                view?.showError("Oops! We've run out of movies to suggest.", "Reshow movies") {
                     moviesManager.reuseMovies()
                     getNextMovie()
                 }
             }
             else -> {
-                view?.showError("Oops! We were not able to get the last movie.")
-                view?.showMovieErrorButton("Retry") {
+                view?.showError("Oops! Ran into some connection issues", "Try again") {
                     id?.let { getMovieById(it) } ?: getNextMovie()
                 }
             }
@@ -101,7 +105,7 @@ class MoviePresenterImpl(
 
     override fun updateFilter(selected: BooleanArray, yearGte: String, yearLte: String) {
         filter = Filter(
-                Genre.getAll().filterIndexed { i, genre -> selected[i] },
+                Genre.Companion.getAll().filterIndexed { i, genre -> selected[i] },
                 yearGte,
                 yearLte
         )

@@ -85,6 +85,16 @@
     <string name="action_home">Home</string>
     <string name="action_watched">Watched</string>
     <string name="action_share">Share</string>
+    <string name="as">as</string>
+    <string name="cast">Cast</string>
+    <string name="see_all">See All</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="in_theaters">Now Playing</string>
+    <string name="popular">Popular</string>
+    <string name="top_movies">Top Movies</string>
+    <string name="upcoming">upcoming</string>
 
 
 </resources>

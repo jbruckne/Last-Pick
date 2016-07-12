@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Action
 
 abstract class BaseFragment : Fragment() {
     open val menuId: Int = R.menu.menu_empty
     abstract val layoutId: Int
     lateinit var parent: BaseActivity
+    protected var baseView: View? = null
+    protected var isFirstStart = true
 
     val logTag = javaClass.simpleName
 
@@ -29,12 +30,18 @@ abstract class BaseFragment : Fragment() {
         return inflater.inflate(layoutId, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        baseView = view
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(menuId, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFirstStart = false
     }
 }

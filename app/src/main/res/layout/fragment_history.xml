@@ -1,33 +1,44 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HistoryFragment">
+    tools:targetApi="lollipop"
+    tools:ignore="RtlSymmetry">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        />
+        tools:context=".ui.home.HistoryFragment">
 
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/loading"
-        style="?android:progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="32dp"
-        android:visibility="invisible"
-        />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            tools:listitem="@layout/card_movie_list"
+            />
 
-    <TextView
-        android:id="@+id/error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="32dp"
-        android:visibility="invisible"
-        />
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/loading"
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="32dp"
+            android:visibility="invisible"
+            />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="32dp"
+            android:visibility="invisible"
+            />
+
+    </FrameLayout>
+</android.support.v4.widget.NestedScrollView>

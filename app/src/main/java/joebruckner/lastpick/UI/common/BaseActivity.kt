@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -20,16 +21,19 @@ abstract class BaseActivity : AppCompatActivity() {
     protected open val fabId = R.id.fab
     protected open val appBarId = R.id.appBar
     protected open val toolbarId = R.id.toolbar
+    protected open val tabLayoutId = R.id.tab_layout
     protected open val collapsingToolbarId = R.id.collapsingToolbar
     protected open var menuId: Int = R.menu.menu_empty
 
     val logTag = javaClass.simpleName!!
 
     var isFirstStart: Boolean = true
+    var isThemeLocked: Boolean = false
 
     val fab by lazy { find<FloatingActionButton?>(fabId) }
     val toolbar by lazy { find<Toolbar?>(toolbarId) }
-    val appBar by lazy { find<AppBarLayout>(appBarId) }
+    val appBar: AppBarLayout? by lazy { find<AppBarLayout>(appBarId) }
+    val tabLayout: TabLayout? by lazy { find<TabLayout>(tabLayoutId) }
     val collapsingToolbar by lazy { find<CollapsingToolbarLayout?>(collapsingToolbarId) }
     var menu: Menu? = null
 
@@ -79,9 +83,10 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun setPrimary(color: Int) {
+        if (isThemeLocked) return
         val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, color)
         primaryAnimator.addUpdateListener { animator ->
-            appBar.setBackgroundColor(animator.animatedValue as Int)
+            appBar?.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar?.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar?.setContentScrimColor(animator.animatedValue as Int)
         }
@@ -91,6 +96,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun setDark(color: Int) {
+        if (isThemeLocked) return
         val darkAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimaryDark, color)
         darkAnimator.addUpdateListener { animator ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -102,6 +108,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun setAccent(color: Int) {
+        if (isThemeLocked) return
         fab?.backgroundTintList = ColorStateList.valueOf(color)
         colorAccent = color
     }

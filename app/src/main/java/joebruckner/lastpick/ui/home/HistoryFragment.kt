@@ -1,6 +1,7 @@
 package joebruckner.lastpick.ui.home
 
 import android.content.Intent
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -32,7 +33,9 @@ class HistoryFragment : BaseFragment(), HistoryPresenter.HistoryView {
     override fun onStart() {
         super.onStart()
 
-        adapter = MovieAdapter(context)
+        ViewCompat.setNestedScrollingEnabled(view, false)
+
+        adapter = MovieAdapter(context, R.layout.card_movie_list)
         adapter.addOnItemClickListener { position ->
             val intent = Intent(context, MovieActivity::class.java)
             intent.putExtra("movie", Gson().toJson(adapter.movies[position]))

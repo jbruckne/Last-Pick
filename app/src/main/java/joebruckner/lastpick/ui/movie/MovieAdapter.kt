@@ -10,9 +10,10 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.find
 import java.util.*
 
-class MovieAdapter(val context: Context): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter(val context: Context, val layout: Int): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
     var movies = listOf<Movie>()
     var onItemClickListeners = ArrayList<(Int) -> Unit>()
 
@@ -22,12 +23,19 @@ class MovieAdapter(val context: Context): RecyclerView.Adapter<MovieAdapter.Movi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder? {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_simple_recent, parent, false)
+                .inflate(layout, parent, false)
         return MovieViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        holder.year?.text = movies[position].releaseDate.substring(0..3)
         holder.title.text = movies[position].title
+        var genreText = ""
+        movies[position].genres.forEachIndexed { i, genre ->
+            if (i < 3) genreText += "${genre.name}, "
+        }
+        if (genreText.isNotBlank()) genreText = genreText.dropLast(2)
+        holder.genres?.text = genreText
         Glide.with(context)
                 .load(movies[position].getFullPosterPath())
                 .crossFade()
@@ -47,7 +55,9 @@ class MovieAdapter(val context: Context): RecyclerView.Adapter<MovieAdapter.Movi
     }
 
     class MovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        val title = view.findViewById(R.id.title) as TextView
-        val poster = view.findViewById(R.id.poster) as ImageView
+        val title = view.find<TextView>(R.id.title)
+        val genres: TextView? = view.find<TextView>(R.id.genres)
+        val year: TextView? = view.find<TextView>(R.id.year)
+        val poster = view.find<ImageView>(R.id.poster)
     }
 }

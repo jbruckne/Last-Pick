@@ -3,145 +3,172 @@ package joebruckner.lastpick.ui.movie
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import joebruckner.lastpick.*
 import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.data.State
 import joebruckner.lastpick.network.BookmarkManager
 import joebruckner.lastpick.network.MovieManager
-import joebruckner.lastpick.presenters.MoviePresenter
-import joebruckner.lastpick.presenters.MoviePresenterImpl
 import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
-import joebruckner.lastpick.widgets.PaletteTheme
-import joebruckner.lastpick.widgets.SimpleRequestListener
 
-class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
-    override val menuId = R.menu.menu_movie
+class MovieFragment() : BaseFragment(), MovieContract.View {
     override val layoutId = R.layout.fragment_movie
-    override var isLoading = true
+    override var state = State.LOADING
 
-    val providedMovieId: Int by lazy { arguments.getInt("movie", -1) }
-    val isConfigChange: Boolean by lazy { arguments.getBoolean("isConfigChange", false) }
+    private var inDiscoveryMode = false
+    private var movie: Movie? = null
+    private var errorMessage: String? = null
+    private var errorButtonMessage: String? = null
+    private var errorButtonListener: (() -> Unit)? = null
+
+    // Fragment arguments
+    val providedMovieId by lazy { arguments.getInt("movie", -1) }
+    val isConfigChange  by lazy { arguments.getBoolean("isConfigChange", false) }
 
     lateinit var adapter: CastAdapter
-    val presenter: MoviePresenter by lazy {
-        MoviePresenterImpl(
+    val presenter: MovieContract.Presenter by lazy {
+        MoviePresenter(
             activity.application.getSystemService(LastPickApp.MOVIE_MANAGER) as MovieManager,
             activity.application.getSystemService(LastPickApp.BOOKMARKS_MANAGER) as BookmarkManager
         )
     }
 
     // Views
-    val content         by lazy { find<View>(R.id.content) }
+    val content         by lazy { find<ViewPager>(R.id.content) }
     val loading         by lazy { find<View>(R.id.loading) }
     val error           by lazy { find<View>(R.id.error) }
-    val errorMessage    by lazy { find<TextView>(R.id.error_message) }
+    val errorText       by lazy { find<TextView>(R.id.error_message) }
     val errorButton     by lazy { find<Button>(R.id.error_button) }
-    val poster          by lazy { find<ImageView>(R.id.poster) }
+    val poster          by lazy { activity.find<ImageView>(R.id.poster) }
     val backdrop        by lazy { activity.find<ImageView>(R.id.backdrop) }
+    val titleArea       by lazy { activity.find<View>(R.id.title_area) }
     val title           by lazy { activity.find<TextView>(R.id.title) }
     val castList        by lazy { find<RecyclerView>(R.id.cast_list) }
-    val trailerButton   by lazy { find<ImageView>(R.id.trailer_button) }
     val scrollView      by lazy { find<NestedScrollView>(R.id.nested_scroll_view) }
     val summary         by lazy { find<TextView>(R.id.overview) }
-    val year            by lazy { find<TextView>(R.id.year) }
-    val mpaa            by lazy { find<TextView>(R.id.mpaa) }
-    val popularity      by lazy { find<TextView>(R.id.popularity) }
-    val runtime         by lazy { find<TextView>(R.id.runtime) }
-    val genres          by lazy { find<ViewGroup>(R.id.genres) }
+    val details         by lazy { activity.find<TextView>(R.id.details) }
+    val genres          by lazy { activity.find<TextView>(R.id.genres) }
     val phrase          by lazy { find<TextView>(R.id.phrase) }
 
+    // Animation values
     val ALPHA_CLEAR = 0f
-    val ALPHA_HALF = 0.4f
+    val ALPHA_HALF = 0.8f
     val ALPHA_FULL = 1f
     val OUT_DURATION: Long = 250
     val IN_DURATION: Long = 350
 
-    override fun showLoading() {
-        isLoading = true
-        clearMovie()
-        parent.disableFab()
-        updateViews(View.INVISIBLE, View.VISIBLE, View.INVISIBLE)
-        scrollView.smoothScrollTo(0, 0)
-    }
+    override fun showLoading() = updateViewState(State.LOADING)
 
-    override fun showError(message: String) {
-        isLoading = false
-        clearMovie()
-        parent.enableFab()
-        errorMessage.text = message
-        updateViews(View.INVISIBLE, View.INVISIBLE, View.VISIBLE)
-        parent.appBar.setExpanded(false, true)
-    }
-
-    override fun showMovieErrorButton(message: String, listener: () -> Unit) {
-        errorButton.text = message
-        errorButton.setOnClickListener { listener() }
-        errorButton.visibility = View.VISIBLE
+    override fun showError(errorMessage: String, errorButtonMessage: String, f: () -> Unit) {
+        this.errorMessage = errorMessage
+        this.errorButtonMessage = errorButtonMessage
+        this.errorButtonListener = f
+        updateViewState(State.LOADING)
     }
 
     override fun showContent(movie: Movie) {
-        isLoading = false
-        showMovie(movie)
-        parent.enableFab()
-        updateViews(View.VISIBLE, View.INVISIBLE, View.INVISIBLE)
-        parent.appBar.setExpanded(true, false)
+        this.movie = movie
+        updateViewState(State.CONTENT)
+    }
+
+    private fun updateViewState(newState: State) {
+        state = newState
+
+        when (state) {
+            State.LOADING -> {
+                clearMovie()
+                parent.appBar?.setExpanded(false, true)
+            }
+            State.CONTENT -> {
+                showMovie(movie)
+                if (inDiscoveryMode) parent.enableFab()
+                parent.appBar?.setExpanded(true, true)
+            }
+            State.ERROR -> {
+                clearMovie()
+                errorText.text = errorMessage
+                errorButton.text = errorButtonMessage
+                parent.appBar?.setExpanded(false, true)
+            }
+        }
+
+        // Set visibility of views
+        titleArea.visibleIf(state == State.CONTENT)
+        content.visibleIf(state == State.CONTENT)
+        loading.visibleIf(state == State.LOADING)
+        error.visibleIf(state == State.ERROR)
+
+        // Reset scrollView location
+        //scrollView.scrollTo(0, 0)
+
+        // Update menu items
+        parent.supportInvalidateOptionsMenu()
     }
 
     private fun clearMovie() {
         backdrop.animate().alpha(ALPHA_CLEAR).duration = OUT_DURATION
         poster.animate().alpha(ALPHA_CLEAR).duration = OUT_DURATION
+        parent.disableFab()
         parent.title = ""
-        title.text = ""
     }
 
-    private fun showMovie(movie: Movie) {
-        if (view == null) return
+    private fun showMovie(movie: Movie?) {
+        if (baseView == null || movie == null) return
 
-        // Set backdrop views
+        // Set screen title
         parent.title = movie.title
         title.text = movie.title
-        loadImage(movie.getFullBackdropPath(), backdrop, ALPHA_HALF) { theme ->
-            parent.setPrimary(theme.getPrimaryColor())
-            parent.setDark(theme.getPrimaryDarkColor())
+
+        // Load backdrop
+        backdrop.loadWithPalette(
+                parent.applicationContext,
+                movie.getFullBackdropPath(),
+                IN_DURATION, ALPHA_HALF
+        ) { theme ->
+            if (activity != null) {
+                parent.setPrimary(theme.getPrimaryColor())
+                titleArea.setBackgroundColor(theme.getPrimaryColor())
+
+            }
         }
 
-        // Set movie detail views
-        loadImage(movie.getFullPosterPath(), poster, ALPHA_FULL) { theme ->
-            parent.setAccent(theme.getAccentColor())
+        // Load poster
+        poster.loadWithPalette(
+                parent.applicationContext,
+                movie.getFullPosterPath(),
+                IN_DURATION,
+                ALPHA_FULL
+        ) { theme ->
+            if (activity != null) parent.setAccent(theme.getAccentColor())
         }
-        summary.text = movie.overview
-        year.text = movie.releaseDate.substring(0, 4)
-        mpaa.text = movie.getSimpleMpaa()
-        popularity.text = movie.voteAverage.toString()
-        runtime.text = movie.runtime.toRuntimeFormat()
-        genres.removeAllViews()
-        movie.genres.slice(0..Math.min(movie.genres.size-1, 2)).forEach { genre ->
-            val card = genres.inflate(R.layout.card_filter)
-            val name = card.find<TextView>(R.id.name)
-            name.text = genre.name
-            genres.addView(card)
+
+        // Set movie details
+        summary.text    = "${movie.overview}"
+        details.text    = "${movie.releaseDate.substring(0..3)}   " +
+                "${movie.getSimpleMpaa()}   " +
+                "${movie.runtime} min"
+        phrase.text     = movie.tagline
+
+        // Set genres
+        var genreText = ""
+        movie.genres.forEachIndexed { i, genre ->
+            if (i < 3) genreText += "${genre.name}, "
         }
+        if (genreText.isNotBlank()) genreText = genreText.dropLast(2)
+        genres.text = genreText
+
+        // Update actors list
         adapter.cast = movie.credits.cast
-        phrase.text = movie.tagline
-
-        // Only show button if trailer exists
-        trailerButton.visibility =
-                if (movie.getYoutubeTrailer().isNullOrBlank()) View.GONE
-                else View.VISIBLE
-
-        // Show bookmarked icon
-        val item = parent.menu?.findItem(R.id.action_bookmark) ?: return
-        parent.supportInvalidateOptionsMenu()
     }
 
     override fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean) {
@@ -158,60 +185,52 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
                 else "Failed to remove bookmark", Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun updateViews(contentState: Int, loadingState:Int, errorState: Int) {
-        content.visibility = contentState
-        loading.visibility = loadingState
-        error.visibility   = errorState
-        errorButton.visibility = View.GONE
-    }
+    override fun onStart() {
+        super.onStart()
 
-    fun loadImage(imagePath: String, imageView: ImageView,
-                  alpha: Float, listener: (PaletteTheme) -> Unit) {
-        Glide.with(parent.applicationContext)
-                .load(imagePath)
-                ?.asBitmap()
-                ?.listener(SimpleRequestListener { resource ->
-                    PaletteTheme.Builder(resource).generateFrom { listener(it) }
-                    imageView.animate().alpha(alpha).duration = IN_DURATION
-                })
-                ?.centerCrop()
-                ?.into(imageView)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        parent.appBar.addOnOffsetChangedListener { appBarLayout, i ->
-            val p = Math.abs(i.toFloat() / appBarLayout.totalScrollRange.toFloat())
-            parent.supportActionBar?.setDisplayShowTitleEnabled(p >= 1)
+        // Fix orientation change bug with scrollView overlap
+        parent.appBar?.addOnOffsetChangedListener { appBarLayout, i ->
+            val expansion = Math.abs(i.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            parent.supportActionBar?.setDisplayShowTitleEnabled(expansion >= 0.9)
+            //scrollView.scrollTo(0, 0)
         }
 
-        backdrop.alpha = ALPHA_HALF
-
-        trailerButton.setOnClickListener {
-            activity.viewUri(presenter.getCurrentMovie()!!.getFullTrailerPath())
+        // Set up tabs
+        parent.tabLayout?.let { layout ->
+            layout.addTab(layout.newTab().setText("Info"), 0)
+            layout.addTab(layout.newTab().setText("Videos"), 1)
+            val pagerAdapter = MovieDetailsPagerAdapter(fragmentManager)
+            content.adapter = pagerAdapter
+            content.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(layout))
+            layout.setOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(tab: TabLayout.Tab) { }
+                override fun onTabUnselected(tab: TabLayout.Tab) { }
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    content.setCurrentItem(tab.position, true)
+                }
+            })
         }
 
         // Set up cast list
         adapter = CastAdapter(context)
-        castList.isNestedScrollingEnabled = false
         castList.adapter = adapter
 
         // Initialization of presenter
-        presenter.attachActor(this)
+        presenter.attachView(this)
 
+        if (!isFirstStart) return
+
+        // Load correct type of movie
         if (isConfigChange) presenter.reloadMovie()
         else if (providedMovieId > 0) presenter.getMovieById(providedMovieId)
-        else  presenter.getNextMovie()
-    }
-
-    override fun onResume() {
-        super.onStart()
-        presenter.attachActor(this)
+        else {
+            inDiscoveryMode = true
+            presenter.getNextMovie()
+        }
     }
 
     override fun onPause() {
-        presenter.detachActor()
+        presenter.detachView()
         super.onPause()
     }
 
@@ -223,11 +242,6 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
                     if (presenter.getBookmarkStatus()) R.drawable.ic_bookmark_24dp
                     else R.drawable.ic_bookmark_outline_24dp
             )
-            val watched = menu.findItem(R.id.action_watched)
-            watched?.setIcon(
-                    if (presenter.getBookmarkStatus()) R.drawable.ic_visibility_off_24dp
-                    else R.drawable.ic_visibility_24dp
-            )
         } catch (e: Exception) {
 
         }
@@ -236,7 +250,6 @@ class MovieFragment() : BaseFragment(), MoviePresenter.MovieView {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_filter -> consume { showFilterSettings() }
         R.id.action_bookmark -> consume { presenter.updateBookmark() }
-        R.id.action_watched -> consume {  }
         R.id.action_share -> consume { share() }
         else -> super.onOptionsItemSelected(item)
     }

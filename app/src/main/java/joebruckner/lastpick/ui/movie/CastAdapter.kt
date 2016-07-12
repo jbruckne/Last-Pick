@@ -18,10 +18,11 @@ class CastAdapter(val context: Context): RecyclerView.Adapter<CastAdapter.CastVi
             notifyDataSetChanged()
         }
 
-    override fun getItemCount(): Int = cast.size
+    override fun getItemCount(): Int = if (cast.size > 5) 5 else cast.size
 
     override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
         holder.name.text = cast[position].name
+        holder.character.text = cast[position].character
         Glide.with(context)
                 .load(cast[position].getFullProfilePath())
                 .centerCrop()
@@ -37,5 +38,6 @@ class CastAdapter(val context: Context): RecyclerView.Adapter<CastAdapter.CastVi
     class CastViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val profilePicture: ImageView = view.findViewById(R.id.profile_picture) as ImageView
         val name: TextView = view.findViewById(R.id.name) as TextView
+        val character: TextView = view.findViewById(R.id.character) as TextView
     }
 }
