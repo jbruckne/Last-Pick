@@ -26,9 +26,14 @@ data class Genre (
         val WESTERN         = Genre(37, "Western")
 
         fun getAll(): List<Genre> {
-            return listOf(Genre(0, "All"), ACTION, ADVENTURE, ANIMATION, COMEDY, CRIME,
+            return listOf(ACTION, ADVENTURE, ANIMATION, COMEDY, CRIME,
                     DOCUMENTARY, DRAMA, FAMILY, FANTASY, FOREIGN, HISTORY, HORROR,
                     MUSIC, MYSTERY, ROMANCE, SCIENCE_FICTION, THRILLER, WAR, WESTERN)
+        }
+
+        fun getGenre(id: Int): Genre? {
+            getAll().forEach { if (it.id == id) return it }
+            return null
         }
     }
 }

@@ -9,7 +9,9 @@ data class Video(
         val type: String
 ) {
 
-    data class ListWrapper(
-            val results: List<Video> = arrayListOf()
-    )
+    data class ListWrapper(val results: List<Video> = arrayListOf())
+
+    fun getTrailerUrl() = "https://www.youtube.com/watch?v=$key"
+
+    fun getThumbnailUrl() = "https://img.youtube.com/vi/$key/0.jpg"
 }

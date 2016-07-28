@@ -1,7 +1,8 @@
 package joebruckner.lastpick.data
 
 data class Filter(
-        val genres: List<Genre> = Genre.getAll(),
+        val showAll: Boolean = true,
+        val genres: List<Genre> = emptyList(),
         val yearGte: String = DEFAULT_GTE,
         val yearLte: String = DEFAULT_LTE
 ) {

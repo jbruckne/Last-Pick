@@ -5,46 +5,54 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import joebruckner.lastpick.*
+import joebruckner.lastpick.LastPickApp
+import joebruckner.lastpick.R
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.data.State
-import joebruckner.lastpick.network.BookmarkManager
-import joebruckner.lastpick.network.MovieManager
+import joebruckner.lastpick.interactors.BookmarkInteractor
+import joebruckner.lastpick.interactors.HistoryInteractor
+import joebruckner.lastpick.interactors.MovieInteractor
 import joebruckner.lastpick.ui.common.BaseFragment
+import joebruckner.lastpick.ui.movie.adapters.MovieDetailsPagerAdapter
+import joebruckner.lastpick.utils.consume
+import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utils.loadWithPalette
+import joebruckner.lastpick.utils.visibleIf
 import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
 
 class MovieFragment() : BaseFragment(), MovieContract.View {
     override val layoutId = R.layout.fragment_movie
     override var state = State.LOADING
 
-    private var inDiscoveryMode = false
     private var movie: Movie? = null
-    private var errorMessage: String? = null
-    private var errorButtonMessage: String? = null
-    private var errorButtonListener: (() -> Unit)? = null
+    private var errorMessage: String = "Error"
+    private var errorButtonMessage: String = "Try again"
+    private var errorButtonListener: (() -> Unit) = {}
 
     // Fragment arguments
     val providedMovieId by lazy { arguments.getInt("movie", -1) }
     val isConfigChange  by lazy { arguments.getBoolean("isConfigChange", false) }
+    val isDiscoveryMode by lazy { arguments.getBoolean("isDiscoveryMode", true) }
 
-    lateinit var adapter: CastAdapter
+    // TODO Move these to injection
+    lateinit var pagerAdapter: MovieDetailsPagerAdapter
     val presenter: MovieContract.Presenter by lazy {
         MoviePresenter(
-            activity.application.getSystemService(LastPickApp.MOVIE_MANAGER) as MovieManager,
-            activity.application.getSystemService(LastPickApp.BOOKMARKS_MANAGER) as BookmarkManager
+            activity.application.getSystemService(LastPickApp.MOVIE_MANAGER) as MovieInteractor,
+            activity.application.getSystemService(LastPickApp.HISTORY_MANAGER) as HistoryInteractor,
+            activity.application.getSystemService(LastPickApp.BOOKMARKS_MANAGER) as BookmarkInteractor
         )
     }
 
     // Views
-    val content         by lazy { find<ViewPager>(R.id.content) }
+    val content         by lazy { find<ViewPager>(R.id.view_pager) }
     val loading         by lazy { find<View>(R.id.loading) }
     val error           by lazy { find<View>(R.id.error) }
     val errorText       by lazy { find<TextView>(R.id.error_message) }
@@ -53,12 +61,9 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
     val backdrop        by lazy { activity.find<ImageView>(R.id.backdrop) }
     val titleArea       by lazy { activity.find<View>(R.id.title_area) }
     val title           by lazy { activity.find<TextView>(R.id.title) }
-    val castList        by lazy { find<RecyclerView>(R.id.cast_list) }
-    val scrollView      by lazy { find<NestedScrollView>(R.id.nested_scroll_view) }
-    val summary         by lazy { find<TextView>(R.id.overview) }
     val details         by lazy { activity.find<TextView>(R.id.details) }
     val genres          by lazy { activity.find<TextView>(R.id.genres) }
-    val phrase          by lazy { find<TextView>(R.id.phrase) }
+    val rating          by lazy { activity.find<TextView>(R.id.rating) }
 
     // Animation values
     val ALPHA_CLEAR = 0f
@@ -73,7 +78,7 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         this.errorMessage = errorMessage
         this.errorButtonMessage = errorButtonMessage
         this.errorButtonListener = f
-        updateViewState(State.LOADING)
+        updateViewState(State.ERROR)
     }
 
     override fun showContent(movie: Movie) {
@@ -91,13 +96,14 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
             }
             State.CONTENT -> {
                 showMovie(movie)
-                if (inDiscoveryMode) parent.enableFab()
+                if (isDiscoveryMode) parent.enableFab()
                 parent.appBar?.setExpanded(true, true)
             }
             State.ERROR -> {
                 clearMovie()
                 errorText.text = errorMessage
                 errorButton.text = errorButtonMessage
+                errorButton.setOnClickListener { errorButtonListener.invoke() }
                 parent.appBar?.setExpanded(false, true)
             }
         }
@@ -107,9 +113,6 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         content.visibleIf(state == State.CONTENT)
         loading.visibleIf(state == State.LOADING)
         error.visibleIf(state == State.ERROR)
-
-        // Reset scrollView location
-        //scrollView.scrollTo(0, 0)
 
         // Update menu items
         parent.supportInvalidateOptionsMenu()
@@ -136,8 +139,8 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 IN_DURATION, ALPHA_HALF
         ) { theme ->
             if (activity != null) {
-                parent.setPrimary(theme.getPrimaryColor())
-                titleArea.setBackgroundColor(theme.getPrimaryColor())
+                //parent.setPrimary(theme.getPrimaryColor())
+                //titleArea.setBackgroundColor(theme.getPrimaryColor())
 
             }
         }
@@ -150,14 +153,16 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 ALPHA_FULL
         ) { theme ->
             if (activity != null) parent.setAccent(theme.getAccentColor())
+
         }
 
+        // Set rating
+        rating.text = movie.voteAverage.toString()
+
         // Set movie details
-        summary.text    = "${movie.overview}"
-        details.text    = "${movie.releaseDate.substring(0..3)}   " +
-                "${movie.getSimpleMpaa()}   " +
-                "${movie.runtime} min"
-        phrase.text     = movie.tagline
+        details.text    = "${movie.releaseDate.substring(0..3)} " +
+                "  ${movie.getSimpleMpaa()}  " +
+                " ${movie.runtime} min"
 
         // Set genres
         var genreText = ""
@@ -167,8 +172,7 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         if (genreText.isNotBlank()) genreText = genreText.dropLast(2)
         genres.text = genreText
 
-        // Update actors list
-        adapter.cast = movie.credits.cast
+        pagerAdapter.updateMovie(movie)
     }
 
     override fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean) {
@@ -187,22 +191,23 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
 
     override fun onStart() {
         super.onStart()
+        Log.d(logTag, "Starting")
 
         // Fix orientation change bug with scrollView overlap
         parent.appBar?.addOnOffsetChangedListener { appBarLayout, i ->
             val expansion = Math.abs(i.toFloat() / appBarLayout.totalScrollRange.toFloat())
             parent.supportActionBar?.setDisplayShowTitleEnabled(expansion >= 0.9)
-            //scrollView.scrollTo(0, 0)
+            pagerAdapter.scrollToTop()
         }
 
         // Set up tabs
         parent.tabLayout?.let { layout ->
-            layout.addTab(layout.newTab().setText("Info"), 0)
-            layout.addTab(layout.newTab().setText("Videos"), 1)
-            val pagerAdapter = MovieDetailsPagerAdapter(fragmentManager)
+            pagerAdapter = MovieDetailsPagerAdapter(childFragmentManager)
             content.adapter = pagerAdapter
+            layout.setupWithViewPager(content)
+            content.clearOnPageChangeListeners()
             content.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(layout))
-            layout.setOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            layout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(tab: TabLayout.Tab) { }
                 override fun onTabUnselected(tab: TabLayout.Tab) { }
                 override fun onTabSelected(tab: TabLayout.Tab) {
@@ -210,10 +215,6 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 }
             })
         }
-
-        // Set up cast list
-        adapter = CastAdapter(context)
-        castList.adapter = adapter
 
         // Initialization of presenter
         presenter.attachView(this)
@@ -223,10 +224,12 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         // Load correct type of movie
         if (isConfigChange) presenter.reloadMovie()
         else if (providedMovieId > 0) presenter.getMovieById(providedMovieId)
-        else {
-            inDiscoveryMode = true
-            presenter.getNextMovie()
-        }
+        else presenter.getNextMovie()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
     }
 
     override fun onPause() {
@@ -270,18 +273,20 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
     fun showFilterSettings() {
         FilterSheetDialogBuilder(
                 context,
+                presenter.isShowingAll(),
                 presenter.getSelectedGenres(),
                 presenter.getGte(),
                 presenter.getLte()
-        ) { selected, gte, lte -> presenter.updateFilter(selected, gte, lte) }
+        ) { all, selected, gte, lte -> presenter.updateFilter(all, selected, gte, lte) }
         .create()
         .show()
     }
 
     companion object {
-        fun newInstance(isConfigChange: Boolean, movieId: Int? = null): MovieFragment {
+        fun newInstance(isDiscoveryMode: Boolean, isConfigChange: Boolean, movieId: Int? = null): MovieFragment {
             val fragment = MovieFragment()
             val args = Bundle()
+            args.putBoolean("isDiscoveryMode", isDiscoveryMode)
             args.putBoolean("isConfigChange", isConfigChange)
             if (movieId != null) args.putInt("movie", movieId)
             fragment.arguments = args

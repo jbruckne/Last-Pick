@@ -14,7 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import joebruckner.lastpick.R
-import joebruckner.lastpick.find
+import joebruckner.lastpick.utils.find
 
 abstract class BaseActivity : AppCompatActivity() {
     protected abstract val layoutId: Int
@@ -30,11 +30,11 @@ abstract class BaseActivity : AppCompatActivity() {
     var isFirstStart: Boolean = true
     var isThemeLocked: Boolean = false
 
-    val fab by lazy { find<FloatingActionButton?>(fabId) }
-    val toolbar by lazy { find<Toolbar?>(toolbarId) }
-    val appBar: AppBarLayout? by lazy { find<AppBarLayout>(appBarId) }
-    val tabLayout: TabLayout? by lazy { find<TabLayout>(tabLayoutId) }
-    val collapsingToolbar by lazy { find<CollapsingToolbarLayout?>(collapsingToolbarId) }
+    val fab                 by lazy { find<FloatingActionButton?>(fabId) }
+    val toolbar             by lazy { find<Toolbar?>(toolbarId) }
+    val appBar              by lazy { find<AppBarLayout?>(appBarId) }
+    val tabLayout           by lazy { find<TabLayout?>(tabLayoutId) }
+    val collapsingToolbar   by lazy { find<CollapsingToolbarLayout?>(collapsingToolbarId) }
     var menu: Menu? = null
 
     var colorPrimary: Int = Color.GRAY
@@ -53,6 +53,8 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
         setSupportActionBar(toolbar)
+
+        resetTheme()
     }
 
     override fun onResume() {
@@ -87,6 +89,7 @@ abstract class BaseActivity : AppCompatActivity() {
         val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, color)
         primaryAnimator.addUpdateListener { animator ->
             appBar?.setBackgroundColor(animator.animatedValue as Int)
+            tabLayout?.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar?.setBackgroundColor(animator.animatedValue as Int)
             collapsingToolbar?.setContentScrimColor(animator.animatedValue as Int)
         }
@@ -109,7 +112,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun setAccent(color: Int) {
         if (isThemeLocked) return
-        fab?.backgroundTintList = ColorStateList.valueOf(color)
+        val animator = ValueAnimator.ofObject(ArgbEvaluator(), colorAccent, color)
+        animator.addUpdateListener { animator ->
+            fab?.backgroundTintList = ColorStateList.valueOf(color)
+            tabLayout?.setSelectedTabIndicatorColor(color)
+        }
+        animator.duration = 200
+        animator.start()
         colorAccent = color
     }
 

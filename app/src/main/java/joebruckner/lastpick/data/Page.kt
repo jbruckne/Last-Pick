@@ -1,15 +1,13 @@
 package joebruckner.lastpick.data
 
-import com.google.gson.JsonArray
 import com.google.gson.annotations.SerializedName
 
 data class Page(
         val page: Int,
-        val results: JsonArray,
+        val results: List<CondensedMovie>,
         @SerializedName("total_results") val totalResults: Int,
         @SerializedName("total_pages") val totalPages: Int
 ) {
 
-    public fun getIds():
-            List<Int> = results.map { it.asJsonObject.get("id").asInt }
+    fun getIds() = results.map { it.id }
 }

@@ -42,9 +42,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_dice_three_48dp"
+            android:src="@drawable/ic_dice_3"
             app:layout_anchor="@+id/frame"
             app:layout_anchorGravity="bottom|end"
+            app:layout_behavior="@string/scroll_aware_fab"
             />
     </android.support.design.widget.CoordinatorLayout>
 

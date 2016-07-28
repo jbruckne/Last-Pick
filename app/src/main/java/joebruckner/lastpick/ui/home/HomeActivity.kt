@@ -1,15 +1,25 @@
 package joebruckner.lastpick.ui.home
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import joebruckner.lastpick.*
+import joebruckner.lastpick.R
 import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.common.BaseActivity
+import joebruckner.lastpick.ui.home.bookmark.BookmarkFragment
+import joebruckner.lastpick.ui.home.history.HistoryFragment
+import joebruckner.lastpick.ui.home.landing.LandingFragment
+import joebruckner.lastpick.ui.intro.IntroActivity
 import joebruckner.lastpick.ui.movie.MovieActivity
+import joebruckner.lastpick.ui.settings.SettingsActivity
+import joebruckner.lastpick.utils.consume
+import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utils.replaceFrame
+import joebruckner.lastpick.utils.setHomeAsUpEnabled
 import jonathanfinerty.once.Once
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
@@ -21,7 +31,7 @@ class HomeActivity : BaseActivity() {
     val drawerLayout by lazy { find<DrawerLayout>(R.id.drawer_layout) }
     val navigationView by lazy { find<NavigationView>(R.id.navigation_view) }
 
-    var lastSelectedItem = R.id.action_home
+    val navBackstack = mutableSetOf<Fragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +63,11 @@ class HomeActivity : BaseActivity() {
         sequence.start()
     }
 
+    override fun onResume() {
+        super.onResume()
+        drawerLayout.closeDrawers()
+    }
+
     fun setupNavDrawer() {
         setHomeAsUpEnabled(true)
         val toggle = ActionBarDrawerToggle(
@@ -64,10 +79,8 @@ class HomeActivity : BaseActivity() {
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        navigationView.setCheckedItem(lastSelectedItem)
         navigationView.setNavigationItemSelectedListener { item ->
             drawerLayout.closeDrawers()
-            if (item.groupId == R.id.section_main) lastSelectedItem = item.itemId
             when (item.itemId) {
                 R.id.action_home -> consume {
                     setupHomePage()
@@ -81,18 +94,33 @@ class HomeActivity : BaseActivity() {
                 }
                 R.id.action_bookmarks -> consume {
                     setupDefaultPage()
-                    replaceFrame(R.id.frame, BookmarksFragment(), false)
+                    replaceFrame(R.id.frame, BookmarkFragment(), false)
                     title = "Bookmarks"
                 }
-                R.id.action_settings, R.id.action_send_feedback -> consume {
-                    Snackbar.make(fab!!, "Coming Soon", Snackbar.LENGTH_SHORT).show()
+                R.id.action_settings ->  {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    false
                 }
-                R.id.action_about -> consume {
+                R.id.action_send_feedback -> {
+                    sendFeedback()
+                    false
+                }
+                R.id.action_about -> {
                     startActivity(Intent(this, AboutActivity::class.java))
+                    false
                 }
                 else -> false
             }
         }
+    }
+
+    fun sendFeedback() {
+        val send = Intent(Intent.ACTION_SENDTO)
+        val uriText = "mailto:" + Uri.encode("joebrucknerdev@gmail.com") +
+                "?subject=" + Uri.encode("Feedback")
+        val uri = Uri.parse(uriText)
+        send.data = uri
+        startActivity(Intent.createChooser(send, "Send Feedback..."))
     }
 
     fun setupHomePage() {
@@ -116,6 +144,5 @@ class HomeActivity : BaseActivity() {
         fab?.setOnClickListener {
             startActivity(Intent(this, MovieActivity::class.java))
         }
-        navigationView.menu.findItem(lastSelectedItem).isChecked = true
     }
 }

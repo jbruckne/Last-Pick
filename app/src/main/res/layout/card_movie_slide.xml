@@ -5,29 +5,29 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="16dp"
-    app:cardBackgroundColor="@color/md_grey_910">
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/md_grey_950">
 
     <RelativeLayout
-        android:layout_width="100dp"
-        android:layout_height="200dp" >
+        android:layout_width="135dp"
+        android:layout_height="270dp" >
 
         <ImageView
             android:id="@+id/poster"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:background="@color/md_grey_900"
             android:contentDescription="@string/poster"/>
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/poster"
             android:layout_margin="8dp"
-            android:textStyle="bold"
-            android:maxLines="2"
+            android:maxLines="3"
             android:gravity="center"
-            tools:text="Caption America 2: The Winter Soldier"/>
+            tools:text="Caption America 2: The Winter Soldier is Coming"/>
 
     </RelativeLayout>
 

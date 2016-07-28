@@ -4,15 +4,16 @@ import joebruckner.lastpick.data.Filter
 import joebruckner.lastpick.data.Genre
 import joebruckner.lastpick.data.Movie
 import joebruckner.lastpick.data.State
-import joebruckner.lastpick.network.BookmarkManager
-import joebruckner.lastpick.network.MovieManager
+import joebruckner.lastpick.interactors.BookmarkInteractor
+import joebruckner.lastpick.interactors.HistoryInteractor
+import joebruckner.lastpick.interactors.MovieInteractor
 import joebruckner.lastpick.ui.movie.MovieContract.View
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import joebruckner.lastpick.utils.applySchedulers
 
 class MoviePresenter(
-        val moviesManager: MovieManager,
-        val bookmarksManager: BookmarkManager
+        val movieInteractor: MovieInteractor,
+        val historyInteractor: HistoryInteractor,
+        val bookmarkInteractor: BookmarkInteractor
 ) : MovieContract.Presenter {
     private var view: View? = null
     private var movie: Movie? = null
@@ -30,19 +31,23 @@ class MoviePresenter(
     }
 
     override fun reloadMovie() {
-        moviesManager.getCachedMovie()?.let { setMovie(it) }
-        ?: if (checkViewIsLoading())
-            view?.showError("Oops! Ran into some connection issues", "Try again") {
-                reloadMovie()
-            }
+        movieInteractor
+                .getLastMovie()
+                .compose(applySchedulers<Movie>())
+                .subscribe ({ movie ->
+                    setMovie(movie)
+                }, { error ->
+                    showError(error, true)
+                })
     }
 
     override fun getNextMovie() {
         this.id = null
         view?.showLoading()
-        moviesManager.getNextMovie(filter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        movieInteractor
+                .getMovieSuggestion(filter)
+                .doOnNext { historyInteractor.addMovieToHistory(it) }
+                .compose(applySchedulers<Movie>())
                 .subscribe ({ movie ->
                     setMovie(movie)
                 }, { error ->
@@ -53,9 +58,10 @@ class MoviePresenter(
     override fun getMovieById(id: Int) {
         this.id = id
         view?.showLoading()
-        moviesManager.getMovie(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        movieInteractor
+                .getMovie(id)
+                .doOnNext { historyInteractor.addMovieToHistory(it) }
+                .compose(applySchedulers<Movie>())
                 .subscribe ({ movie ->
                     setMovie(movie)
                 }, { error ->
@@ -75,19 +81,21 @@ class MoviePresenter(
         }
     }
 
-    private fun showError(error: Throwable) {
+    private fun showError(error: Throwable, reload: Boolean = false) {
         error.printStackTrace()
         if (!checkViewIsLoading()) return
         when (error.message) {
-            MovieManager.OUT_OF_MOVIES -> {
+            MovieInteractor.OUT_OF_SUGGESTIONS -> {
                 view?.showError("Oops! We've run out of movies to suggest.", "Reshow movies") {
-                    moviesManager.reuseMovies()
+                    movieInteractor.resetMovieSuggestions()
                     getNextMovie()
                 }
             }
             else -> {
                 view?.showError("Oops! Ran into some connection issues", "Try again") {
-                    id?.let { getMovieById(it) } ?: getNextMovie()
+                    if (reload == true) reloadMovie()
+                    else if (id != null) getMovieById(id!!)
+                    else getNextMovie()
                 }
             }
         }
@@ -95,21 +103,26 @@ class MoviePresenter(
 
     override fun updateBookmark() {
         if (movie == null) return
-        val observable =
-                if (!bookmarksManager.isBookmarked(movie!!))
-                    bookmarksManager.addBookmark(movie!!)
-                else
-                    bookmarksManager.removeBookmark(movie!!)
-        observable.subscribe { updateBookmarkView(movie!!, true) }
+        if (!bookmarkInteractor.isMovieBookmarked(movie!!))
+            bookmarkInteractor.addBookmark(movie!!)
+        else
+            bookmarkInteractor.removeBookmark(movie!!)
+        updateBookmarkView(movie!!, true)
     }
 
-    override fun updateFilter(selected: BooleanArray, yearGte: String, yearLte: String) {
+    override fun updateFilter(showAll: Boolean, selected: BooleanArray,
+                              yearGte: String, yearLte: String) {
+
+        val selection = Genre.getAll().filterIndexed { i, genre -> selected[i] }
         filter = Filter(
-                Genre.Companion.getAll().filterIndexed { i, genre -> selected[i] },
+                showAll,
+                selection,
                 yearGte,
                 yearLte
         )
     }
+
+    override fun isShowingAll(): Boolean = filter.showAll
 
     override fun getSelectedGenres(): BooleanArray {
         return Genre.getAll()
@@ -117,24 +130,16 @@ class MoviePresenter(
                 .toBooleanArray()
     }
 
-    override fun getBookmarkStatus() = bookmarksManager.isBookmarked(movie!!)
+    override fun getBookmarkStatus() = bookmarkInteractor.isMovieBookmarked(movie!!)
 
     override fun getCurrentMovie() = movie
 
-    override fun getLte() = filter.yearLte
+    override fun getLte() = if (filter.yearLte.toFloat() > 2020) "2020" else filter.yearLte
 
     override fun getGte() = filter.yearGte
 
-    fun updateRatingFilter() {
-        //TODO
-    }
-
-    fun updateKeywordFilter() {
-        //TODO
-    }
-
     fun updateBookmarkView(movie: Movie, notify: Boolean) {
         if (this.movie?.id != movie.id) return
-        view?.showBookmarkUpdate(bookmarksManager.isBookmarked(movie), notify)
+        view?.showBookmarkUpdate(bookmarkInteractor.isMovieBookmarked(movie), notify)
     }
 }

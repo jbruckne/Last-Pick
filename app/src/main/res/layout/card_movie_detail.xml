@@ -9,7 +9,7 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
-        android:id="@+id/phrase"
+        android:id="@+id/tagline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -60,17 +60,12 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_alignParentStart="true"
-                        android:textSize="20sp"
+                        android:padding="12dp"
+                        android:textSize="18sp"
                         android:text="@string/cast"
                         android:textStyle="bold"/>
 
-                    <Button
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:text="@string/see_all"/>
+
 
                 </RelativeLayout>
 
@@ -86,11 +81,6 @@
                     tools:listitem="@layout/card_actor"
                     tools:targetApi="lollipop" />
             </LinearLayout>
-
-
-
         </android.support.v7.widget.CardView>
-
     </LinearLayout>
-
 </LinearLayout>

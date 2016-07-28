@@ -12,7 +12,8 @@ class MovieContract {
         fun getNextMovie()
         fun getMovieById(id: Int)
         fun setMovie(movie: Movie)
-        fun updateFilter(selected: BooleanArray, yearGte: String, yearLte: String)
+        fun updateFilter(showAll: Boolean, selected: BooleanArray, yearGte: String, yearLte: String)
+        fun isShowingAll(): Boolean
         fun updateBookmark()
         fun getSelectedGenres(): BooleanArray
         fun getBookmarkStatus(): Boolean
@@ -26,7 +27,7 @@ class MovieContract {
         fun showLoading()
         fun showContent(movie: Movie)
         fun showError(errorMessage: String, errorButtonMessage: String, f: () -> Unit)
-        fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean)
-        fun showBookmarkError(isBookmarked: Boolean)
+        fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean) {}
+        fun showBookmarkError(isBookmarked: Boolean) {}
     }
 }

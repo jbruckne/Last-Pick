@@ -3,8 +3,7 @@ package joebruckner.lastpick.widgets
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v7.graphics.Palette
-import android.util.Log
-import joebruckner.lastpick.darkenColor
+import joebruckner.lastpick.utils.darkenColor
 
 class PaletteTheme(val palette: Palette) {
     val defaultPrimary = Color.GRAY
@@ -13,19 +12,15 @@ class PaletteTheme(val palette: Palette) {
 
     private fun choosePrimarySwatch() = when (true) {
         palette.mutedSwatch         != null -> {
-            Log.d("Palette", "Muted")
             palette.mutedSwatch
         }
         palette.vibrantSwatch       != null -> {
-            Log.d("Palette", "vibrant")
             palette.vibrantSwatch
         }
         palette.darkVibrantSwatch   != null -> {
-            Log.d("Palette", "darkVibrant")
             palette.darkVibrantSwatch
         }
         palette.darkMutedSwatch     != null -> {
-            Log.d("Palette", "darkMuted")
             palette.darkMutedSwatch
         }
         else -> palette.swatches.elementAtOrNull(0)
