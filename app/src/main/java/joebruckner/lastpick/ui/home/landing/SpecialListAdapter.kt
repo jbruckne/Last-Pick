@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.ListType
+import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.utils.darkenColor
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.inflate

@@ -173,6 +173,12 @@
     <string name="select_all">Select All</string>
     <string name="show_all">Show all</string>
     <string name="filter_options">Filter Options</string>
+    <string name="where_to_watch">Where to watch</string>
+    <string name="see_all_trailers">See All Trailers</string>
+    <string name="view_more">View More</string>
+    <string name="metacritic_reviews">Metacritic</string>
+    <string name="rotten_tomatoes_reviews">Rotten Tomatoes</string>
+    <string name="themoviedb_reviews">The Movie Database</string>
 
     <string-array name="see_all_button_values">
         <item>See all popular movies</item>

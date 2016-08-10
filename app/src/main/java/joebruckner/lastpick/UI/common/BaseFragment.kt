@@ -10,7 +10,6 @@ abstract class BaseFragment : Fragment() {
     open val menuId: Int = R.menu.menu_empty
     abstract val layoutId: Int
     lateinit var parent: BaseActivity
-    protected var baseView: View? = null
     protected var isFirstStart = true
 
     val logTag = javaClass.simpleName
@@ -23,6 +22,7 @@ abstract class BaseFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         parent = context as BaseActivity
+        parent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +31,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        baseView = view
+        findViews()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -44,4 +44,9 @@ abstract class BaseFragment : Fragment() {
         super.onResume()
         isFirstStart = false
     }
+
+    /*
+     * Do all view initialization here. Called in onViewCreated.
+     */
+    open fun findViews() {}
 }

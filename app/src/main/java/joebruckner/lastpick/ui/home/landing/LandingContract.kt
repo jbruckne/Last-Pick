@@ -1,7 +1,7 @@
 package joebruckner.lastpick.ui.home.landing
 
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.State
+import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.State
 
 class LandingContract {
 

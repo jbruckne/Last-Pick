@@ -1,25 +1,33 @@
 package joebruckner.lastpick.ui.movie
 
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.data.State
+import joebruckner.lastpick.model.Filter
+import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.ReviewSource
+import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.tmdb.Video
 
 class MovieContract {
 
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
+        fun addSubview(subview: Subview)
+        fun removeSubview(subview: Subview)
         fun reloadMovie()
         fun getNextMovie()
         fun getMovieById(id: Int)
+        fun shareMovie()
+        fun watchVideo(video: Video)
+        fun readReviews(source: ReviewSource)
+        fun viewSource(source: Source)
         fun setMovie(movie: Movie)
-        fun updateFilter(showAll: Boolean, selected: BooleanArray, yearGte: String, yearLte: String)
-        fun isShowingAll(): Boolean
+        fun setColor(color: Int)
+        fun updateFilter(filter: Filter)
+        fun getFilter(): Filter
         fun updateBookmark()
-        fun getSelectedGenres(): BooleanArray
         fun getBookmarkStatus(): Boolean
         fun getCurrentMovie(): Movie?
-        fun getLte(): String
-        fun getGte(): String
     }
 
     interface View {
@@ -27,7 +35,12 @@ class MovieContract {
         fun showLoading()
         fun showContent(movie: Movie)
         fun showError(errorMessage: String, errorButtonMessage: String, f: () -> Unit)
-        fun showBookmarkUpdate(isBookmarked: Boolean, notify: Boolean) {}
-        fun showBookmarkError(isBookmarked: Boolean) {}
+        fun setBookmark(isBookmarked: Boolean)
+        fun showSnackbar(message: String)
+    }
+
+    interface Subview {
+        fun updateMovie(movie: Movie)
+        fun updateColor(color: Int)
     }
 }

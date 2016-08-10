@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -138,5 +139,9 @@ abstract class BaseActivity : AppCompatActivity() {
                 if (fabIsEnabled) enableFab()
             }
         })
+    }
+
+    open fun inject(fragment: Fragment) {
+        throw Exception("$logTag cannot inject ${fragment.javaClass.simpleName}")
     }
 }

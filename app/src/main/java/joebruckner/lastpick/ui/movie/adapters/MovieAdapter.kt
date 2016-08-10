@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Movie
+import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.utils.find
 import java.util.*
 

@@ -1,14 +1,15 @@
 package joebruckner.lastpick.ui.specials
 
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.ListType
-import joebruckner.lastpick.data.State
+import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 
 class SpecialsContract {
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
         fun getSpecialList(type: ListType)
+        fun movieSelected(movie: CondensedMovie)
     }
     interface View {
         fun showError(errorMessage: String)

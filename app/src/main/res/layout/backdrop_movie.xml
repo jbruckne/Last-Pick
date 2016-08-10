@@ -52,15 +52,6 @@
             android:layout_below="@+id/title"
             android:textSize="@dimen/detail_text_size"
             tools:text="Action, Horror, Thriller"/>
-
-        <TextView
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:textSize="20sp"
-            tools:text="9.2" />
     </RelativeLayout>
 
     <ImageView

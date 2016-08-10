@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:ignore="RtlSymmetry">
+    android:nestedScrollingEnabled="false"
+    tools:ignore="RtlSymmetry"
+    tools:targetApi="N">
 
     <TextView
         android:id="@+id/tagline"
@@ -35,52 +37,56 @@
             android:textSize="18sp"
             tools:text="@string/dummy_summary"
             />
-
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="2dp"
-            app:cardBackgroundColor="@color/md_grey_910">
+            android:layout_margin="16dp"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                android:text="@string/cast"
+                android:textStyle="bold"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cast_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/card_actor"
+                tools:layout_height="200dp"/>
+        </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/md_grey_900"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentStart="true"
-                        android:padding="12dp"
-                        android:textSize="18sp"
-                        android:text="@string/cast"
-                        android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                android:text="@string/where_to_watch"
+                android:textStyle="bold"/>
 
-
-
-                </RelativeLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/cast_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:orientation="vertical"
-                    android:clipToPadding="false"
-                    android:nestedScrollingEnabled="false"
-                    app:layoutManager="LinearLayoutManager"
-                    tools:listitem="@layout/card_actor"
-                    tools:targetApi="lollipop" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/source_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/card_source" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Genre
+import joebruckner.lastpick.model.tmdb.Genre
 
 class GenreAdapter(
         initSelected: BooleanArray,

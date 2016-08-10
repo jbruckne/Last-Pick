@@ -1,54 +1,38 @@
 package joebruckner.lastpick.ui.home.landing
 
-
 import android.content.Intent
-import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import joebruckner.lastpick.LastPickApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.State
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.ui.movie.MovieActivity
 import joebruckner.lastpick.ui.specials.SpecialsActivity
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.visibleIf
+import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass.
- */
 class LandingFragment : BaseFragment(), LandingContract.View {
+    // Overridden properties
     override val layoutId: Int = R.layout.fragment_landing
-
-    val loading by lazy { find<View>(R.id.loading) }
-    val content by lazy { find<View>(R.id.content) }
-    val error   by lazy { find<TextView>(R.id.error) }
-    val specialLists by lazy { find<RecyclerView>(R.id.special_lists) }
-
-    private val presenter: LandingContract.Presenter by lazy { LandingPresenter(
-            activity.application.getSystemService(LastPickApp.Companion.MOVIE_MANAGER) as MovieInteractor
-    ) }
     override var state: State = State.LOADING
+
+    // Injected objects
+    @Inject lateinit var presenter: LandingContract.Presenter
+
+    // Views
+    val loading: View get() = find(R.id.loading)
+    val content: View get() = find(R.id.content)
+    val error: TextView get() = find(R.id.error)
+    val specialLists: RecyclerView get() = find(R.id.special_lists)
 
     private fun updateViews() {
         content.visibleIf(state == State.CONTENT)
         loading.visibleIf(state == State.LOADING)
         error.visibleIf(state == State.ERROR)
-    }
-
-    override fun showLoading() {
-        state = State.LOADING
-        updateViews()
-    }
-
-    override fun showError(message: String) {
-        state = State.ERROR
-        error.text = message
-        updateViews()
     }
 
     override fun showContent(movies: List<CondensedMovie>) {
@@ -64,6 +48,17 @@ class LandingFragment : BaseFragment(), LandingContract.View {
             startActivity(intent)
         })
         specialLists.swapAdapter(adapter, true)
+        updateViews()
+    }
+
+    override fun showLoading() {
+        state = State.LOADING
+        updateViews()
+    }
+
+    override fun showError(message: String) {
+        state = State.ERROR
+        error.text = message
         updateViews()
     }
 

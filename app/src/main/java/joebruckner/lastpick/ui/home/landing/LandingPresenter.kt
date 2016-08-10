@@ -1,12 +1,17 @@
 package joebruckner.lastpick.ui.home.landing
 
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.ListType
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.MovieInteractor
+import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.utils.applySchedulers
 import rx.Observable
+import javax.inject.Inject
 
-class LandingPresenter(val movieInteractor: MovieInteractor): LandingContract.Presenter {
+@ActivityScope
+class LandingPresenter @Inject constructor(
+        val movieInteractor: MovieInteractor
+): LandingContract.Presenter {
     var view: LandingContract.View? = null
 
     override fun attachView(view: LandingContract.View) {

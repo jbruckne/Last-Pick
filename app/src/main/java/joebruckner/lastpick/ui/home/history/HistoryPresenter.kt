@@ -1,11 +1,14 @@
 package joebruckner.lastpick.ui.home.history
 
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.interactors.HistoryInteractor
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.HistoryInteractor
+import joebruckner.lastpick.domain.MovieInteractor
+import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.utils.applySchedulers
+import javax.inject.Inject
 
-class HistoryPresenter(
+@ActivityScope
+class HistoryPresenter @Inject constructor(
         val movieManager: MovieInteractor,
         val historyManager: HistoryInteractor
 ): HistoryContract.Presenter {

@@ -23,9 +23,6 @@
         android:id="@+id/section_other"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/action_settings"
-            android:title="@string/action_settings" />
-        <item
             android:id="@+id/action_send_feedback"
             android:title="@string/action_send_feedback" />
         <item

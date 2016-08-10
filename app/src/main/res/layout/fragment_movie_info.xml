@@ -4,7 +4,7 @@
      android:id="@+id/nested_scroll_view"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
-     tools:context="joebruckner.lastpick.ui.movie.MovieInfoFragment">
+     tools:context="joebruckner.lastpick.ui.movie.fragments.MovieInfoFragment">
 
      <include layout="@layout/card_movie_detail" />
 </android.support.v4.widget.NestedScrollView>

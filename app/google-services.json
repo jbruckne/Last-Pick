@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "998304593010",
+    "firebase_url": "https://last-pick-85e11.firebaseio.com",
+    "project_id": "last-pick-85e11",
+    "storage_bucket": "last-pick-85e11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998304593010:android:3d832909dca94281",
+        "android_client_info": {
+          "package_name": "joebruckner.lastpick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998304593010-ee8vper7a9n6o1ujahrl1fgltap9d3dq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "joebruckner.lastpick",
+            "certificate_hash": "338ECAB4AF56D698C184CC11FCA84AFB2226BE9A"
+          }
+        },
+        {
+          "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqD0AmaniXOFWInpxI4b8JBmkr1943OV8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998304593010:android:8bb49544329ec320",
+        "android_client_info": {
+          "package_name": "joebruckner.lastpick.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998304593010-iecbvofnjgji2k9ltbrvj0vps44e4u4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "joebruckner.lastpick.debug",
+            "certificate_hash": "338ECAB4AF56D698C184CC11FCA84AFB2226BE9A"
+          }
+        },
+        {
+          "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqD0AmaniXOFWInpxI4b8JBmkr1943OV8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998304593010:android:75c9bc67fbfd8ca8",
+        "android_client_info": {
+          "package_name": "joebruckner.lastpick.release"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998304593010-hrulilu8lvmcctj3kudpg2mdisnqa3m0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "joebruckner.lastpick.release",
+            "certificate_hash": "338ECAB4AF56D698C184CC11FCA84AFB2226BE9A"
+          }
+        },
+        {
+          "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqD0AmaniXOFWInpxI4b8JBmkr1943OV8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

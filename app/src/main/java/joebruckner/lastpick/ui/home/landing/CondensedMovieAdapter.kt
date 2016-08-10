@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.CondensedMovie
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.inflate
 import joebruckner.lastpick.utils.load

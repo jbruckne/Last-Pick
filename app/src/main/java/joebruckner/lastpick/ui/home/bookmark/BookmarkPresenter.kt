@@ -1,12 +1,13 @@
 package joebruckner.lastpick.ui.home.bookmark
 
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.interactors.BookmarkInteractor
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.BookmarkInteractor
+import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.utils.applySchedulers
+import javax.inject.Inject
 
-class BookmarkPresenter(
-        val movieManager: MovieInteractor,
+@ActivityScope
+class BookmarkPresenter @Inject constructor(
         val bookmarkManager: BookmarkInteractor
 ): BookmarkContract.Presenter {
     private var view: BookmarkContract.View? = null
@@ -25,11 +26,9 @@ class BookmarkPresenter(
                 .getBookmarks()
                 .compose(applySchedulers<List<Movie>>())
                 .subscribe ({
-                    view?.showContent(it.sortedBy {
-                        it.title.first().toUpperCase() - 'A'
-                    })
-                }, { error ->
-                    error.printStackTrace()
+                    view?.showContent(it.sortedBy { it.title.first().toUpperCase() - 'A' })
+                }, {
+                    it.printStackTrace()
                     view?.showError("Oops, there was a problem loading your bookmarks.")
                 })
     }

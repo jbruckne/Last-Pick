@@ -1,26 +1,35 @@
 package joebruckner.lastpick.ui.movie
 
-import joebruckner.lastpick.data.Filter
-import joebruckner.lastpick.data.Genre
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.data.State
-import joebruckner.lastpick.interactors.BookmarkInteractor
-import joebruckner.lastpick.interactors.HistoryInteractor
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.*
+import joebruckner.lastpick.domain.impl.MovieInteractorImpl
+import joebruckner.lastpick.model.Filter
+import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.ReviewSource
+import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.tmdb.Video
+import joebruckner.lastpick.ui.movie.MovieContract.Subview
 import joebruckner.lastpick.ui.movie.MovieContract.View
 import joebruckner.lastpick.utils.applySchedulers
+import javax.inject.Inject
 
-class MoviePresenter(
+@ActivityScope
+class MoviePresenter @Inject constructor(
         val movieInteractor: MovieInteractor,
         val historyInteractor: HistoryInteractor,
-        val bookmarkInteractor: BookmarkInteractor
+        val bookmarkInteractor: BookmarkInteractor,
+        val navigator: FlowNavigator,
+        val logger: EventLogger
 ) : MovieContract.Presenter {
     private var view: View? = null
+    private val subviews: MutableList<Subview> = mutableListOf()
     private var movie: Movie? = null
+    private var color: Int? = null
     private var id: Int? = null
     private var filter = Filter()
 
-    private fun checkViewIsLoading(): Boolean = view?.state == State.LOADING
+    private fun viewIsLoading(): Boolean = view?.state == State.LOADING
 
     override fun attachView(view: View) {
         this.view = view
@@ -30,7 +39,21 @@ class MoviePresenter(
         this.view = null
     }
 
+    override fun addSubview(subview: Subview) {
+        subviews.add(subview)
+        movie?.let { subview.updateMovie(it) }
+        color?.let { subview.updateColor(it) }
+    }
+
+    override fun removeSubview(subview: Subview) {
+        subviews.remove(subview)
+    }
+
     override fun reloadMovie() {
+        if (movie != null) {
+            showMovie()
+            return
+        }
         movieInteractor
                 .getLastMovie()
                 .compose(applySchedulers<Movie>())
@@ -53,6 +76,7 @@ class MoviePresenter(
                 }, { error ->
                     showError(error)
                 })
+        logger.logRandomViewed(filter, (movieInteractor as MovieInteractorImpl).count)
     }
 
     override fun getMovieById(id: Int) {
@@ -69,21 +93,65 @@ class MoviePresenter(
                 })
     }
 
+    override fun shareMovie() {
+        navigator.share(Movie.theMovieDatabaseUrl + movie?.id, "Check out this movie!")
+        movie?.let { logger.logMovieShared(it) }
+    }
+
+    override fun viewSource(source: Source) {
+        navigator.view(source.link)
+        movie?.let { logger.logSourceViewed(it, source) }
+    }
+
+    override fun readReviews(source: ReviewSource) {
+        when (source) {
+            ReviewSource.ROTTEN_TOMATOES -> {
+                movie?.rottenTomatoesId?.let {
+                    navigator.view(Movie.rottenTomatoesUrl + it)
+                }
+            }
+            ReviewSource.METACRITIC -> {
+                movie?.metacriticLink?.let {
+                    navigator.view(it)
+                }
+            }
+            ReviewSource.THEMOVIEDB -> {
+                movie?.let {
+                    navigator.view(Movie.theMovieDatabaseUrl + it.id)
+                }
+            }
+        }
+    }
+
+    override fun watchVideo(video: Video) {
+        navigator.view(video.getTrailerUrl())
+        movie?.let { logger.logVideoViewed(it, video) }
+    }
+
     override fun setMovie(movie: Movie) {
+        logger.logMovieLoaded(movie)
         this.movie = movie
         showMovie()
     }
 
+    override fun setColor(color: Int) {
+        this.color = color
+        subviews.forEach { it.updateColor(color) }
+    }
+
     private fun showMovie() {
-        if (checkViewIsLoading()) {
-            view?.showContent(movie!!)
-            updateBookmarkView(movie!!, false)
+        if (viewIsLoading()) {
+            movie?.let {
+                view?.showContent(it)
+                view?.setBookmark(bookmarkInteractor.isMovieBookmarked(it))
+                subviews.forEach { sub -> sub.updateMovie(it) }
+            }
         }
     }
 
     private fun showError(error: Throwable, reload: Boolean = false) {
-        error.printStackTrace()
-        if (!checkViewIsLoading()) return
+        logger.logError(error)
+        if (!viewIsLoading()) return
         when (error.message) {
             MovieInteractor.OUT_OF_SUGGESTIONS -> {
                 view?.showError("Oops! We've run out of movies to suggest.", "Reshow movies") {
@@ -102,44 +170,28 @@ class MoviePresenter(
     }
 
     override fun updateBookmark() {
-        if (movie == null) return
-        if (!bookmarkInteractor.isMovieBookmarked(movie!!))
-            bookmarkInteractor.addBookmark(movie!!)
-        else
-            bookmarkInteractor.removeBookmark(movie!!)
-        updateBookmarkView(movie!!, true)
+        movie?.let {
+            if (getBookmarkStatus()) {
+                bookmarkInteractor.removeBookmark(it)
+                view?.setBookmark(false)
+                view?.showSnackbar("Bookmark removed")
+            } else {
+                bookmarkInteractor.addBookmark(it)
+                view?.setBookmark(true)
+                view?.showSnackbar("Bookmark added")
+            }
+            logger.logBookmarkChange(it, !getBookmarkStatus())
+        }
     }
 
-    override fun updateFilter(showAll: Boolean, selected: BooleanArray,
-                              yearGte: String, yearLte: String) {
-
-        val selection = Genre.getAll().filterIndexed { i, genre -> selected[i] }
-        filter = Filter(
-                showAll,
-                selection,
-                yearGte,
-                yearLte
-        )
+    override fun updateFilter(filter: Filter) {
+        this.filter = filter
+        logger.logFilterChange(filter)
     }
 
-    override fun isShowingAll(): Boolean = filter.showAll
-
-    override fun getSelectedGenres(): BooleanArray {
-        return Genre.getAll()
-                .map { filter.genres.contains(it) }
-                .toBooleanArray()
-    }
+    override fun getFilter(): Filter = filter
 
     override fun getBookmarkStatus() = bookmarkInteractor.isMovieBookmarked(movie!!)
 
     override fun getCurrentMovie() = movie
-
-    override fun getLte() = if (filter.yearLte.toFloat() > 2020) "2020" else filter.yearLte
-
-    override fun getGte() = filter.yearGte
-
-    fun updateBookmarkView(movie: Movie, notify: Boolean) {
-        if (this.movie?.id != movie.id) return
-        view?.showBookmarkUpdate(bookmarkInteractor.isMovieBookmarked(movie), notify)
-    }
 }

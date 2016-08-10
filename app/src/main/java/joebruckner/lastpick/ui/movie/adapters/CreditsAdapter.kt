@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.Credits
+import joebruckner.lastpick.model.tmdb.Cast
+import joebruckner.lastpick.model.tmdb.Credits
+import joebruckner.lastpick.model.tmdb.Crew
 import joebruckner.lastpick.utils.load
 
 class CreditsAdapter(val context: Context): RecyclerView.Adapter<CreditsAdapter.CastViewHolder>() {
@@ -17,6 +19,8 @@ class CreditsAdapter(val context: Context): RecyclerView.Adapter<CreditsAdapter.
             field = value
             notifyDataSetChanged()
         }
+    var castListener: (Cast) -> Unit = {}
+    var crewListener: (Crew) -> Unit = {}
 
     override fun getItemCount(): Int {
         val castSize = credits?.cast?.size ?: 0
@@ -30,12 +34,14 @@ class CreditsAdapter(val context: Context): RecyclerView.Adapter<CreditsAdapter.
             holder.name.text = crew.name
             holder.character.text = crew.job
             holder.profilePicture.load(context, crew.getFullProfilePath())
+            holder.view.setOnClickListener { crewListener.invoke(crew) }
         } else {
             val adjustment = if (credits?.getDirector() == null) position else position - 1
             val cast = credits!!.cast[adjustment]
             holder.name.text = cast.name
             holder.character.text = cast.character
             holder.profilePicture.load(context, cast.getFullProfilePath())
+            holder.view.setOnClickListener { castListener.invoke(cast) }
         }
     }
 

@@ -1,7 +1,7 @@
 package joebruckner.lastpick.ui.home.bookmark
 
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.data.State
+import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.State
 
 class BookmarkContract {
     interface Presenter {

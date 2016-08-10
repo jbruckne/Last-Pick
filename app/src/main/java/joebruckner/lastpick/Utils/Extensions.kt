@@ -2,14 +2,9 @@ package joebruckner.lastpick.utils
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
-import android.os.Build
-import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +16,6 @@ import joebruckner.lastpick.widgets.SimpleRequestListener
 import java.util.*
 
 inline fun <reified T : View?> Activity.find(id: Int): T = findViewById(id) as T
-
-fun Activity.viewUri(uri: String) = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
-
-fun Activity.getColor(colorRes: Int): Int {
-    return if (Build.VERSION.SDK_INT >= 23) ContextCompat.getColor(this, colorRes)
-    else resources.getColor(colorRes)
-}
 
 fun FragmentActivity.replaceFrame(frameId: Int, fragment: Fragment, backstack: Boolean = false) {
     val transaction = supportFragmentManager.beginTransaction().replace(frameId, fragment)
@@ -41,10 +29,6 @@ fun FragmentActivity.getFragment(id: Int): Fragment {
 
 fun AppCompatActivity.setHomeAsUpEnabled(isEnabled: Boolean) {
     supportActionBar?.setDisplayHomeAsUpEnabled(isEnabled)
-}
-
-fun AppCompatActivity.setTitleEnabled(isEnabled: Boolean) {
-    supportActionBar?.setDisplayShowTitleEnabled(isEnabled)
 }
 
 inline fun <reified T : View?> Fragment.find(id: Int): T = view!!.findViewById(id) as T
@@ -62,10 +46,6 @@ inline fun consume(f: () -> Unit): Boolean {
 
 fun View.visibleIf(bool: Boolean) {
     this.visibility = if (bool) View.VISIBLE else View.GONE
-}
-
-fun ImageView.load(fragment: Fragment, path: String) {
-    Glide.with(fragment).load(path).centerCrop().into(this)
 }
 
 fun ImageView.load(context: Context, path: String) {
@@ -92,21 +72,6 @@ fun Int.darkenColor(): Int {
     return Color.HSVToColor(hsv)
 }
 
-fun AppBarLayout.onExpanse(f: () -> Unit) {
-    this.setExpanded(true, true)
-    this.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener {
-        override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-            val expansion = Math.abs(
-                    verticalOffset.toFloat() / appBarLayout.totalScrollRange.toFloat()
-            )
-            if (expansion <= 0) {
-                f()
-                this@onExpanse.removeOnOffsetChangedListener(this)
-            }
-        }
-    })
-}
-
 fun <T> Collection<T>.shuffle(): List<T> {
     val positions = IntRange(0, this.size-1).toMutableList()
     val random = Random(System.currentTimeMillis())
@@ -123,3 +88,5 @@ fun <T> Collection<T>.shuffle(): List<T> {
 fun <T> MutableCollection<T>.addIfNotContained(item: T) {
     if (!this.contains(item)) this.add(item)
 }
+
+fun Int.isEven(): Boolean = this % 2 == 0

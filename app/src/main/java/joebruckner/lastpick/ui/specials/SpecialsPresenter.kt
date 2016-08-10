@@ -1,12 +1,20 @@
 package joebruckner.lastpick.ui.specials
 
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.ListType
-import joebruckner.lastpick.data.Movie
-import joebruckner.lastpick.interactors.MovieInteractor
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.EventLogger
+import joebruckner.lastpick.domain.FlowNavigator
+import joebruckner.lastpick.domain.MovieInteractor
+import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.utils.applySchedulers
+import javax.inject.Inject
 
-class SpecialsPresenter(val movieInteractor: MovieInteractor): SpecialsContract.Presenter {
+@ActivityScope
+class SpecialsPresenter @Inject constructor(
+        val movieInteractor: MovieInteractor,
+        val navigator: FlowNavigator,
+        val logger: EventLogger
+): SpecialsContract.Presenter {
     var view: SpecialsContract.View? = null
 
     override fun attachView(view: SpecialsContract.View) {
@@ -26,7 +34,12 @@ class SpecialsPresenter(val movieInteractor: MovieInteractor): SpecialsContract.
                 .subscribe ({
                     view?.showContent(it)
                 }, {
+                    logger.logError(it)
                     view?.showError("Oops, there was a problem loading the list.")
                 })
+    }
+
+    override fun movieSelected(movie: CondensedMovie) {
+        navigator.showMovie(movie.id)
     }
 }

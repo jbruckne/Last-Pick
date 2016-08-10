@@ -9,17 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import joebruckner.lastpick.R
-import joebruckner.lastpick.data.CondensedMovie
-import joebruckner.lastpick.data.Genre
+import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.utils.find
-import java.util.*
 
 class CondensedMovieAdapter(
         val context: Context,
-        val layout: Int
+        val layout: Int,
+        val listener: (CondensedMovie) -> Unit
 ): RecyclerView.Adapter<CondensedMovieAdapter.CondensedMovieViewHolder>() {
     var movies = listOf<CondensedMovie>()
-    var onItemClickListeners = ArrayList<(Int) -> Unit>()
 
     override fun getItemCount(): Int {
         return movies.size
@@ -45,12 +44,8 @@ class CondensedMovieAdapter(
                 .crossFade()
                 .into(holder.poster)
         holder.view.setOnClickListener {
-            onItemClickListeners.forEach { it.invoke(position) }
+            listener.invoke(movies[position])
         }
-    }
-
-    fun addOnItemClickListener(listener: (Int) -> Unit) {
-        onItemClickListeners.add(listener)
     }
 
     fun setNewMovies(movies: List<CondensedMovie>) {

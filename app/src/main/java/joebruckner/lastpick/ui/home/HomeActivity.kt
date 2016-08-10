@@ -7,6 +7,8 @@ import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import joebruckner.lastpick.ActivityModule
+import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.common.BaseActivity
@@ -15,7 +17,6 @@ import joebruckner.lastpick.ui.home.history.HistoryFragment
 import joebruckner.lastpick.ui.home.landing.LandingFragment
 import joebruckner.lastpick.ui.intro.IntroActivity
 import joebruckner.lastpick.ui.movie.MovieActivity
-import joebruckner.lastpick.ui.settings.SettingsActivity
 import joebruckner.lastpick.utils.consume
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.replaceFrame
@@ -31,7 +32,11 @@ class HomeActivity : BaseActivity() {
     val drawerLayout by lazy { find<DrawerLayout>(R.id.drawer_layout) }
     val navigationView by lazy { find<NavigationView>(R.id.navigation_view) }
 
-    val navBackstack = mutableSetOf<Fragment>()
+    val component by lazy {
+        (application as MainApp)
+                .component
+                .getHomeComponent(ActivityModule(this))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,10 +102,6 @@ class HomeActivity : BaseActivity() {
                     replaceFrame(R.id.frame, BookmarkFragment(), false)
                     title = "Bookmarks"
                 }
-                R.id.action_settings ->  {
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                    false
-                }
                 R.id.action_send_feedback -> {
                     sendFeedback()
                     false
@@ -143,6 +144,15 @@ class HomeActivity : BaseActivity() {
         super.onStart()
         fab?.setOnClickListener {
             startActivity(Intent(this, MovieActivity::class.java))
+        }
+    }
+
+    override fun inject(fragment: Fragment) {
+        when (fragment) {
+            is LandingFragment -> component.inject(fragment)
+            is HistoryFragment -> component.inject(fragment)
+            is BookmarkFragment -> component.inject(fragment)
+            else -> super.inject(fragment)
         }
     }
 }

@@ -2,10 +2,17 @@ package joebruckner.lastpick.ui.movie
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import joebruckner.lastpick.ActivityModule
+import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.ui.common.BaseActivity
+import joebruckner.lastpick.ui.movie.fragments.MovieFragment
+import joebruckner.lastpick.ui.movie.fragments.MovieInfoFragment
+import joebruckner.lastpick.ui.movie.fragments.MovieMediaFragment
+import joebruckner.lastpick.ui.movie.fragments.MovieReviewFragment
 import joebruckner.lastpick.utils.consume
 import joebruckner.lastpick.utils.getFragment
 import joebruckner.lastpick.utils.replaceFrame
@@ -16,6 +23,11 @@ class MovieActivity : BaseActivity() {
     override val layoutId: Int = R.layout.activity_movie
 
     private var inDiscoveryMode = false
+    private val component by lazy {
+        (application as MainApp)
+                .component
+                .getMovieComponent(ActivityModule(this))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,5 +77,15 @@ class MovieActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
             android.R.id.home -> consume { onBackPressed() }
             else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun inject(fragment: Fragment) {
+        when (fragment) {
+            is MovieFragment -> component.inject(fragment)
+            is MovieInfoFragment -> component.inject(fragment)
+            is MovieReviewFragment -> component.inject(fragment)
+            is MovieMediaFragment -> component.inject(fragment)
+            else -> super.inject(fragment)
+        }
     }
 }

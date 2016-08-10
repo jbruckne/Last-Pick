@@ -1,0 +1,54 @@
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/source_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:gravity="center"
+            android:textSize="34sp"
+            android:textStyle="bold|italic"
+            tools:text="8.6/10"/>
+
+        <Button
+            android:id="@+id/metacritic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
+            android:text="@string/metacritic_reviews"
+            style="?android:borderlessButtonStyle"/>
+
+        <Button
+            android:id="@+id/rotten_tomatoes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
+            android:text="@string/rotten_tomatoes_reviews"
+            style="?android:borderlessButtonStyle"/>
+
+        <Button
+            android:id="@+id/themoviedb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
+            android:text="@string/themoviedb_reviews"
+            style="?android:borderlessButtonStyle"/>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
