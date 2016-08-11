@@ -12,6 +12,7 @@ import joebruckner.lastpick.model.tmdb.Genre
 
 class GenreAdapter(
         initSelected: BooleanArray,
+        val color: Int,
         val listener: ((Int) -> Unit)? = null
 ): RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
     val genres = Genre.getAll()
@@ -36,13 +37,12 @@ class GenreAdapter(
         val name = view.findViewById(R.id.name) as TextView
         val card = view.findViewById(R.id.card) as CardView
         val black = Color.parseColor("#212121")
-        val accent = Color.parseColor("#1DE9B6")
         if (!selected[position]) {
             name.setTextColor(Color.WHITE)
             card.setCardBackgroundColor(black)
         } else {
-            name.setTextColor(black)
-            card.setCardBackgroundColor(accent)
+            name.setTextColor(Color.BLACK)
+            card.setCardBackgroundColor(color)
         }
 
     }

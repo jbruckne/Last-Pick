@@ -24,6 +24,7 @@ class MovieContract {
         fun onReviewSourceClicked(source: ReviewSource)
         fun onSourceClicked(source: Source)
         fun setColor(color: Int)
+        fun getColor(): Int
         fun onFilterDismissed(filter: Filter)
         fun getFilter(): Filter
         fun onBookmarkToggled()

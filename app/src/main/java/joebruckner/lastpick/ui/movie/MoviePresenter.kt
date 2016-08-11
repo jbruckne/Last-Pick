@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.movie
 
+import android.graphics.Color
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.*
 import joebruckner.lastpick.domain.impl.MovieInteractorImpl
@@ -8,7 +9,6 @@ import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.ReviewSource
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.guidebox.Source
-import joebruckner.lastpick.model.tmdb.Image
 import joebruckner.lastpick.model.tmdb.Video
 import joebruckner.lastpick.ui.movie.MovieContract.Subview
 import joebruckner.lastpick.ui.movie.MovieContract.View
@@ -151,6 +151,8 @@ class MoviePresenter @Inject constructor(
         this.color = color
         subviews.forEach { it.updateColor(color) }
     }
+
+    override fun getColor() = color ?: Color.WHITE
 
     private fun showMovie() {
         if (viewIsLoading()) {

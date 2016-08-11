@@ -46,7 +46,9 @@ class MovieReviewFragment : BaseFragment(), MovieContract.Subview {
     override fun updateMovie(movie: Movie) = updateView()
 
     override fun updateColor(color: Int) {
-
+        rottenTomatoes.setTextColor(color)
+        metacritic.setTextColor(color)
+        themoviedb.setTextColor(color)
     }
 
     fun updateView() {

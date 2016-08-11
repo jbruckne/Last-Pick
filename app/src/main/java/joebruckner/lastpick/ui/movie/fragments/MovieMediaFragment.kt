@@ -51,7 +51,8 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
     }
 
     override fun updateColor(color: Int) {
-
+        viewMoreTrailers.setTextColor(color)
+        viewMoreImages.setTextColor(color)
     }
 
     fun updateView() {

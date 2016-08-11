@@ -1,6 +1,7 @@
 package joebruckner.lastpick.ui.movie.adapters
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +21,9 @@ class ImageAdapter @Inject constructor(
 
     init {
         val workList = mutableListOf<Int>()
-        with (context.resources) {
-            workList.add(getColor(R.color.material_grey_800, null))
-            workList.add(getColor(R.color.material_grey_850, null))
-            workList.add(getColor(R.color.material_grey_900, null))
-        }
+        workList.add(ContextCompat.getColor(context, R.color.material_grey_800))
+        workList.add(ContextCompat.getColor(context, R.color.material_grey_850))
+        workList.add(ContextCompat.getColor(context, R.color.material_grey_900))
         backgrounds = workList.toList()
     }
 

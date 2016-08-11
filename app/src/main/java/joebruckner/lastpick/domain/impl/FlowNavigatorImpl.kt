@@ -4,15 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import joebruckner.lastpick.R
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.model.ListType
 import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.home.HomeActivity
 import joebruckner.lastpick.ui.movie.MovieActivity
-import joebruckner.lastpick.ui.image.ImageFragment
 import joebruckner.lastpick.ui.specials.SpecialsActivity
-import joebruckner.lastpick.utils.replaceFrame
 import javax.inject.Inject
 
 class FlowNavigatorImpl @Inject constructor(
@@ -63,9 +60,5 @@ class FlowNavigatorImpl @Inject constructor(
 
     override fun showAbout() {
         activity.startActivity(Intent(activity, AboutActivity::class.java))
-    }
-
-    override fun showImage(url: String) {
-        activity.replaceFrame(R.id.frame, ImageFragment.newInstance(url), true)
     }
 }

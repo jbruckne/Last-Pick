@@ -1,12 +1,14 @@
 package joebruckner.lastpick.widgets
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
-import android.widget.Switch
 import android.widget.TextView
 import com.appyvet.rangebar.RangeBar
 import joebruckner.lastpick.R
@@ -18,6 +20,7 @@ import joebruckner.lastpick.utils.find
 class FilterSheetDialogBuilder(
         val context: Context,
         val filter: Filter,
+        val color: Int = Color.WHITE,
         val listener: (Filter) -> Unit
 ) {
     fun create(): BottomSheetDialog {
@@ -27,11 +30,15 @@ class FilterSheetDialogBuilder(
                 .inflate(R.layout.sheet_filter, null)
 
         // Set up genre picker
-        val switchAll = sheetView.find<Switch>(R.id.switch_all)
+        val switchAll = sheetView.find<SwitchCompat>(R.id.switch_all)
+        switchAll.thumbTintList = ColorStateList.valueOf(color)
+        switchAll.trackTintList = ColorStateList.valueOf(color)
         switchAll.isChecked = filter.showAll
         val recyclerView = sheetView.find<RecyclerView>(R.id.genres)
         val layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.HORIZONTAL)
-        val adapter = GenreAdapter(filter.genresToBooleanArray()) { switchAll.isChecked = false }
+        val adapter = GenreAdapter(filter.genresToBooleanArray(), color) {
+            switchAll.isChecked = false
+        }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
@@ -39,6 +46,8 @@ class FilterSheetDialogBuilder(
         val rangeBar = sheetView.find<RangeBar>(R.id.years)
         val gteText = sheetView.find<TextView>(R.id.year_gte)
         val lteText = sheetView.find<TextView>(R.id.year_lte)
+        rangeBar.setConnectingLineColor(color)
+        rangeBar.setSelectorColor(color)
         gteText.text = filter.yearGte
         lteText.text = filter.yearLte
         rangeBar.setRangePinsByValue(

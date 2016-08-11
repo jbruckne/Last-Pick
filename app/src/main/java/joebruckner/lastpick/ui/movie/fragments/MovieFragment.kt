@@ -1,9 +1,11 @@
 package joebruckner.lastpick.ui.movie.fragments
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.ContentLoadingProgressBar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -33,8 +35,8 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
     @Inject lateinit var presenter: MovieContract.Presenter
 
     // Views
-    val viewPager: ViewPager  get() = find(R.id.view_pager)
-    val loading: View       get() = find(R.id.loading)
+    val viewPager: ViewPager get() = find(R.id.view_pager)
+    val loading: ContentLoadingProgressBar get() = find(R.id.loading)
     val error: View         get() = find(R.id.error)
     val errorText: TextView get() = find(R.id.error_message)
     val errorButton: Button get() = find(R.id.error_button)
@@ -140,6 +142,7 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 ALPHA_FULL
         ) { theme ->
             if (activity != null) parent.setAccent(theme.getAccentColor())
+            loading.indeterminateDrawable.setColorFilter(theme.getAccentColor(), PorterDuff.Mode.MULTIPLY)
             presenter.setColor(theme.getAccentColor())
         }
         poster.setOnClickListener {
