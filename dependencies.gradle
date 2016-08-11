@@ -32,7 +32,8 @@ ext {
             'de.hdodenhof:circleimageview:2.1.0',
             'com.appyvet:materialrangebar:1.3',
             'com.github.paolorotolo:appintro:4.0.0',
-            'com.github.deano2390:MaterialShowcaseView:1.1.0'
+            'com.github.deano2390:MaterialShowcaseView:1.1.0',
+            'it.sephiroth.android.library.imagezoom:imagezoom:+'
     ]
     other = [
             'com.github.bumptech.glide:glide:3.6.1',

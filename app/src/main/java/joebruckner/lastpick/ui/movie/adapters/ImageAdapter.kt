@@ -14,7 +14,7 @@ import javax.inject.Named
 class ImageAdapter @Inject constructor(
         @Named("Activity") val context: Context
 ) : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
-    var listener: ((Image) -> Unit)? = null
+    var listener: ((Image, ImageView) -> Unit)? = null
     private var images: List<Image> = emptyList()
     private val backgrounds: List<Int>
 
@@ -35,6 +35,7 @@ class ImageAdapter @Inject constructor(
             else if (backdrops.size > i/2) list.add(backdrops[i / 2])
             else break
         }
+        if (images == list.toList()) return
         images = list.toList()
         notifyDataSetChanged()
     }
@@ -49,7 +50,7 @@ class ImageAdapter @Inject constructor(
         val image = images[position]
         holder.image.load(context, image.fullPath())
         holder.image.setBackgroundColor(backgrounds.shuffle().first())
-        holder.view.setOnClickListener { listener?.invoke(image) }
+        holder.view.setOnClickListener { listener?.invoke(image, holder.image) }
     }
 
     override fun getItemViewType(position: Int): Int {

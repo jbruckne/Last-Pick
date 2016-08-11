@@ -11,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import joebruckner.lastpick.widgets.PaletteTheme
 import joebruckner.lastpick.widgets.SimpleRequestListener
 import java.util.*
@@ -48,8 +51,24 @@ fun View.visibleIf(bool: Boolean) {
     this.visibility = if (bool) View.VISIBLE else View.GONE
 }
 
-fun ImageView.load(context: Context, path: String) {
-    Glide.with(context).load(path).centerCrop().into(this)
+fun ImageView.load(context: Context, path: String,
+                   success: (GlideDrawable) -> Unit = {},
+                   error: (Exception) -> Unit = {}
+) {
+    Glide.with(context).load(path).listener(object: RequestListener<String, GlideDrawable> {
+        override fun onException(e: Exception, model: String?, target: Target<GlideDrawable>?,
+                                 isFirstResource: Boolean): Boolean {
+            error.invoke(e)
+            return false
+        }
+
+        override fun onResourceReady(resource: GlideDrawable, model: String?,
+                                     target: Target<GlideDrawable>?, isFromMemoryCache: Boolean,
+                                     isFirstResource: Boolean): Boolean {
+            success.invoke(resource)
+            return false
+        }
+    }).into(this)
 }
 
 fun ImageView.loadWithPalette(context: Context, path: String, duration: Long, alpha: Float,

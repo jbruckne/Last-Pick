@@ -1,7 +1,7 @@
 package joebruckner.lastpick
 
-import android.app.Activity
 import android.content.Context
+import android.support.v7.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
 import joebruckner.lastpick.domain.FlowNavigator
@@ -9,11 +9,11 @@ import joebruckner.lastpick.domain.impl.FlowNavigatorImpl
 import javax.inject.Named
 
 @Module
-class ActivityModule(val activity: Activity) {
+class ActivityModule(val activity: AppCompatActivity) {
 
     @Provides
     @ActivityScope
-    fun provideActivity(): Activity {
+    fun provideActivity(): AppCompatActivity {
         return activity
     }
 

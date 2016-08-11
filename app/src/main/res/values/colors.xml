@@ -302,4 +302,6 @@
 
     <color name="primary_dark_grey">#1F2328</color>
 
+    <color name="black_overlay">#66000000</color>
+
 </resources>

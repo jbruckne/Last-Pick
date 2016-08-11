@@ -34,17 +34,15 @@ data class Movie(
         val sources: List<Source>
 ) {
 
-    fun getFullPosterPath(): String = imageUrl + POSTER_SIZE + posterPath
+    fun getFullPosterPath(): String = imageUrl + posterPath
 
-    fun getFullBackdropPath(): String = imageUrl + BACKDROP_SIZE + backdropPath
+    fun getFullBackdropPath(): String = imageUrl + backdropPath
 
     companion object {
         val rottenTomatoesUrl="https://www.rottentomatoes.com/m/"
         val theMovieDatabaseUrl = "http://www.themoviedb.com/movie/"
         val youtubeUrl = "https://www.youtube.com/watch?v="
-        val imageUrl = "http://image.tmdb.org/t/p/"
-        val BACKDROP_SIZE = "w1280"
-        val POSTER_SIZE = "w342"
+        val imageUrl = "http://image.tmdb.org/t/p/original"
 
         fun createMovie(tmdb: TmdbMovie, guidebox: GuideboxMovie?): Movie {
             val sources = guidebox?.let {

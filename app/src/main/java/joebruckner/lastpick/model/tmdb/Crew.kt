@@ -13,5 +13,5 @@ data class Crew(
         @SerializedName("profile_path")
         val profilePath: String
 ) {
-        fun getFullProfilePath() = Movie.imageUrl + Movie.POSTER_SIZE + profilePath
+        fun getFullProfilePath() = Movie.imageUrl + profilePath
 }

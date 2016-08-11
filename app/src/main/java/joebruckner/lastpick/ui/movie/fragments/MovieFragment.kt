@@ -8,33 +8,32 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import it.sephiroth.android.library.imagezoom.ImageViewTouch
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.ui.movie.MovieContract
 import joebruckner.lastpick.ui.movie.adapters.MovieDetailsPagerAdapter
-import joebruckner.lastpick.utils.consume
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.loadWithPalette
-import joebruckner.lastpick.utils.visibleIf
+import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
 import javax.inject.Inject
 
 class MovieFragment() : BaseFragment(), MovieContract.View {
-    // Overridden properties
+    // Properties
     override val layoutId = R.layout.fragment_movie
     override var state = State.LOADING
 
-    // Injected objects
+    // Objects
     lateinit var pagerAdapter: MovieDetailsPagerAdapter
     @Inject lateinit var presenter: MovieContract.Presenter
 
     // Views
-    val content: ViewPager  get() = find(R.id.view_pager)
+    val viewPager: ViewPager  get() = find(R.id.view_pager)
     val loading: View       get() = find(R.id.loading)
     val error: View         get() = find(R.id.error)
     val errorText: TextView get() = find(R.id.error_message)
@@ -86,9 +85,9 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 parent.appBar?.setExpanded(false, true)
             }
             State.CONTENT -> {
-                showMovie(presenter.getCurrentMovie())
+                showMovie(presenter.getMovie())
                 if (isDiscoveryMode) parent.enableFab()
-                parent.appBar?.setExpanded(true, true)
+                if (!isConfigChange) parent.appBar?.setExpanded(true, true)
             }
             State.ERROR -> {
                 clearMovie()
@@ -101,7 +100,7 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
 
         // Set visibility of views
         titleArea.visibleIf(state == State.CONTENT)
-        content.visibleIf(state == State.CONTENT)
+        viewPager.visibleIf(state == State.CONTENT)
         loading.visibleIf(state == State.LOADING)
         error.visibleIf(state == State.ERROR)
 
@@ -129,6 +128,9 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 movie.getFullBackdropPath(),
                 IN_DURATION, ALPHA_HALF
         ) {}
+        backdrop.setOnClickListener {
+            presenter.onImageClicked(movie.getFullBackdropPath())
+        }
 
         // Load poster
         poster.loadWithPalette(
@@ -139,6 +141,9 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         ) { theme ->
             if (activity != null) parent.setAccent(theme.getAccentColor())
             presenter.setColor(theme.getAccentColor())
+        }
+        poster.setOnClickListener {
+            presenter.onImageClicked(movie.getFullPosterPath())
         }
 
         // Set movie details
@@ -163,9 +168,41 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         view?.let { Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show() }
     }
 
+    override fun showImage(imageUrl: String) {
+        val layout = activity
+                .layoutInflater
+                .inflate(R.layout.fragment_image, viewRoot, false) as ViewGroup
+        viewRoot.addView(layout)
+        val fullscreenImage = layout.find<ImageViewTouch>(R.id.fullscreen_image)
+        fullscreenImage.load(context, imageUrl)
+        fullscreenImage.setSingleTapListener {
+            presenter.onImageDismissed()
+        }
+    }
+
+    override fun removeImage() {
+        val layout = viewRoot.find<View>(R.id.fullscreen_container)
+        viewRoot.removeView(layout)
+    }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        pagerAdapter = MovieDetailsPagerAdapter(childFragmentManager)
+        viewPager.adapter = pagerAdapter
+        parent.tabLayout?.let { layout ->
+            viewPager.currentItem = layout.selectedTabPosition
+            layout.setupWithViewPager(viewPager)
+            viewPager.clearOnPageChangeListeners()
+            viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(layout))
+            layout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(tab: TabLayout.Tab) { }
+                override fun onTabUnselected(tab: TabLayout.Tab) { }
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    if (getView() == null) return
+                    viewPager.setCurrentItem(tab.position, true)
+                }
+            })
+        }
     }
 
     override fun onStart() {
@@ -183,29 +220,13 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
 
         if (!isFirstStart) return
 
-        // Set up tabs
-        parent.tabLayout?.let { layout ->
-            pagerAdapter = MovieDetailsPagerAdapter(childFragmentManager)
-            content.adapter = pagerAdapter
-            layout.setupWithViewPager(content)
-            content.clearOnPageChangeListeners()
-            content.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(layout))
-            layout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab) { }
-                override fun onTabUnselected(tab: TabLayout.Tab) { }
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    content.setCurrentItem(tab.position, true)
-                }
-            })
-        }
-
         // Initialization of presenter
         presenter.attachView(this)
 
         // Load correct type of movie
         if (isConfigChange) presenter.reloadMovie()
-        else if (providedMovieId > 0) presenter.getMovieById(providedMovieId)
-        else presenter.getNextMovie()
+        else if (providedMovieId > 0) presenter.onMovieClicked(providedMovieId)
+        else presenter.onRandomClicked()
     }
 
     override fun onResume() {
@@ -231,18 +252,26 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_filter -> consume { showFilterSettings() }
-        R.id.action_bookmark -> consume { presenter.updateBookmark() }
-        R.id.action_share -> consume { presenter.shareMovie() }
+        R.id.action_bookmark -> consume { presenter.onBookmarkToggled() }
+        R.id.action_share -> consume { presenter.onShareClicked() }
         else -> super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed(): Boolean {
+        if (activity.findViewById(R.id.fullscreen_container) != null) {
+            presenter.onImageDismissed()
+            return true
+        }
+        return false
+    }
+
     fun callForUpdate() {
-        presenter.getNextMovie()
+        presenter.onRandomClicked()
     }
 
     fun showFilterSettings() {
         FilterSheetDialogBuilder(context, presenter.getFilter()) {
-            presenter.updateFilter(it)
+            presenter.onFilterDismissed(it)
         }
         .create()
         .show()

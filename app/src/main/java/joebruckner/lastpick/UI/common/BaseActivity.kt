@@ -144,4 +144,11 @@ abstract class BaseActivity : AppCompatActivity() {
     open fun inject(fragment: Fragment) {
         throw Exception("$logTag cannot inject ${fragment.javaClass.simpleName}")
     }
+
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is BackPressListener && it.onBackPressed()) return
+        }
+        super.onBackPressed()
+    }
 }

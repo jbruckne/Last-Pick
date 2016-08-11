@@ -22,5 +22,5 @@ data class Cast(
         return text.toString()
     }
 
-    fun getFullProfilePath() = Movie.imageUrl + Movie.POSTER_SIZE + profilePath
+    fun getFullProfilePath() = Movie.imageUrl + profilePath
 }

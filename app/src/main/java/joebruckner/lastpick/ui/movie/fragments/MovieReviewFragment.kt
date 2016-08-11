@@ -27,13 +27,13 @@ class MovieReviewFragment : BaseFragment(), MovieContract.Subview {
     override fun onStart() {
         super.onStart()
         rottenTomatoes.setOnClickListener {
-            presenter.readReviews(ReviewSource.ROTTEN_TOMATOES)
+            presenter.onReviewSourceClicked(ReviewSource.ROTTEN_TOMATOES)
         }
         metacritic.setOnClickListener {
-            presenter.readReviews(ReviewSource.METACRITIC)
+            presenter.onReviewSourceClicked(ReviewSource.METACRITIC)
         }
         themoviedb.setOnClickListener {
-            presenter.readReviews(ReviewSource.THEMOVIEDB)
+            presenter.onReviewSourceClicked(ReviewSource.THEMOVIEDB)
         }
         presenter.addSubview(this)
     }
@@ -51,8 +51,8 @@ class MovieReviewFragment : BaseFragment(), MovieContract.Subview {
 
     fun updateView() {
         if (view == null || activity == null) return
-        rating.text = "${presenter.getCurrentMovie()?.voteAverage ?: '-' }/10"
-        rottenTomatoes.visibleIf(presenter.getCurrentMovie()?.rottenTomatoesId != null)
-        metacritic.visibleIf(presenter.getCurrentMovie()?.metacriticLink != null)
+        rating.text = "${presenter.getMovie()?.voteAverage ?: '-' }/10"
+        rottenTomatoes.visibleIf(presenter.getMovie()?.rottenTomatoesId != null)
+        metacritic.visibleIf(presenter.getMovie()?.metacriticLink != null)
     }
 }

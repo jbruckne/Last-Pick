@@ -8,6 +8,7 @@ import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.ReviewSource
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.tmdb.Image
 import joebruckner.lastpick.model.tmdb.Video
 import joebruckner.lastpick.ui.movie.MovieContract.Subview
 import joebruckner.lastpick.ui.movie.MovieContract.View
@@ -28,11 +29,13 @@ class MoviePresenter @Inject constructor(
     private var color: Int? = null
     private var id: Int? = null
     private var filter = Filter()
+    private var image: String? = null
 
     private fun viewIsLoading(): Boolean = view?.state == State.LOADING
 
     override fun attachView(view: View) {
         this.view = view
+        image?.let { view.showImage(it) }
     }
 
     override fun detachView() {
@@ -64,7 +67,7 @@ class MoviePresenter @Inject constructor(
                 })
     }
 
-    override fun getNextMovie() {
+    override fun onRandomClicked() {
         this.id = null
         view?.showLoading()
         movieInteractor
@@ -79,7 +82,7 @@ class MoviePresenter @Inject constructor(
         logger.logRandomViewed(filter, (movieInteractor as MovieInteractorImpl).count)
     }
 
-    override fun getMovieById(id: Int) {
+    override fun onMovieClicked(id: Int) {
         this.id = id
         view?.showLoading()
         movieInteractor
@@ -93,17 +96,17 @@ class MoviePresenter @Inject constructor(
                 })
     }
 
-    override fun shareMovie() {
+    override fun onShareClicked() {
         navigator.share(Movie.theMovieDatabaseUrl + movie?.id, "Check out this movie!")
         movie?.let { logger.logMovieShared(it) }
     }
 
-    override fun viewSource(source: Source) {
+    override fun onSourceClicked(source: Source) {
         navigator.view(source.link)
         movie?.let { logger.logSourceViewed(it, source) }
     }
 
-    override fun readReviews(source: ReviewSource) {
+    override fun onReviewSourceClicked(source: ReviewSource) {
         when (source) {
             ReviewSource.ROTTEN_TOMATOES -> {
                 movie?.rottenTomatoesId?.let {
@@ -123,12 +126,22 @@ class MoviePresenter @Inject constructor(
         }
     }
 
-    override fun watchVideo(video: Video) {
+    override fun onTrailerClicked(video: Video) {
         navigator.view(video.getTrailerUrl())
         movie?.let { logger.logVideoViewed(it, video) }
     }
 
-    override fun setMovie(movie: Movie) {
+    override fun onImageClicked(imageUrl: String) {
+        this.image = imageUrl
+        view?.showImage(imageUrl)
+    }
+
+    override fun onImageDismissed() {
+        this.image = null
+        view?.removeImage()
+    }
+
+    fun setMovie(movie: Movie) {
         logger.logMovieLoaded(movie)
         this.movie = movie
         showMovie()
@@ -156,20 +169,20 @@ class MoviePresenter @Inject constructor(
             MovieInteractor.OUT_OF_SUGGESTIONS -> {
                 view?.showError("Oops! We've run out of movies to suggest.", "Reshow movies") {
                     movieInteractor.resetMovieSuggestions()
-                    getNextMovie()
+                    onRandomClicked()
                 }
             }
             else -> {
                 view?.showError("Oops! Ran into some connection issues", "Try again") {
                     if (reload == true) reloadMovie()
-                    else if (id != null) getMovieById(id!!)
-                    else getNextMovie()
+                    else if (id != null) onMovieClicked(id!!)
+                    else onRandomClicked()
                 }
             }
         }
     }
 
-    override fun updateBookmark() {
+    override fun onBookmarkToggled() {
         movie?.let {
             if (getBookmarkStatus()) {
                 bookmarkInteractor.removeBookmark(it)
@@ -184,7 +197,7 @@ class MoviePresenter @Inject constructor(
         }
     }
 
-    override fun updateFilter(filter: Filter) {
+    override fun onFilterDismissed(filter: Filter) {
         this.filter = filter
         logger.logFilterChange(filter)
     }
@@ -193,5 +206,5 @@ class MoviePresenter @Inject constructor(
 
     override fun getBookmarkStatus() = bookmarkInteractor.isMovieBookmarked(movie!!)
 
-    override fun getCurrentMovie() = movie
+    override fun getMovie() = movie
 }

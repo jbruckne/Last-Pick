@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import joebruckner.lastpick.R
+import joebruckner.lastpick.utils.find
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), BackPressListener {
     open val menuId: Int = R.menu.menu_empty
     abstract val layoutId: Int
     lateinit var parent: BaseActivity
     protected var isFirstStart = true
+    val logTag: String = javaClass.simpleName
 
-    val logTag = javaClass.simpleName
+    val viewRoot by lazy { activity.find<ViewGroup>(android.R.id.content) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,6 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        findViews()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -45,8 +46,10 @@ abstract class BaseFragment : Fragment() {
         isFirstStart = false
     }
 
-    /*
-     * Do all view initialization here. Called in onViewCreated.
-     */
-    open fun findViews() {}
+    override fun onBackPressed(): Boolean {
+        childFragmentManager.fragments?.forEach {
+            if (it is BackPressListener && it.onBackPressed()) return true
+        }
+        return false
+    }
 }

@@ -26,7 +26,7 @@ class CondensedMovie (
         @SerializedName("vote_count")
         val voteCount: Int
 ) {
-        fun getFullPosterPath(): String = Movie.imageUrl + Movie.POSTER_SIZE + posterPath
+        fun getFullPosterPath(): String = Movie.imageUrl + posterPath
 
-        fun getFullBackdropPath(): String = Movie.imageUrl + Movie.BACKDROP_SIZE + backdropPath
+        fun getFullBackdropPath(): String = Movie.imageUrl + backdropPath
 }

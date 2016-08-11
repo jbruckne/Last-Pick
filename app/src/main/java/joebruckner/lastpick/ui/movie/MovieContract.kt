@@ -15,19 +15,20 @@ class MovieContract {
         fun addSubview(subview: Subview)
         fun removeSubview(subview: Subview)
         fun reloadMovie()
-        fun getNextMovie()
-        fun getMovieById(id: Int)
-        fun shareMovie()
-        fun watchVideo(video: Video)
-        fun readReviews(source: ReviewSource)
-        fun viewSource(source: Source)
-        fun setMovie(movie: Movie)
+        fun onRandomClicked()
+        fun onMovieClicked(id: Int)
+        fun onShareClicked()
+        fun onTrailerClicked(video: Video)
+        fun onImageClicked(imageUrl: String)
+        fun onImageDismissed()
+        fun onReviewSourceClicked(source: ReviewSource)
+        fun onSourceClicked(source: Source)
         fun setColor(color: Int)
-        fun updateFilter(filter: Filter)
+        fun onFilterDismissed(filter: Filter)
         fun getFilter(): Filter
-        fun updateBookmark()
+        fun onBookmarkToggled()
         fun getBookmarkStatus(): Boolean
-        fun getCurrentMovie(): Movie?
+        fun getMovie(): Movie?
     }
 
     interface View {
@@ -37,6 +38,8 @@ class MovieContract {
         fun showError(errorMessage: String, errorButtonMessage: String, f: () -> Unit)
         fun setBookmark(isBookmarked: Boolean)
         fun showSnackbar(message: String)
+        fun showImage(imageUrl: String)
+        fun removeImage()
     }
 
     interface Subview {

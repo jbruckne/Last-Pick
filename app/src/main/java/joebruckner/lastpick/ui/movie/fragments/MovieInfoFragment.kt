@@ -31,7 +31,7 @@ class MovieInfoFragment() : BaseFragment(), MovieContract.Subview {
 
     fun updateView() {
         if (view == null || activity == null) return
-        presenter.getCurrentMovie()?.let {
+        presenter.getMovie()?.let {
             overview.text = it.overview
             tagline.visibleIf(!it.tagline.isNullOrBlank())
             tagline.text = it.tagline
@@ -58,7 +58,7 @@ class MovieInfoFragment() : BaseFragment(), MovieContract.Subview {
     override fun onStart() {
         super.onStart()
         Log.d("Info", "Started")
-        sourceAdapter.listener = { presenter.viewSource(it) }
+        sourceAdapter.listener = { presenter.onSourceClicked(it) }
         castList.adapter = creditsAdapter
         sourceList.adapter = sourceAdapter
         presenter.addSubview(this)

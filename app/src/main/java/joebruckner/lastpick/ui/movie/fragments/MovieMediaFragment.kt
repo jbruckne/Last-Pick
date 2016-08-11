@@ -1,6 +1,5 @@
 package joebruckner.lastpick.ui.movie.fragments
 
-import android.support.v7.widget.OrientationHelper
 import android.support.v7.widget.RecyclerView
 import android.widget.Button
 import joebruckner.lastpick.R
@@ -10,9 +9,8 @@ import joebruckner.lastpick.ui.movie.MovieContract
 import joebruckner.lastpick.ui.movie.adapters.ImageAdapter
 import joebruckner.lastpick.ui.movie.adapters.TrailerAdapter
 import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.shuffle
+import joebruckner.lastpick.utils.fullPath
 import joebruckner.lastpick.utils.visibleIf
-import joebruckner.lastpick.widgets.StaticGridLayoutManager
 import javax.inject.Inject
 
 class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
@@ -23,7 +21,6 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
     @Inject lateinit var presenter: MovieContract.Presenter
     @Inject lateinit var trailerAdapter: TrailerAdapter
     @Inject lateinit var imageAdapter: ImageAdapter
-    val gridLayoutManager = StaticGridLayoutManager(2, OrientationHelper.HORIZONTAL)
 
     // Views
     val trailerList: RecyclerView get() = find(R.id.trailer_list)
@@ -34,10 +31,12 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
     override fun onStart() {
         super.onStart()
         trailerAdapter.listener = { video ->
-            presenter.watchVideo(video)
+            presenter.onTrailerClicked(video)
         }
         trailerList.adapter = trailerAdapter
-        imageList.layoutManager = gridLayoutManager
+        imageAdapter.listener = { image, view ->
+            presenter.onImageClicked(image.fullPath())
+        }
         imageList.adapter = imageAdapter
         presenter.addSubview(this)
     }
@@ -57,16 +56,16 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
 
     fun updateView() {
         if (view == null || activity == null) return
-        presenter.getCurrentMovie()?.let {
+        presenter.getMovie()?.let {
             trailerAdapter.videos = it.videos
-            imageAdapter.setNewItems(it.posters.shuffle(), it.backdrops.shuffle())
+            imageAdapter.setNewItems(it.posters, it.backdrops)
         }
         viewMoreImages.visibleIf(
-                presenter.getCurrentMovie()?.posters?.isNotEmpty() ?: false ||
-                presenter.getCurrentMovie()?.backdrops?.isNotEmpty() ?: false
+                presenter.getMovie()?.posters?.isNotEmpty() ?: false ||
+                presenter.getMovie()?.backdrops?.isNotEmpty() ?: false
         )
         viewMoreTrailers.visibleIf(
-                presenter.getCurrentMovie()?.videos?.isNotEmpty() ?: false
+                presenter.getMovie()?.videos?.isNotEmpty() ?: false
         )
     }
 }
