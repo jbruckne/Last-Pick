@@ -1,34 +1,35 @@
 package joebruckner.lastpick.ui.home
 
-import android.content.Intent
-import android.net.Uri
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.ui.about.AboutActivity
+import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.ui.home.bookmark.BookmarkFragment
 import joebruckner.lastpick.ui.home.history.HistoryFragment
 import joebruckner.lastpick.ui.home.landing.LandingFragment
-import joebruckner.lastpick.ui.intro.IntroActivity
-import joebruckner.lastpick.ui.movie.MovieActivity
 import joebruckner.lastpick.utils.consume
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.replaceFrame
 import joebruckner.lastpick.utils.setHomeAsUpEnabled
-import jonathanfinerty.once.Once
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 
 class HomeActivity : BaseActivity() {
+    // Parameters
     override val layoutId = R.layout.activity_home
     override var menuId = R.menu.menu_home
 
+    // Objects
+    lateinit var navigator: FlowNavigator
+
+    // Views
     val drawerLayout by lazy { find<DrawerLayout>(R.id.drawer_layout) }
     val navigationView by lazy { find<NavigationView>(R.id.navigation_view) }
 
@@ -40,28 +41,35 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        navigator = component.getNavigator()
 
+        /*
         if (!Once.beenDone(Once.THIS_APP_INSTALL, "onboarding")) {
             startActivity(Intent(this, IntroActivity::class.java))
             Once.markDone("onboarding")
         }
+        */
 
         replaceFrame(R.id.frame, LandingFragment(), false)
         setupNavDrawer()
 
-        if (!Once.beenDone(Once.THIS_APP_VERSION, "showcase")) {
+        //if (!Once.beenDone(Once.THIS_APP_VERSION, "showcase")) {
             setupShowcase()
-        }
+        //}
+        fab?.setOnClickListener { navigator.showRandom() }
     }
 
     fun setupShowcase() {
-        val sequence = MaterialShowcaseSequence(this, "4815")
+        val sequence = MaterialShowcaseSequence(this)
+        val accent = ContextCompat.getColor(this, R.color.md_teal_A700)
+        val color = ColorStateList.valueOf(accent).withAlpha(225).defaultColor
         sequence.addSequenceItem(
                 MaterialShowcaseView.Builder(this)
                         .setTarget(fab)
-                        .setContentText("Click this to shuffle the movie results")
+                        .setContentText("Click the die to get a random movie suggestion.")
                         .setDismissText("GOT IT")
-                        .setShapePadding(20)
+                        .setShapePadding(40)
+                        .setMaskColour(color)
                         .setDelay(1000)
                         .build()
         )
@@ -103,11 +111,11 @@ class HomeActivity : BaseActivity() {
                     title = "Bookmarks"
                 }
                 R.id.action_send_feedback -> {
-                    sendFeedback()
+                    navigator.sendFeedback()
                     false
                 }
                 R.id.action_about -> {
-                    startActivity(Intent(this, AboutActivity::class.java))
+                    navigator.showAbout()
                     false
                 }
                 else -> false
@@ -115,44 +123,23 @@ class HomeActivity : BaseActivity() {
         }
     }
 
-    fun sendFeedback() {
-        val send = Intent(Intent.ACTION_SENDTO)
-        val uriText = "mailto:" + Uri.encode("joebrucknerdev@gmail.com") +
-                "?subject=" + Uri.encode("Feedback")
-        val uri = Uri.parse(uriText)
-        send.data = uri
-        startActivity(Intent.createChooser(send, "Send Feedback..."))
-    }
-
     fun setupHomePage() {
-        isThemeLocked = false
         menuId = R.menu.menu_home
         supportInvalidateOptionsMenu()
-        enableFab()
     }
 
     fun setupDefaultPage() {
-        resetTheme()
-        isThemeLocked = true
         menuId = R.menu.menu_empty
         supportInvalidateOptionsMenu()
-        appBar?.setExpanded(false, false)
-        disableFab()
     }
 
-    override fun onStart() {
-        super.onStart()
-        fab?.setOnClickListener {
-            startActivity(Intent(this, MovieActivity::class.java))
-        }
-    }
-
-    override fun inject(fragment: Fragment) {
-        when (fragment) {
-            is LandingFragment -> component.inject(fragment)
-            is HistoryFragment -> component.inject(fragment)
-            is BookmarkFragment -> component.inject(fragment)
-            else -> super.inject(fragment)
+    override fun inject(injectee: Any) {
+        when (injectee) {
+            is HomeActivity -> component.inject(injectee)
+            is LandingFragment -> component.inject(injectee)
+            is HistoryFragment -> component.inject(injectee)
+            is BookmarkFragment -> component.inject(injectee)
+            else -> super.inject(injectee)
         }
     }
 }

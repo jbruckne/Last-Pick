@@ -3,6 +3,7 @@ package joebruckner.lastpick.ui.movie.adapters
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -18,6 +19,13 @@ class ImageAdapter @Inject constructor(
     var listener: ((Image, ImageView) -> Unit)? = null
     private var images: List<Image> = emptyList()
     private val backgrounds: List<Int>
+    var showAll = false
+        set(value) {
+            field = value
+            if (images.size <= 5) return
+            if (value) notifyItemRangeInserted(5, images.size - 5)
+            else notifyItemRangeRemoved(5, images.size - 5)
+        }
 
     init {
         val workList = mutableListOf<Int>()
@@ -28,14 +36,17 @@ class ImageAdapter @Inject constructor(
     }
 
     fun setNewItems(posters: List<Image>, backdrops: List<Image>) {
+        val pList = posters.toMutableList()
+        val bList = backdrops.toMutableList()
         val list: MutableList<Image> = mutableListOf()
-        for (i in 0..4) {
-            if ((i.isEven() || backdrops.size < i/2) && posters.size > i/2) list.add(posters[i / 2])
-            else if (backdrops.size > i/2) list.add(backdrops[i / 2])
-            else break
+        for (i in 0..Math.max(posters.size, backdrops.size)) {
+            when (true) {
+                i.isEven() && pList.size > 0 -> list.add(pList.removeAt(0))
+                else -> if (bList.size > 0) list.add(bList.removeAt(0))
+            }
         }
-        if (images == list.toList()) return
         images = list.toList()
+        Log.d("Images", images.toString())
         notifyDataSetChanged()
     }
 
@@ -43,7 +54,7 @@ class ImageAdapter @Inject constructor(
         return ImageViewHolder(parent.inflate(viewType))
     }
 
-    override fun getItemCount(): Int = images.size
+    override fun getItemCount() = if (showAll) images.size else Math.min(images.size, 5)
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val image = images[position]

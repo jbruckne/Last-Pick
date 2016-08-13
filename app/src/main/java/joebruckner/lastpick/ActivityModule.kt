@@ -4,8 +4,6 @@ import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import dagger.Module
 import dagger.Provides
-import joebruckner.lastpick.domain.FlowNavigator
-import joebruckner.lastpick.domain.impl.FlowNavigatorImpl
 import javax.inject.Named
 
 @Module
@@ -22,12 +20,6 @@ class ActivityModule(val activity: AppCompatActivity) {
     @Named("Activity")
     fun provideContext(): Context {
         return activity
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideFlowNavigator(): FlowNavigator {
-        return FlowNavigatorImpl(activity)
     }
 
 }

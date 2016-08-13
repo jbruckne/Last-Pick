@@ -1,8 +1,8 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.home.history.HistoryFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -12,6 +12,7 @@
         android:paddingBottom="72dp"
         android:clipToPadding="false"
         android:visibility="visible"
+        app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/card_movie_list"
         />
 
@@ -20,7 +21,7 @@
         style="?android:progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:padding="32dp"
         android:visibility="invisible"
         />
@@ -29,7 +30,7 @@
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:padding="32dp"
         android:visibility="invisible"
         />

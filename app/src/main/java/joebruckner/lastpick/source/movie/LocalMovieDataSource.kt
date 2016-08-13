@@ -5,7 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.DatabaseHelper
 import rx.Observable
@@ -49,7 +49,7 @@ class LocalMovieDataSource @Inject constructor(
         throw UnsupportedOperationException("not implemented")
     }
 
-    override fun getSpecialList(type: ListType): Observable<Page> {
+    override fun getSpecialList(type: Showcase): Observable<Page> {
         throw UnsupportedOperationException("not implemented")
     }
 

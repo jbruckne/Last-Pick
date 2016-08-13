@@ -2,31 +2,32 @@ package joebruckner.lastpick.ui.movie.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.utils.find
-import java.util.*
+import joebruckner.lastpick.utils.inflate
+import javax.inject.Inject
+import javax.inject.Named
 
-class MovieAdapter(
-        val context: Context,
-        val layout: Int
+@ActivityScope
+class MovieAdapter @Inject constructor(
+        @Named("Activity") val context: Context
 ): RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
     var movies = listOf<Movie>()
-    var onItemClickListeners = ArrayList<(Int) -> Unit>()
+    var onItemClickListener: ((Int) -> Unit)? = null
 
     override fun getItemCount(): Int {
         return movies.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder? {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(layout, parent, false)
+        val view = parent.inflate(R.layout.card_movie_list)
         return MovieViewHolder(view)
     }
 
@@ -44,12 +45,8 @@ class MovieAdapter(
                 .crossFade()
                 .into(holder.poster)
         holder.view.setOnClickListener {
-            onItemClickListeners.forEach { it.invoke(position) }
+            onItemClickListener?.invoke(position)
         }
-    }
-
-    fun addOnItemClickListener(listener: (Int) -> Unit) {
-        onItemClickListeners.add(listener)
     }
 
     fun setNewMovies(movies: List<Movie>) {

@@ -4,7 +4,7 @@ import android.net.ConnectivityManager
 import android.util.Log
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.model.tmdb.Page
@@ -47,13 +47,13 @@ class NetworkMovieDataSource @Inject constructor(
         )
     }
 
-    override fun getSpecialList(type: ListType): Observable<Page> {
+    override fun getSpecialList(type: Showcase): Observable<Page> {
         if (!isConnected()) return Observable.error(Throwable(CONNECTION_ERROR))
         return when (type) {
-            ListType.POPULAR -> themoviedb.getPopular(MainApp.TMDB_API_KEY)
-            ListType.UPCOMING -> themoviedb.getUpcoming(MainApp.TMDB_API_KEY)
-            ListType.TOP_RATED -> themoviedb.getTopRated(MainApp.TMDB_API_KEY)
-            ListType.NOW_PLAYING -> themoviedb.getNowPlaying(MainApp.TMDB_API_KEY)
+            Showcase.POPULAR -> themoviedb.getPopular(MainApp.TMDB_API_KEY)
+            Showcase.UPCOMING -> themoviedb.getUpcoming(MainApp.TMDB_API_KEY)
+            Showcase.TOP_RATED -> themoviedb.getTopRated(MainApp.TMDB_API_KEY)
+            Showcase.NOW_PLAYING -> themoviedb.getNowPlaying(MainApp.TMDB_API_KEY)
         }
     }
 

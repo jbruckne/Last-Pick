@@ -7,20 +7,25 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.ui.movie.adapters.SourceAdapter.SourceViewHolder
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.inflate
+import javax.inject.Inject
+import javax.inject.Named
 
-class SourceAdapter(val context: Context): RecyclerView.Adapter<SourceViewHolder>() {
-    private val sources: MutableList<Source> = mutableListOf()
+@ActivityScope
+class SourceAdapter @Inject constructor(
+        @Named("Activity") val context: Context
+): RecyclerView.Adapter<SourceViewHolder>() {
+    private var sources: List<Source> = listOf()
     var listener: (Source) -> Unit = {}
 
     fun setNewItems(items: List<Source>?) {
-        if (items == null) return
-        sources.clear()
-        sources.addAll(items)
+        if (items == null || sources.equals(items)) return
+        sources = items
         notifyDataSetChanged()
     }
 

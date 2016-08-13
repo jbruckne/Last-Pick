@@ -18,9 +18,8 @@
             android:paddingBottom="72dp"
             android:clipToPadding="false"
             app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/card_special_list"
+            tools:listitem="@layout/card_showcase"
             />
-
     </RelativeLayout>
 
     <android.support.v4.widget.ContentLoadingProgressBar

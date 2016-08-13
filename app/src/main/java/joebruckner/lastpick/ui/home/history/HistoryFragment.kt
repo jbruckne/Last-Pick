@@ -1,7 +1,7 @@
 package joebruckner.lastpick.ui.home.history
 
 import android.content.Intent
-import android.support.v7.widget.LinearLayoutManager
+import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
@@ -22,7 +22,7 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
 
     // Injected objects
     @Inject lateinit var presenter: HistoryContract.Presenter
-    lateinit var adapter: MovieAdapter
+    @Inject lateinit var adapter: MovieAdapter
 
     // Views
     val content by lazy { find<RecyclerView>(R.id.content) }
@@ -52,18 +52,18 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
         updateViews()
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        content.adapter = adapter
+    }
+
     override fun onStart() {
         super.onStart()
-
-        adapter = MovieAdapter(context, R.layout.card_movie_list)
-        adapter.addOnItemClickListener { position ->
+        adapter.onItemClickListener = { position ->
             val intent = Intent(context, MovieActivity::class.java)
             intent.putExtra("movie", adapter.movies[position].id)
             activity.startActivity(intent)
         }
-
-        content.layoutManager = LinearLayoutManager(activity)
-        content.adapter = adapter
 
         presenter.attachView(this)
         presenter.getHistory()

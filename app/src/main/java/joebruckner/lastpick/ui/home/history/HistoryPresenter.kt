@@ -1,6 +1,7 @@
 package joebruckner.lastpick.ui.home.history
 
 import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.HistoryInteractor
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Movie
@@ -10,7 +11,8 @@ import javax.inject.Inject
 @ActivityScope
 class HistoryPresenter @Inject constructor(
         val movieManager: MovieInteractor,
-        val historyManager: HistoryInteractor
+        val historyManager: HistoryInteractor,
+        val navigator: FlowNavigator
 ): HistoryContract.Presenter {
     private var view: HistoryContract.View? = null
 

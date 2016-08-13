@@ -79,13 +79,13 @@ class MovieActivity : BaseActivity() {
             else -> super.onOptionsItemSelected(item)
     }
 
-    override fun inject(fragment: Fragment) {
-        when (fragment) {
-            is MovieFragment -> component.inject(fragment)
-            is MovieInfoFragment -> component.inject(fragment)
-            is MovieReviewFragment -> component.inject(fragment)
-            is MovieMediaFragment -> component.inject(fragment)
-            else -> super.inject(fragment)
+    override fun inject(injectee: Any) {
+        when (injectee) {
+            is MovieFragment -> component.inject(injectee)
+            is MovieInfoFragment -> component.inject(injectee)
+            is MovieReviewFragment -> component.inject(injectee)
+            is MovieMediaFragment -> component.inject(injectee)
+            else -> super.inject(injectee)
         }
     }
 }

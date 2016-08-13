@@ -1,19 +1,20 @@
 package joebruckner.lastpick.domain.impl
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import joebruckner.lastpick.domain.FlowNavigator
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.ui.about.AboutActivity
 import joebruckner.lastpick.ui.home.HomeActivity
 import joebruckner.lastpick.ui.movie.MovieActivity
 import joebruckner.lastpick.ui.specials.SpecialsActivity
 import javax.inject.Inject
+import javax.inject.Named
 
 class FlowNavigatorImpl @Inject constructor(
-        val activity: AppCompatActivity
+        @Named("Activity") val context: Context
 ): FlowNavigator {
 
     override fun sendFeedback() {
@@ -22,7 +23,7 @@ class FlowNavigatorImpl @Inject constructor(
                 "?subject=" + Uri.encode("Feedback")
         val uri = Uri.parse(uriText)
         send.data = uri
-        activity.startActivity(Intent.createChooser(send, "Send Feedback..."))
+        context.startActivity(Intent.createChooser(send, "Send Feedback..."))
     }
 
     override fun share(url: String, message: String?) {
@@ -30,35 +31,35 @@ class FlowNavigatorImpl @Inject constructor(
         intent.type = "text/plain"
         message?.let { intent.putExtra(Intent.EXTRA_SUBJECT, it) }
         intent.putExtra(Intent.EXTRA_TEXT, url)
-        activity.startActivity(Intent.createChooser(intent, "Share with"))
+        context.startActivity(Intent.createChooser(intent, "Share with"))
     }
 
     override fun view(url: String) {
         Log.d("View", url)
-        activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     override fun showHome() {
-        activity.startActivity(Intent(activity, HomeActivity::class.java))
+        context.startActivity(Intent(context, HomeActivity::class.java))
     }
 
     override fun showRandom() {
-        activity.startActivity(Intent(activity, MovieActivity::class.java))
+        context.startActivity(Intent(context, MovieActivity::class.java))
     }
 
     override fun showMovie(id: Int) {
-        val intent = Intent(activity, MovieActivity::class.java)
+        val intent = Intent(context, MovieActivity::class.java)
         intent.putExtra("movie", id)
-        activity.startActivity(intent)
+        context.startActivity(intent)
     }
 
-    override fun showSpecial(type: ListType) {
-        val intent = Intent(activity, SpecialsActivity::class.java)
+    override fun showSpecial(type: Showcase) {
+        val intent = Intent(context, SpecialsActivity::class.java)
         intent.putExtra("type", type.ordinal)
-        activity.startActivity(intent)
+        context.startActivity(intent)
     }
 
     override fun showAbout() {
-        activity.startActivity(Intent(activity, AboutActivity::class.java))
+        context.startActivity(Intent(context, AboutActivity::class.java))
     }
 }

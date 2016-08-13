@@ -2,13 +2,15 @@ package joebruckner.lastpick.ui.home.bookmark
 
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.BookmarkInteractor
+import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.utils.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope
 class BookmarkPresenter @Inject constructor(
-        val bookmarkManager: BookmarkInteractor
+        val bookmarkManager: BookmarkInteractor,
+        val navigator: FlowNavigator
 ): BookmarkContract.Presenter {
     private var view: BookmarkContract.View? = null
 

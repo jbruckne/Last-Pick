@@ -89,7 +89,7 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
             State.CONTENT -> {
                 showMovie(presenter.getMovie())
                 if (isDiscoveryMode) parent.enableFab()
-                if (!isConfigChange) parent.appBar?.setExpanded(true, true)
+                parent.appBar?.setExpanded(true, true)
             }
             State.ERROR -> {
                 clearMovie()
@@ -142,7 +142,9 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
                 ALPHA_FULL
         ) { theme ->
             if (activity != null) parent.setAccent(theme.getAccentColor())
-            loading.indeterminateDrawable.setColorFilter(theme.getAccentColor(), PorterDuff.Mode.MULTIPLY)
+            loading
+                    .indeterminateDrawable
+                    .setColorFilter(theme.getAccentColor(), PorterDuff.Mode.MULTIPLY)
             presenter.setColor(theme.getAccentColor())
         }
         poster.setOnClickListener {
@@ -150,9 +152,11 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         }
 
         // Set movie details
-        details.text    = "${movie.releaseDate.substring(0..3)} " +
-                "  ${movie.rating}  " +
-                " ${movie.runtime} min"
+        val builder = StringBuilder()
+        builder.append(movie.releaseDate.substring(0..3))
+        movie.rating?.let { builder.append(" $it ") }
+        if (movie.runtime > 0) builder.append(" ${movie.runtime} min")
+        details.text = builder.toString()
 
         // Set genres
         var genreText = ""

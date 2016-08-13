@@ -1,13 +1,15 @@
 package joebruckner.lastpick.ui.home.landing
 
+import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import joebruckner.lastpick.R
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.State
-import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.ui.common.BaseFragment
 import joebruckner.lastpick.ui.movie.MovieActivity
 import joebruckner.lastpick.ui.specials.SpecialsActivity
@@ -22,6 +24,7 @@ class LandingFragment : BaseFragment(), LandingContract.View {
 
     // Injected objects
     @Inject lateinit var presenter: LandingContract.Presenter
+    lateinit var adapter: ShowcaseAdapter
 
     // Views
     val loading: View get() = find(R.id.loading)
@@ -35,19 +38,9 @@ class LandingFragment : BaseFragment(), LandingContract.View {
         error.visibleIf(state == State.ERROR)
     }
 
-    override fun showContent(movies: List<CondensedMovie>) {
+    override fun showContent(movie: SlimMovie, type: Showcase) {
         state = State.CONTENT
-        Log.d(logTag, "Content")
-        val adapter = SpecialListAdapter(context, movies.toTypedArray(), {
-            val intent = Intent(context, MovieActivity::class.java)
-            intent.putExtra("movie", it.id)
-            startActivity(intent)
-        }, {
-            val intent = Intent(context, SpecialsActivity::class.java)
-            intent.putExtra("type", it.ordinal)
-            startActivity(intent)
-        })
-        specialLists.swapAdapter(adapter, true)
+        adapter.addPair(movie, type)
         updateViews()
     }
 
@@ -56,17 +49,34 @@ class LandingFragment : BaseFragment(), LandingContract.View {
         updateViews()
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: String, type: Showcase) {
         state = State.ERROR
         error.text = message
         updateViews()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        adapter = ShowcaseAdapter(context, {
+            val intent = Intent(context, MovieActivity::class.java)
+            intent.putExtra("movie", it.id)
+            startActivity(intent)
+        }, {
+            val intent = Intent(context, SpecialsActivity::class.java)
+            intent.putExtra("type", it.ordinal)
+            startActivity(intent)
+        })
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        specialLists.adapter = adapter
+    }
+
     override fun onStart() {
         super.onStart()
-
         presenter.attachView(this)
-        presenter.loadLists()
+        if (isFirstStart) presenter.loadShowcases()
     }
 
     override fun onPause() {

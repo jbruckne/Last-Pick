@@ -4,8 +4,8 @@ import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.EventLogger
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
-import joebruckner.lastpick.model.ListType
-import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.utils.applySchedulers
 import javax.inject.Inject
 
@@ -25,12 +25,12 @@ class SpecialsPresenter @Inject constructor(
         this.view = null
     }
 
-    override fun getSpecialList(type: ListType) {
+    override fun getSpecialList(type: Showcase) {
         view?.showLoading()
         movieInteractor
                 .getSpecialList(type)
                 .map { it.results }
-                .compose(applySchedulers<List<CondensedMovie>>())
+                .compose(applySchedulers<List<SlimMovie>>())
                 .subscribe ({
                     view?.showContent(it)
                 }, {
@@ -39,7 +39,7 @@ class SpecialsPresenter @Inject constructor(
                 })
     }
 
-    override fun movieSelected(movie: CondensedMovie) {
+    override fun movieSelected(movie: SlimMovie) {
         navigator.showMovie(movie.id)
     }
 }

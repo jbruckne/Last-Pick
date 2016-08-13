@@ -9,23 +9,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        >
 
-        <TextView
-            android:id="@+id/rating"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:gravity="center"
-            android:textSize="34sp"
-            android:textStyle="bold|italic"
-            tools:text="8.6/10"/>
+            android:layout_margin="24dp"
+            android:orientation="horizontal"
+            android:gravity="bottom|center">
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                tools:text="8.6"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rating_threshold"
+                android:layout_gravity="bottom"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/read_reviews"
+            />
 
         <Button
             android:id="@+id/metacritic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:textColor="?attr/colorAccent"
             android:textSize="16sp"
             android:text="@string/metacritic_reviews"
@@ -35,7 +58,6 @@
             android:id="@+id/rotten_tomatoes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:textColor="?attr/colorAccent"
             android:textSize="16sp"
             android:text="@string/rotten_tomatoes_reviews"
@@ -45,7 +67,6 @@
             android:id="@+id/themoviedb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:textColor="?attr/colorAccent"
             android:textSize="16sp"
             android:text="@string/themoviedb_reviews"

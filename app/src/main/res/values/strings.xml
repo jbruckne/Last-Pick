@@ -182,15 +182,19 @@
     <string name="image">image</string>
 
     <string-array name="see_all_button_values">
-        <item>See all popular movies</item>
-        <item>See all now playing movies</item>
-        <item>See all upcoming movies</item>
-        <item>See all top rated movies</item>
+        <item>See all popular worklist</item>
+        <item>See all now playing worklist</item>
+        <item>See all upcoming worklist</item>
+        <item>See all top rated worklist</item>
     </string-array>
 
     <string name="title_activity_image">ImageActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="rating_threshold">/10</string>
+    <string name="read_reviews">Read reviews</string>
+    <string name="trailers">Trailers</string>
+    <string name="images">Images</string>
 
 
 </resources>

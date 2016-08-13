@@ -22,7 +22,7 @@ class BookmarkFragment : BaseFragment(), BookmarkContract.View {
 
     // Injected objects
     @Inject lateinit var presenter: BookmarkContract.Presenter
-    lateinit var adapter: MovieAdapter
+    @Inject lateinit var adapter: MovieAdapter
 
     // Views
     val content: RecyclerView get() = find(R.id.content)
@@ -54,9 +54,7 @@ class BookmarkFragment : BaseFragment(), BookmarkContract.View {
 
     override fun onStart() {
         super.onStart()
-
-        adapter = MovieAdapter(context, R.layout.card_movie_list)
-        adapter.addOnItemClickListener { position ->
+        adapter.onItemClickListener = { position ->
             val intent = Intent(context, MovieActivity::class.java)
             intent.putExtra("movie", adapter.movies[position].id)
             startActivity(intent)

@@ -7,11 +7,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.State
-import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.ui.movie.adapters.CondensedMovieAdapter
+import joebruckner.lastpick.ui.movie.adapters.SlimMovieAdapter
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.visibleIf
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class SpecialsFragment : BaseFragment(), SpecialsContract.View {
     override var state = State.LOADING
 
     @Inject lateinit var presenter: SpecialsContract.Presenter
-    lateinit var adapter: CondensedMovieAdapter
+    lateinit var adapter: SlimMovieAdapter
 
     val content by lazy { find<RecyclerView>(R.id.content) }
     val loading by lazy { find<View>(R.id.loading) }
@@ -33,7 +33,7 @@ class SpecialsFragment : BaseFragment(), SpecialsContract.View {
         error.visibleIf(state == State.ERROR)
     }
 
-    override fun showContent(content: List<CondensedMovie>) {
+    override fun showContent(content: List<SlimMovie>) {
         state = State.CONTENT
         adapter.setNewMovies(content)
         updateViews()
@@ -55,7 +55,7 @@ class SpecialsFragment : BaseFragment(), SpecialsContract.View {
 
         if (!isFirstStart) return
 
-        adapter = CondensedMovieAdapter(context, R.layout.card_movie_list) {
+        adapter = SlimMovieAdapter(context, R.layout.card_movie_list) {
             presenter.movieSelected(it)
         }
 
@@ -63,7 +63,7 @@ class SpecialsFragment : BaseFragment(), SpecialsContract.View {
         content.adapter = adapter
 
         presenter.attachView(this)
-        presenter.getSpecialList(ListType.values()[arguments.getInt("type", 0)])
+        presenter.getSpecialList(Showcase.values()[arguments.getInt("type", 0)])
     }
 
     override fun onResume() {

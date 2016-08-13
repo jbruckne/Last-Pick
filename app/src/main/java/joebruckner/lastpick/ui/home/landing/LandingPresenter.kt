@@ -1,16 +1,17 @@
 package joebruckner.lastpick.ui.home.landing
 
 import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
-import joebruckner.lastpick.model.ListType
-import joebruckner.lastpick.model.tmdb.CondensedMovie
+import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.utils.applySchedulers
-import rx.Observable
 import javax.inject.Inject
 
 @ActivityScope
 class LandingPresenter @Inject constructor(
-        val movieInteractor: MovieInteractor
+        val movieInteractor: MovieInteractor,
+        val navigator: FlowNavigator
 ): LandingContract.Presenter {
     var view: LandingContract.View? = null
 
@@ -22,23 +23,26 @@ class LandingPresenter @Inject constructor(
         this.view = null
     }
 
-    override fun loadLists() {
+    override fun loadShowcases() {
         view?.showLoading()
+        val ids = mutableSetOf<Int>()
+        Showcase.values().forEach { getShowcase(it, ids) }
+    }
 
-        val popular = movieInteractor.getSpecialList(ListType.POPULAR)
-        val now = movieInteractor.getSpecialList(ListType.NOW_PLAYING)
-        val upcoming = movieInteractor.getSpecialList(ListType.UPCOMING)
-        val top = movieInteractor.getSpecialList(ListType.TOP_RATED)
-
-        Observable
-                .merge(popular, now, upcoming, top)
-                .map { it.results.first() }
-                .compose(applySchedulers<CondensedMovie>())
-                .toList()
+    private fun getShowcase(type: Showcase, ids: MutableSet<Int>) {
+        movieInteractor
+                .getSpecialList(type)
+                .flatMapIterable { it.results }
+                .filter { !ids.contains(it.id) }
+                .first()
+                .doOnNext { ids.add(it.id) }
+                .map { Pair(it, type) }
+                .retry(2)
+                .compose(applySchedulers<Pair<SlimMovie, Showcase>>())
                 .subscribe ({
-                    view?.showContent(it)
-                }, { error ->
-                    view?.showError(error.message ?: "Error")
+                    view?.showContent(it.first, it.second)
+                }, {
+                    view?.showError("Failed to load movie", type)
                 })
     }
 }

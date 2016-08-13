@@ -29,7 +29,7 @@ class PaletteTheme(val palette: Palette) {
     private fun chooseAccentSwatch() = when (true) {
         palette.vibrantSwatch       != null -> palette.vibrantSwatch
         palette.lightVibrantSwatch  != null -> palette.lightVibrantSwatch
-        palette.darkVibrantSwatch   != null -> palette.darkVibrantSwatch
+        palette.mutedSwatch         != null -> palette.mutedSwatch
         palette.lightMutedSwatch    != null -> palette.lightMutedSwatch
         else -> palette.swatches.elementAtOrNull(0)
     }

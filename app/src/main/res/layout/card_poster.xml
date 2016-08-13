@@ -6,5 +6,6 @@
     android:layout_height="150dp"
     android:layout_margin="2dp"
     android:background="@color/md_grey_910"
+    android:foreground="?android:selectableItemBackground"
     android:scaleType="centerCrop"
     android:contentDescription="@string/poster" />

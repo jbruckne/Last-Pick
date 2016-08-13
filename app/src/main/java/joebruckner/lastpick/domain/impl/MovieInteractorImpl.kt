@@ -2,7 +2,7 @@ package joebruckner.lastpick.domain.impl
 
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.movie.LocalMovieDataSource
@@ -100,7 +100,7 @@ class MovieInteractorImpl @Inject constructor(
         return Observable.error(Throwable(ERROR_RELOAD))
     }
 
-    override fun getSpecialList(type: ListType): Observable<Page> {
+    override fun getSpecialList(type: Showcase): Observable<Page> {
         return networkMovieSource.getSpecialList(type)
     }
 

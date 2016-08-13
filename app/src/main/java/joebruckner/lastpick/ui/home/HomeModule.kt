@@ -3,6 +3,8 @@ package joebruckner.lastpick.ui.home
 import dagger.Binds
 import dagger.Module
 import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.FlowNavigator
+import joebruckner.lastpick.domain.impl.FlowNavigatorImpl
 import joebruckner.lastpick.ui.home.bookmark.BookmarkContract
 import joebruckner.lastpick.ui.home.bookmark.BookmarkPresenter
 import joebruckner.lastpick.ui.home.history.HistoryContract
@@ -15,6 +17,10 @@ abstract class HomeModule {
 
     @Binds
     @ActivityScope
+    abstract fun bindFlowNavigator(navigator: FlowNavigatorImpl): FlowNavigator
+
+    @Binds
+    @ActivityScope
     abstract fun provideLandingPresenter(presenter: LandingPresenter): LandingContract.Presenter
 
     @Binds
@@ -24,5 +30,4 @@ abstract class HomeModule {
     @Binds
     @ActivityScope
     abstract fun provideBookmarkPresenter(presenter: BookmarkPresenter): BookmarkContract.Presenter
-
 }

@@ -1,6 +1,6 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 
 interface FlowNavigator {
     fun sendFeedback()
@@ -9,6 +9,6 @@ interface FlowNavigator {
     fun showHome()
     fun showRandom()
     fun showMovie(id: Int)
-    fun showSpecial(type: ListType)
+    fun showSpecial(type: Showcase)
     fun showAbout()
 }

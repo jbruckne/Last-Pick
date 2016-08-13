@@ -53,7 +53,7 @@ class MovieReviewFragment : BaseFragment(), MovieContract.Subview {
 
     fun updateView() {
         if (view == null || activity == null) return
-        rating.text = "${presenter.getMovie()?.voteAverage ?: '-' }/10"
+        rating.text = "${presenter.getMovie()?.voteAverage ?: '-' }"
         rottenTomatoes.visibleIf(presenter.getMovie()?.rottenTomatoesId != null)
         metacritic.visibleIf(presenter.getMovie()?.metacriticLink != null)
     }

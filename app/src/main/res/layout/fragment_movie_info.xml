@@ -1,10 +1,76 @@
-<android.support.v4.widget.NestedScrollView
+ <android.support.v4.widget.NestedScrollView
      xmlns:android="http://schemas.android.com/apk/res/android"
      xmlns:tools="http://schemas.android.com/tools"
-     android:id="@+id/nested_scroll_view"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
      android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     tools:context="joebruckner.lastpick.ui.movie.fragments.MovieInfoFragment">
+     android:layout_height="match_parent">
 
-     <include layout="@layout/card_movie_detail" />
-</android.support.v4.widget.NestedScrollView>
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         tools:ignore="RtlSymmetry"
+         tools:targetApi="N">
+
+         <TextView
+             android:id="@+id/tagline"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="16dp"
+             android:padding="16dp"
+             android:gravity="center"
+             android:textSize="18sp"
+             android:textStyle="italic|bold"
+             android:fontFamily="sans-serif-condensed"
+             tools:text="Good vs Evil" />
+
+         <TextView
+             android:id="@+id/overview"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:padding="14dp"
+             android:gravity="center"
+             android:textSize="18sp"
+             tools:text="@string/dummy_summary"
+             />
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:textSize="20sp"
+             android:textStyle="bold"
+             android:text="@string/cast"/>
+
+         <android.support.v7.widget.RecyclerView
+             android:id="@+id/cast_list"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:orientation="vertical"
+             android:clipToPadding="false"
+             android:nestedScrollingEnabled="false"
+             app:layoutManager="LinearLayoutManager"
+             tools:listitem="@layout/card_actor"
+             tools:layout_height="200dp"/>
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:textSize="20sp"
+             android:textStyle="bold"
+             android:text="@string/where_to_watch"/>
+
+         <android.support.v7.widget.RecyclerView
+             android:id="@+id/source_list"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="16dp"
+             android:orientation="vertical"
+             android:clipToPadding="false"
+             android:nestedScrollingEnabled="false"
+             app:layoutManager="LinearLayoutManager"
+             tools:listitem="@layout/card_source" />
+     </LinearLayout>
+ </android.support.v4.widget.NestedScrollView>

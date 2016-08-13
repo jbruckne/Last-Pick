@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fullscreen_container"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -12,8 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:indeterminateTint="@color/md_white_1000"
         style="?android:progressBarStyle"
-        />
+        tools:targetApi="lollipop" />
 
     <it.sephiroth.android.library.imagezoom.ImageViewTouch
         android:id="@+id/fullscreen_image"

@@ -7,15 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.tmdb.Cast
 import joebruckner.lastpick.model.tmdb.Credits
 import joebruckner.lastpick.model.tmdb.Crew
 import joebruckner.lastpick.utils.load
+import javax.inject.Inject
+import javax.inject.Named
 
-class CreditsAdapter(val context: Context): RecyclerView.Adapter<CreditsAdapter.CastViewHolder>() {
+@ActivityScope
+class CreditsAdapter @Inject constructor(
+        @Named("Activity") val context: Context
+): RecyclerView.Adapter<CreditsAdapter.CastViewHolder>() {
     var credits: Credits? = null
         set(value) {
+            if (value == field) return
             field = value
             notifyDataSetChanged()
         }

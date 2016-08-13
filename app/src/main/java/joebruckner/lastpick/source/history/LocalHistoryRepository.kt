@@ -6,9 +6,9 @@ import joebruckner.lastpick.source.DatabaseHelper
 import rx.Observable
 import javax.inject.Inject
 
-class LocalHistoryDataSource @Inject constructor(
+class LocalHistoryRepository @Inject constructor(
         val dbHelper: DatabaseHelper
-): HistoryDataSource {
+): HistoryRepository {
 
     override fun getHistoryEntries(): Observable<List<Int>> {
         return Observable.create<List<Int>> { subscriber ->

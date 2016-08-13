@@ -1,8 +1,8 @@
 package joebruckner.lastpick.ui.movie.fragments
 
-import android.support.v4.widget.NestedScrollView
+import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.view.View
 import android.widget.TextView
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Movie
@@ -20,8 +20,8 @@ class MovieInfoFragment() : BaseFragment(), MovieContract.Subview {
 
     // Objects
     @Inject lateinit var presenter: MovieContract.Presenter
-    val creditsAdapter by lazy { CreditsAdapter(activity) }
-    val sourceAdapter by lazy { SourceAdapter(activity) }
+    @Inject lateinit var creditsAdapter: CreditsAdapter
+    @Inject lateinit var sourceAdapter: SourceAdapter
 
     // Views
     val overview: TextView get() = find(R.id.overview)
@@ -32,9 +32,9 @@ class MovieInfoFragment() : BaseFragment(), MovieContract.Subview {
     fun updateView() {
         if (view == null || activity == null) return
         presenter.getMovie()?.let {
-            overview.text = it.overview
-            tagline.visibleIf(!it.tagline.isNullOrBlank())
+            overview.text = "   ${it.overview}"
             tagline.text = it.tagline
+            tagline.visibleIf(!it.tagline.isNullOrBlank())
             creditsAdapter.credits = it.credits
             sourceAdapter.setNewItems(it.sources)
         }
@@ -50,17 +50,18 @@ class MovieInfoFragment() : BaseFragment(), MovieContract.Subview {
     }
 
     fun scrollToTop() {
-        view?.let {
-            it.find<NestedScrollView>(R.id.nested_scroll_view).scrollTo(0, 0)
-        }
+
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        castList.adapter = creditsAdapter
+        sourceList.adapter = sourceAdapter
+        sourceAdapter.listener = { presenter.onSourceClicked(it) }
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d("Info", "Started")
-        sourceAdapter.listener = { presenter.onSourceClicked(it) }
-        castList.adapter = creditsAdapter
-        sourceList.adapter = sourceAdapter
         presenter.addSubview(this)
     }
 

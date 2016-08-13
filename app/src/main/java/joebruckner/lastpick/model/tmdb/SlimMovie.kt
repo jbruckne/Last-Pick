@@ -3,7 +3,7 @@ package joebruckner.lastpick.model.tmdb
 import com.google.gson.annotations.SerializedName
 import joebruckner.lastpick.model.Movie
 
-class CondensedMovie (
+class SlimMovie(
         val id: Int,
         val title: String,
         val overview: String,
@@ -26,7 +26,6 @@ class CondensedMovie (
         @SerializedName("vote_count")
         val voteCount: Int
 ) {
-        fun getFullPosterPath(): String = Movie.imageUrl + posterPath
-
-        fun getFullBackdropPath(): String = Movie.imageUrl + backdropPath
+    fun getFullPosterPath(): String = Movie.imageUrl + posterPath
+    fun getFullBackdropPath(): String = Movie.imageUrl + backdropPath
 }

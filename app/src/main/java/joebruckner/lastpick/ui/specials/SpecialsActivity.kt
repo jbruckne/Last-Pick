@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.ListType
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.ui.common.BaseActivity
 import joebruckner.lastpick.utils.replaceFrame
 import joebruckner.lastpick.utils.setHomeAsUpEnabled
@@ -24,15 +24,15 @@ class SpecialsActivity : BaseActivity() {
 
         val type = intent.extras.getInt("type", 0)
 
-        title = ListType.values()[type].name
+        title = Showcase.values()[type].title
         setHomeAsUpEnabled(true)
         replaceFrame(R.id.frame, SpecialsFragment.newInstance(type))
     }
 
-    override fun inject(fragment: Fragment) {
-        when (fragment) {
-            is SpecialsFragment -> component.inject(fragment)
-            else -> super.inject(fragment)
+    override fun inject(injectee: Any) {
+        when (injectee) {
+            is SpecialsFragment -> component.inject(injectee)
+            else -> super.inject(injectee)
         }
     }
 }

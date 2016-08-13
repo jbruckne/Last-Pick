@@ -9,28 +9,28 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.tmdb.CondensedMovie
 import joebruckner.lastpick.model.tmdb.Genre
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.utils.find
 
-class CondensedMovieAdapter(
+class SlimMovieAdapter(
         val context: Context,
         val layout: Int,
-        val listener: (CondensedMovie) -> Unit
-): RecyclerView.Adapter<CondensedMovieAdapter.CondensedMovieViewHolder>() {
-    var movies = listOf<CondensedMovie>()
+        val listener: (SlimMovie) -> Unit
+): RecyclerView.Adapter<SlimMovieAdapter.SlimMovieViewHolder>() {
+    var movies = listOf<SlimMovie>()
 
     override fun getItemCount(): Int {
         return movies.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CondensedMovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlimMovieViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(layout, parent, false)
-        return CondensedMovieViewHolder(view)
+        return SlimMovieViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CondensedMovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SlimMovieViewHolder, position: Int) {
         holder.year?.text = movies[position].releaseDate.substring(0..3)
         holder.title.text = movies[position].title
         var genreText = ""
@@ -48,12 +48,12 @@ class CondensedMovieAdapter(
         }
     }
 
-    fun setNewMovies(movies: List<CondensedMovie>) {
+    fun setNewMovies(movies: List<SlimMovie>) {
         this.movies = movies
         notifyDataSetChanged()
     }
 
-    class CondensedMovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class SlimMovieViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val title = view.find<TextView>(R.id.title)
         val genres: TextView? = view.find<TextView>(R.id.genres)
         val year: TextView? = view.find<TextView>(R.id.year)

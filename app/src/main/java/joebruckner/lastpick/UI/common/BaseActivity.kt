@@ -10,9 +10,9 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import joebruckner.lastpick.R
 import joebruckner.lastpick.utils.find
@@ -54,7 +54,6 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
         setSupportActionBar(toolbar)
-
         resetTheme()
     }
 
@@ -141,13 +140,16 @@ abstract class BaseActivity : AppCompatActivity() {
         })
     }
 
-    open fun inject(fragment: Fragment) {
-        throw Exception("$logTag cannot inject ${fragment.javaClass.simpleName}")
+    open fun inject(injectee: Any) {
+        throw Exception("$logTag cannot inject ${injectee.javaClass.simpleName}")
     }
 
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
-            if (it is BackPressListener && it.onBackPressed()) return
+            if (it is BackPressListener && it.onBackPressed()) {
+                Log.d("Back Pressed", "Handled by $it")
+                return
+            }
         }
         super.onBackPressed()
     }
