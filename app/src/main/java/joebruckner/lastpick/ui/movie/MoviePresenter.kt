@@ -141,6 +141,10 @@ class MoviePresenter @Inject constructor(
         view?.removeImage()
     }
 
+    override fun onTopClicked() {
+        subviews.forEach { it.scrollToTop() }
+    }
+
     fun setMovie(movie: Movie) {
         logger.logMovieLoaded(movie)
         this.movie = movie

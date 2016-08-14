@@ -1,7 +1,6 @@
 package joebruckner.lastpick.ui.home.landing
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -11,8 +10,6 @@ import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.ui.common.BaseFragment
-import joebruckner.lastpick.ui.movie.MovieActivity
-import joebruckner.lastpick.ui.specials.SpecialsActivity
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.visibleIf
 import javax.inject.Inject
@@ -57,14 +54,10 @@ class LandingFragment : BaseFragment(), LandingContract.View {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        adapter = ShowcaseAdapter(context, {
-            val intent = Intent(context, MovieActivity::class.java)
-            intent.putExtra("movie", it.id)
-            startActivity(intent)
+        adapter = ShowcaseAdapter(context, { movie, type ->
+            presenter.onMovieClicked(movie, type)
         }, {
-            val intent = Intent(context, SpecialsActivity::class.java)
-            intent.putExtra("type", it.ordinal)
-            startActivity(intent)
+            presenter.onShowcaseClicked(it)
         })
     }
 

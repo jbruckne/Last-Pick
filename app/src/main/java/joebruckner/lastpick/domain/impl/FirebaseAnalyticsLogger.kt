@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import joebruckner.lastpick.domain.EventLogger
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.Filter
+import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.model.tmdb.Video
 import java.util.*
 import javax.inject.Inject
@@ -79,6 +81,21 @@ class FirebaseAnalyticsLogger @Inject constructor(
         params.putString("guidebox", source.source)
         params.putString("time", Date().toString())
         analytics.logEvent("view_source", params)
+    }
+
+    override fun logShowcaseViewed(movie: SlimMovie, type: Showcase) {
+        val params = Bundle()
+        params.putInt("movie_id", movie.id)
+        params.putString("type", type.name)
+        params.putString("time", Date().toString())
+        analytics.logEvent("view_showcase", params)
+    }
+
+    override fun logSpecialListViewed(type: Showcase) {
+        val params = Bundle()
+        params.putString("type", type.name)
+        params.putString("time", Date().toString())
+        analytics.logEvent("view_special_list", params)
     }
 
     override fun logError(error: Throwable) {

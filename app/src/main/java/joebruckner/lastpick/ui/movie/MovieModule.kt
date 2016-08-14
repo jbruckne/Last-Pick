@@ -7,7 +7,7 @@ import dagger.Provides
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.impl.FlowNavigatorImpl
-import joebruckner.lastpick.widgets.GridAutofitLayoutManager
+import joebruckner.lastpick.widgets.GridAutoFitLayoutManager
 
 @Module
 class MovieModule {
@@ -25,8 +25,7 @@ class MovieModule {
     }
 
     @Provides
-    @ActivityScope
     fun provideLayoutManager(): StaggeredGridLayoutManager {
-        return GridAutofitLayoutManager(2, OrientationHelper.HORIZONTAL)
+        return GridAutoFitLayoutManager(2, OrientationHelper.HORIZONTAL)
     }
 }

@@ -1,8 +1,10 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.Filter
+import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.model.tmdb.Video
 
 interface EventLogger {
@@ -13,5 +15,7 @@ interface EventLogger {
     fun logMovieShared(movie: Movie)
     fun logVideoViewed(movie: Movie, video: Video)
     fun logSourceViewed(movie: Movie, source: Source)
+    fun logShowcaseViewed(movie: SlimMovie, type: Showcase)
+    fun logSpecialListViewed(type: Showcase)
     fun logError(error: Throwable)
 }

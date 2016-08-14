@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.movie.fragments
 
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.widget.Button
@@ -72,6 +73,10 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
         viewMoreImages.setTextColor(color)
     }
 
+    override fun scrollToTop() {
+        find<NestedScrollView>(R.id.scroll_view).scrollTo(0, 0)
+    }
+
     fun updateView() {
         if (view == null || activity == null) return
         presenter.getMovie()?.let {
@@ -87,5 +92,7 @@ class MovieMediaFragment : BaseFragment(), MovieContract.Subview {
         val numberOfBackdrops = presenter.getMovie()?.posters?.size ?: 0
         viewMoreImages.visibleIf(numberOfPosters + numberOfBackdrops > 5)
         imagesTitle.visibleIf(numberOfPosters + numberOfBackdrops > 0)
+
+        scrollToTop()
     }
 }

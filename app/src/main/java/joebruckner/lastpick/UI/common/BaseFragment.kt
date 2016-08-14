@@ -16,24 +16,33 @@ abstract class BaseFragment : Fragment(), BackPressListener {
 
     val viewRoot by lazy { activity.find<ViewGroup>(android.R.id.content) }
 
+    val listeners = mutableListOf<FragmentListener>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        //listeners.add(FragmentLifecycleLogger(logTag))
+
+        listeners.forEach { it.onCreate() }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         parent = context as BaseActivity
         parent.inject(this)
+
+        listeners.forEach { it.onAttach() }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        listeners.forEach { it.onCreateView() }
         return inflater.inflate(layoutId, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listeners.forEach { it.onViewCreated() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -41,9 +50,25 @@ abstract class BaseFragment : Fragment(), BackPressListener {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onStart() {
+        super.onStart()
+        listeners.forEach { it.onStart() }
+    }
+
     override fun onResume() {
         super.onResume()
         isFirstStart = false
+        listeners.forEach { it.onResume() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        listeners.forEach { it.onPause() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listeners.forEach { it.onDestroy() }
     }
 
     override fun onBackPressed(): Boolean {

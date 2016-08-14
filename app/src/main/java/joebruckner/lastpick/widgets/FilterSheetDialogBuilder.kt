@@ -15,6 +15,7 @@ import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Filter
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.ui.movie.adapters.GenreAdapter
+import joebruckner.lastpick.utils.darkenColor
 import joebruckner.lastpick.utils.find
 
 class FilterSheetDialogBuilder(
@@ -32,7 +33,7 @@ class FilterSheetDialogBuilder(
         // Set up genre picker
         val switchAll = sheetView.find<SwitchCompat>(R.id.switch_all)
         switchAll.thumbTintList = ColorStateList.valueOf(color)
-        switchAll.trackTintList = ColorStateList.valueOf(color)
+        switchAll.trackTintList = ColorStateList.valueOf(color.darkenColor())
         switchAll.isChecked = filter.showAll
         val recyclerView = sheetView.find<RecyclerView>(R.id.genres)
         val layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.HORIZONTAL)

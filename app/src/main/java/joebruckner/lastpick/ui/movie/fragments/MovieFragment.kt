@@ -2,8 +2,8 @@ package joebruckner.lastpick.ui.movie.fragments
 
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.Snackbar
-import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.util.Log
@@ -25,7 +25,8 @@ import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
 import javax.inject.Inject
 
-class MovieFragment() : BaseFragment(), MovieContract.View {
+class MovieFragment() : BaseFragment(),
+        MovieContract.View, AppBarLayout.OnOffsetChangedListener, ViewPager.OnPageChangeListener {
     // Properties
     override val layoutId = R.layout.fragment_movie
     override var state = State.LOADING
@@ -89,7 +90,8 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
             State.CONTENT -> {
                 showMovie(presenter.getMovie())
                 if (isDiscoveryMode) parent.enableFab()
-                parent.appBar?.setExpanded(true, true)
+                if (!isConfigChange) parent.appBar?.setExpanded(true, true)
+                parent.appBar?.addOnOffsetChangedListener(this)
             }
             State.ERROR -> {
                 clearMovie()
@@ -196,19 +198,19 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         super.onViewCreated(view, savedInstanceState)
         pagerAdapter = MovieDetailsPagerAdapter(childFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.removeOnPageChangeListener(this)
+        viewPager.addOnPageChangeListener(this)
         parent.tabLayout?.let { layout ->
             viewPager.currentItem = layout.selectedTabPosition
             layout.setupWithViewPager(viewPager)
-            viewPager.clearOnPageChangeListeners()
-            viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(layout))
-            layout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab) { }
-                override fun onTabUnselected(tab: TabLayout.Tab) { }
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    if (getView() == null) return
-                    viewPager.setCurrentItem(tab.position, true)
-                }
-            })
+        }
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, offset: Int) {
+        val expansion = Math.abs(offset.toFloat() / appBarLayout.totalScrollRange.toFloat())
+        if (expansion <= 0.2) {
+            presenter.onTopClicked()
+            appBarLayout.removeOnOffsetChangedListener(this)
         }
     }
 
@@ -220,9 +222,6 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         parent.appBar?.addOnOffsetChangedListener { appBarLayout, i ->
             val expansion = Math.abs(i.toFloat() / appBarLayout.totalScrollRange.toFloat())
             parent.supportActionBar?.setDisplayShowTitleEnabled(expansion >= 0.9)
-            childFragmentManager.fragments?.forEach {
-                if (it is MovieInfoFragment) it.scrollToTop()
-            }
         }
 
         if (!isFirstStart) return
@@ -282,6 +281,18 @@ class MovieFragment() : BaseFragment(), MovieContract.View {
         }
         .create()
         .show()
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+        //Log.d(logTag, "State Changed: $state")
+    }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        //Log.d(logTag, "Scrolled: $position, $positionOffset, $positionOffsetPixels")
+    }
+
+    override fun onPageSelected(position: Int) {
+        //Log.d(logTag, "Selected: $position")
     }
 
     companion object {

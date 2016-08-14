@@ -22,6 +22,13 @@ class SourceAdapter @Inject constructor(
 ): RecyclerView.Adapter<SourceViewHolder>() {
     private var sources: List<Source> = listOf()
     var listener: (Source) -> Unit = {}
+    var showAll = false
+        set(value) {
+            field = value
+            if (sources.size < 4) return
+            if (value) notifyItemRangeInserted(4, sources.size - 4)
+            else notifyItemRangeRemoved(4, sources.size - 4)
+        }
 
     fun setNewItems(items: List<Source>?) {
         if (items == null || sources.equals(items)) return
@@ -38,7 +45,7 @@ class SourceAdapter @Inject constructor(
         }
     }
 
-    override fun getItemCount() = sources.size
+    override fun getItemCount() = if (showAll) sources.size else Math.min(sources.size, 4)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceViewHolder {
         return SourceViewHolder(parent.inflate(R.layout.card_source))

@@ -16,7 +16,7 @@ import joebruckner.lastpick.utils.load
 
 class ShowcaseAdapter(
         val context: Context,
-        val showcaseListener: (SlimMovie) -> Unit,
+        val showcaseListener: (SlimMovie, Showcase) -> Unit,
         val viewMoreListener: (Showcase) -> Unit
 ): RecyclerView.Adapter<ShowcaseAdapter.SpecialListViewHolder>() {
     private val showcases = Showcase.values().toList()
@@ -35,13 +35,13 @@ class ShowcaseAdapter(
         val type = showcases[position]
         val movie = movies[type]
         movie?.let {
-            holder.showcaseBackdrop.setOnClickListener { showcaseListener.invoke(movie) }
+            holder.showcaseBackdrop.setOnClickListener { showcaseListener.invoke(movie, type) }
             holder.showcaseBackdrop.load(context, movie.getFullBackdropPath())
             holder.showcaseTitle.text = movie.title
         }
-        holder.showcaseCategory.text = showcases[position].title
+        holder.showcaseCategory.text = type.title
         holder.viewMoreButton.setOnClickListener {
-            viewMoreListener.invoke(showcases[position])
+            viewMoreListener.invoke(type)
         }
     }
 

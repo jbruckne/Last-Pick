@@ -2,8 +2,8 @@ package joebruckner.lastpick.domain.impl
 
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.movie.LocalMovieDataSource
 import joebruckner.lastpick.source.movie.NetworkMovieDataSource
@@ -45,11 +45,7 @@ class MovieInteractorImpl @Inject constructor(
     override fun getMovieSuggestion(filter: Filter): Observable<Movie> {
         if (this.filter != filter) {
             this.filter = filter
-            queryData = null
-            usedPages.clear()
-            usedMovies.clear()
-            unusedPages.clear()
-            unusedMovies.clear()
+            resetMovieSuggestions()
         }
         return getIdWorkingSet(filter)
                 .map { it.minus(blacklist) }
@@ -61,7 +57,7 @@ class MovieInteractorImpl @Inject constructor(
                     count++
                 }
                 .flatMap { getMovie(it) }
-                .retry(2)
+                .retry(1)
     }
 
     private fun getIdWorkingSet(filter: Filter): Observable<List<Int>> {
@@ -81,14 +77,17 @@ class MovieInteractorImpl @Inject constructor(
     }
 
     private fun getPageWorkingSet(filter: Filter): Observable<List<Int>> {
-        return when (true) {
-            unusedPages.isNotEmpty() -> Observable.just(unusedPages)
-            queryData == null -> networkMovieSource
+        return if (unusedPages.isNotEmpty())
+            Observable.just(unusedPages)
+        else if (queryData == null) {
+            networkMovieSource
                     .getPage(1000, filter)
+                    .doOnNext { queryData = it }
                     .flatMapIterable { IntRange(1, it.totalPages).toList() }
                     .doOnNext { unusedPages.addIfNotContained(it) }
                     .toList()
-            else -> Observable.error(Throwable(MovieInteractor.OUT_OF_SUGGESTIONS))
+        } else {
+            Observable.error(Throwable(MovieInteractor.OUT_OF_SUGGESTIONS))
         }
     }
 
@@ -105,8 +104,9 @@ class MovieInteractorImpl @Inject constructor(
     }
 
     override fun resetMovieSuggestions() {
-        unusedPages.addAll(usedMovies)
-        unusedMovies.addAll(usedMovies)
+        queryData = null
+        unusedPages.clear()
+        unusedMovies.clear()
         usedPages.clear()
         usedMovies.clear()
     }

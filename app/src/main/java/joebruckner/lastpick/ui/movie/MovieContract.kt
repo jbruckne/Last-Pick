@@ -23,6 +23,7 @@ class MovieContract {
         fun onImageDismissed()
         fun onReviewSourceClicked(source: ReviewSource)
         fun onSourceClicked(source: Source)
+        fun onTopClicked()
         fun setColor(color: Int)
         fun getColor(): Int
         fun onFilterDismissed(filter: Filter)
@@ -46,5 +47,6 @@ class MovieContract {
     interface Subview {
         fun updateMovie(movie: Movie)
         fun updateColor(color: Int)
+        fun scrollToTop()
     }
 }

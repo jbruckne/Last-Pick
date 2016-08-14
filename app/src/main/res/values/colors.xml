@@ -301,7 +301,8 @@
     <color name="md_blue_grey_900">#263238</color>
 
     <color name="primary_dark_grey">#1F2328</color>
-
+    <color name="primary_grey">#2A363B</color>
+    <color name="accent_blue">#13B8F5</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>

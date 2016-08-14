@@ -1,6 +1,7 @@
 package joebruckner.lastpick.ui.home.landing
 
 import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.domain.EventLogger
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Showcase
@@ -11,7 +12,8 @@ import javax.inject.Inject
 @ActivityScope
 class LandingPresenter @Inject constructor(
         val movieInteractor: MovieInteractor,
-        val navigator: FlowNavigator
+        val navigator: FlowNavigator,
+        val logger: EventLogger
 ): LandingContract.Presenter {
     var view: LandingContract.View? = null
 
@@ -27,6 +29,16 @@ class LandingPresenter @Inject constructor(
         view?.showLoading()
         val ids = mutableSetOf<Int>()
         Showcase.values().forEach { getShowcase(it, ids) }
+    }
+
+    override fun onMovieClicked(movie: SlimMovie, type: Showcase) {
+        navigator.showMovie(movie.id)
+        logger.logShowcaseViewed(movie, type)
+    }
+
+    override fun onShowcaseClicked(type: Showcase) {
+        navigator.showSpecial(type)
+        logger.logSpecialListViewed(type)
     }
 
     private fun getShowcase(type: Showcase, ids: MutableSet<Int>) {

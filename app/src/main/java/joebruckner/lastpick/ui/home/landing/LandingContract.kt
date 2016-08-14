@@ -10,6 +10,8 @@ class LandingContract {
         fun attachView(view: View)
         fun detachView()
         fun loadShowcases()
+        fun onMovieClicked(movie: SlimMovie, type: Showcase)
+        fun onShowcaseClicked(type: Showcase)
     }
 
     interface View {

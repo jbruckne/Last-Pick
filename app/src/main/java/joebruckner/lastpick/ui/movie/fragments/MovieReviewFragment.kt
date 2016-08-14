@@ -1,5 +1,6 @@
 package joebruckner.lastpick.ui.movie.fragments
 
+import android.support.v4.widget.NestedScrollView
 import android.widget.Button
 import android.widget.TextView
 import joebruckner.lastpick.R
@@ -51,10 +52,16 @@ class MovieReviewFragment : BaseFragment(), MovieContract.Subview {
         themoviedb.setTextColor(color)
     }
 
+    override fun scrollToTop() {
+        find<NestedScrollView>(R.id.scroll_view).scrollTo(0, 0)
+    }
+
     fun updateView() {
         if (view == null || activity == null) return
         rating.text = "${presenter.getMovie()?.voteAverage ?: '-' }"
         rottenTomatoes.visibleIf(presenter.getMovie()?.rottenTomatoesId != null)
         metacritic.visibleIf(presenter.getMovie()?.metacriticLink != null)
+
+        scrollToTop()
     }
 }

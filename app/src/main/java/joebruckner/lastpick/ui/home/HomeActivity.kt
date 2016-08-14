@@ -18,6 +18,7 @@ import joebruckner.lastpick.utils.consume
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.replaceFrame
 import joebruckner.lastpick.utils.setHomeAsUpEnabled
+import jonathanfinerty.once.Once
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 
@@ -43,25 +44,19 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         navigator = component.getNavigator()
 
-        /*
-        if (!Once.beenDone(Once.THIS_APP_INSTALL, "onboarding")) {
-            startActivity(Intent(this, IntroActivity::class.java))
-            Once.markDone("onboarding")
-        }
-        */
-
         replaceFrame(R.id.frame, LandingFragment(), false)
         setupNavDrawer()
 
-        //if (!Once.beenDone(Once.THIS_APP_VERSION, "showcase")) {
+        if (!Once.beenDone(Once.THIS_APP_VERSION, "showcase")) {
+            Once.markDone("showcase")
             setupShowcase()
-        //}
+        }
         fab?.setOnClickListener { navigator.showRandom() }
     }
 
     fun setupShowcase() {
-        val sequence = MaterialShowcaseSequence(this)
-        val accent = ContextCompat.getColor(this, R.color.md_teal_A700)
+        val sequence = MaterialShowcaseSequence(this, "4815")
+        val accent = ContextCompat.getColor(this, R.color.accent_blue)
         val color = ColorStateList.valueOf(accent).withAlpha(225).defaultColor
         sequence.addSequenceItem(
                 MaterialShowcaseView.Builder(this)
