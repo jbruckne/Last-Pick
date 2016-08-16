@@ -6,6 +6,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.ContentLoadingProgressBar
+import android.support.v7.widget.AppCompatDrawableManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -249,10 +250,8 @@ class MovieFragment() : BaseFragment(),
         super.onPrepareOptionsMenu(menu)
         try {
             val bookmark = menu.findItem(R.id.action_bookmark)
-            bookmark?.setIcon(
-                    if (presenter.getBookmarkStatus()) R.drawable.ic_bookmark_24dp
-                    else R.drawable.ic_bookmark_outline_24dp
-            )
+            bookmark?.icon = if (presenter.getBookmarkStatus()) AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_24dp)
+            else AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_outline_24dp)
         } catch (e: Exception) {}
     }
 

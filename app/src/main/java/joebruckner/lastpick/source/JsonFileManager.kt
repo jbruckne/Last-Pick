@@ -3,23 +3,27 @@ package joebruckner.lastpick.source
 import android.content.Context
 import com.google.gson.Gson
 import java.io.File
-import java.io.FileInputStream
+import java.io.FileReader
+import javax.inject.Inject
+import javax.inject.Named
 
-class JsonFileManager(val context: Context, val gson: Gson = Gson()) {
+class JsonFileManager @Inject constructor(
+        @Named("Application") val context: Context,
+        val gson: Gson = Gson()
+) {
 
     inline fun <reified T: Any> load(fileName: String): T? {
-        val input = l(fileName) ?: return null
-        val json = input.reader().readText()
+        val json = l(fileName) ?: return null
         return gson.fromJson(json, T::class.java)
     }
 
-    fun l(f: String): FileInputStream? {
+    fun l(f: String): String? {
         val file = File(context.filesDir, f)
         if (!file.exists()) {
             context.openFileOutput(f, Context.MODE_PRIVATE).close()
         }
         try {
-            val input = FileInputStream(file)
+            val input = FileReader(file).readText()
             return input
         } catch (e: Exception) {
             e.printStackTrace()

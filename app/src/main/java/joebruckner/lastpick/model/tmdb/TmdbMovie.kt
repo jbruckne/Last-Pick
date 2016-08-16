@@ -35,6 +35,6 @@ data class TmdbMovie(
         @SerializedName("vote_count")
         val voteCount: Int,
         val videos: Video.ListWrapper,
-        val images: Image.ListWrapper,
+        val images: Image.ListWrapper?,
         val releases: Release.ListWrapper
 )

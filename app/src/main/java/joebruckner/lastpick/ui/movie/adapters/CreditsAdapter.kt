@@ -1,6 +1,7 @@
 package joebruckner.lastpick.ui.movie.adapters
 
 import android.content.Context
+import android.support.v7.widget.AppCompatDrawableManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,9 @@ class CreditsAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: CastViewHolder, position: Int) {
+        holder.profilePicture.background = AppCompatDrawableManager
+                .get()
+                .getDrawable(context, R.drawable.ic_account_circle)
         if (position == 0 && credits?.getDirector() != null) {
             val crew = credits!!.crew[0]
             holder.name.text = crew.name

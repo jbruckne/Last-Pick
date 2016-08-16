@@ -4,13 +4,21 @@ import android.content.ContentValues
 import android.util.Log
 import com.google.gson.Gson
 import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.tmdb.TmdbMovie
 import joebruckner.lastpick.source.DatabaseHelper
+import joebruckner.lastpick.source.JsonFileManager
 import rx.Observable
 import javax.inject.Inject
 
 class LocalBookmarkDataSource @Inject constructor(
-        val dbHelper: DatabaseHelper
+        val dbHelper: DatabaseHelper,
+        jsonFileManager: JsonFileManager
 ): BookmarkDataSource {
+
+    init {
+        val legacyBookmarks = jsonFileManager.load<Array<TmdbMovie>>("bookmarks")
+        legacyBookmarks?.forEach { saveBookmarkEntry(Movie.createMovie(it, null)) }
+    }
 
     override fun getBookmarkEntries(): Observable<List<Movie>> {
         return Observable.create<List<Movie>> { subscriber ->
