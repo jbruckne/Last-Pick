@@ -9,7 +9,6 @@
         android:layout_height="240dp"
         android:contentDescription="@string/backdrop"
         android:scaleType="centerCrop"
-        android:fitsSystemWindows="true"
         android:foreground="?android:selectableItemBackground"
         app:layout_collapseMode="parallax"
         tools:background="@color/md_grey_700" />

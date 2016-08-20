@@ -1,5 +1,5 @@
 ext {
-    support = '24.1.0'
+    support = '24.2.0'
     retrofit = '2.1.0'
     firebase = '9.4.0'
     dagger = '2.6'

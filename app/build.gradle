@@ -19,8 +19,8 @@ android {
         applicationId "joebruckner.lastpick"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 14
-        versionName "1.4.3"
+        versionCode 16
+        versionName "1.4.5"
         vectorDrawables.useSupportLibrary = true
     }
     compileOptions {
@@ -55,6 +55,12 @@ kapt {
     generateStubs = true
 }
 
+repositories {
+    maven {
+        url "https://dl.bintray.com/jbruckne/maven"
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile support
@@ -70,4 +76,5 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
     compile "me.henrytao:smooth-app-bar-layout:24.1.1.0"
+    compile "com.joebruckner.androidbase:androidbase:1.1.0"
 }

@@ -1,18 +1,18 @@
 package joebruckner.lastpick.ui.about
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.widget.TextView
+import com.joebruckner.androidbase.BaseActivity
 import joebruckner.lastpick.R
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : BaseActivity() {
+    override val layoutId = R.layout.activity_about
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)

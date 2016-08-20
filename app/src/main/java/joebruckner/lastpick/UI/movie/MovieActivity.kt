@@ -1,10 +1,11 @@
 package joebruckner.lastpick.ui.movie
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
@@ -31,6 +32,13 @@ class MovieActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+            )
+        }
 
         val id: Int?
         if (Intent.ACTION_VIEW == intent.action)
