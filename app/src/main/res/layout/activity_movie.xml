@@ -25,9 +25,12 @@
             app:titleEnabled="false"
             >
 
-            <include
-                layout="@layout/header_movie"
-                />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true">
+                <include layout="@layout/header_movie"/>
+            </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

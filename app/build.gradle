@@ -8,7 +8,7 @@ android {
     signingConfigs {
         config {
             keyAlias 'lastpick'
-            storeFile file('/Users/joebruckner/Documents/android.jks')
+            storeFile file('/Users/joebruckner/Drive/Keystores/android.jks')
             storePassword '826lastp49'
             keyPassword '826lastp49'
         }
@@ -75,6 +75,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger"
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
-    compile "me.henrytao:smooth-app-bar-layout:24.1.1.0"
-    compile "com.joebruckner.androidbase:androidbase:1.1.0"
+    compile 'com.joebruckner.androidbase:androidbase:1.1.0'
+    compile 'com.firebase:firebase-client-android:2.3.1'
 }
