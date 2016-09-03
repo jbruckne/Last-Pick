@@ -1,13 +1,16 @@
-package joebruckner.lastpick.ui
+package joebruckner.lastpick.view
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import com.joebruckner.androidbase.BaseActivity
 import joebruckner.lastpick.R
+import joebruckner.lastpick.utils.replaceFrame
 
-class TestActivity : AppCompatActivity() {
+class TestActivity : BaseActivity() {
+    override val layoutId = R.layout.activity_movie_tabs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test_scrolling)
+
+        replaceFrame(R.id.frame, TestFragment())
     }
 }

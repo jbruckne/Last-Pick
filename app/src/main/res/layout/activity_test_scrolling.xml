@@ -56,7 +56,7 @@
 
         <fragment
             android:id="@+id/test"
-            android:name="joebruckner.lastpick.ui.TestFragment"
+            android:name="joebruckner.lastpick.view.TestFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_test_scrolling" />

@@ -1,19 +1,10 @@
-package joebruckner.lastpick.ui
+package joebruckner.lastpick.view
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import com.joebruckner.androidbase.BaseFragment
 import joebruckner.lastpick.R
-import joebruckner.lastpick.utils.find
 
-class TestFragment: Fragment() {
+class TestFragment: BaseFragment() {
+    override val layoutId = R.layout.fragment_movie_view_pager
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_movie_info, container, false)
-        view.find<TextView>(R.id.overview).text = StringBuilder().padStart(1000, 'J').toString()
-        return view
-    }
+
 }
