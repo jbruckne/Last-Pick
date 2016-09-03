@@ -44,6 +44,9 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //startActivity(Intent(this, TestActivity::class.java))
+
         navigator = component.getNavigator()
 
         startActivity(Intent(this, TestActivity::class.java))
