@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="joebruckner.lastpick.ui.about.AboutActivity">
+    tools:context="joebruckner.lastpick.view.about.AboutActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"

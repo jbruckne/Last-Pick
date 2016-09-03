@@ -2,12 +2,12 @@ package joebruckner.lastpick
 
 import dagger.Component
 import joebruckner.lastpick.domain.DomainModule
-import joebruckner.lastpick.ui.home.HomeActivity
-import joebruckner.lastpick.ui.home.HomeComponent
-import joebruckner.lastpick.ui.movie.MovieActivity
-import joebruckner.lastpick.ui.movie.MovieComponent
-import joebruckner.lastpick.ui.specials.SpecialsActivity
-import joebruckner.lastpick.ui.specials.SpecialsComponent
+import joebruckner.lastpick.view.home.HomeActivity
+import joebruckner.lastpick.view.home.HomeComponent
+import joebruckner.lastpick.view.movie.MovieActivity
+import joebruckner.lastpick.view.movie.MovieComponent
+import joebruckner.lastpick.view.specials.SpecialsActivity
+import joebruckner.lastpick.view.specials.SpecialsComponent
 import javax.inject.Singleton
 
 @Singleton

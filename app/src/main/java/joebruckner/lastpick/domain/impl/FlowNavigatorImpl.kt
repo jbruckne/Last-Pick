@@ -6,10 +6,10 @@ import android.net.Uri
 import android.util.Log
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.model.Showcase
-import joebruckner.lastpick.ui.about.AboutActivity
-import joebruckner.lastpick.ui.home.HomeActivity
-import joebruckner.lastpick.ui.movie.MovieActivity
-import joebruckner.lastpick.ui.specials.SpecialsActivity
+import joebruckner.lastpick.view.about.AboutActivity
+import joebruckner.lastpick.view.home.HomeActivity
+import joebruckner.lastpick.view.movie.MovieActivity
+import joebruckner.lastpick.view.specials.SpecialsActivity
 import javax.inject.Inject
 import javax.inject.Named
 

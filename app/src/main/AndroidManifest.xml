@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".view.home.HomeActivity"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,21 +21,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.intro.IntroActivity"
+            android:name=".view.intro.IntroActivity"
             android:label="App Intro" />
         <activity
-            android:name=".ui.about.AboutActivity"
-            android:parentActivityName=".ui.home.HomeActivity" >
+            android:name=".view.about.AboutActivity"
+            android:parentActivityName=".view.home.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.HomeActivity" />
+                android:value=".view.home.HomeActivity" />
         </activity>
         <activity
-            android:name=".ui.movie.MovieActivity"
-            android:parentActivityName=".ui.home.HomeActivity" >
+            android:name=".view.movie.MovieActivity"
+            android:parentActivityName=".view.home.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.HomeActivity" />
+                android:value=".view.home.HomeActivity" />
 
             <intent-filter android:autoVerify="true" >
                 <action android:name="android.intent.action.VIEW" />
@@ -52,14 +52,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.specials.SpecialsActivity"
+            android:name=".view.specials.SpecialsActivity"
             android:label="@string/specials"
-            android:parentActivityName=".ui.home.HomeActivity" >
+            android:parentActivityName=".view.home.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="joebruckner.lastpick.ui.home.HomeActivity" />
+                android:value=".view.home.HomeActivity" />
         </activity>
-        <activity android:name=".ui.TestActivity" >
+        <activity android:name=".view.TestActivity" >
         </activity>
     </application>
 

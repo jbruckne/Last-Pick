@@ -14,7 +14,7 @@ import com.appyvet.rangebar.RangeBar
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Filter
 import joebruckner.lastpick.model.tmdb.Genre
-import joebruckner.lastpick.ui.movie.adapters.GenreAdapter
+import joebruckner.lastpick.view.movie.adapters.GenreAdapter
 import joebruckner.lastpick.utils.darkenColor
 import joebruckner.lastpick.utils.find
 
