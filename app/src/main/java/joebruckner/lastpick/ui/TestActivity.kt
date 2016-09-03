@@ -1,16 +1,13 @@
 package joebruckner.lastpick.ui
 
 import android.os.Bundle
-import com.joebruckner.androidbase.BaseActivity
+import android.support.v7.app.AppCompatActivity
 import joebruckner.lastpick.R
-import joebruckner.lastpick.utils.replaceFrame
 
-class TestActivity : BaseActivity() {
-    override val layoutId = R.layout.activity_test
+class TestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        replaceFrame(R.id.frame, TestFragment())
+        setContentView(R.layout.activity_test_scrolling)
     }
 }

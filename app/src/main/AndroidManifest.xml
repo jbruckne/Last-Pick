@@ -59,7 +59,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="joebruckner.lastpick.ui.home.HomeActivity" />
         </activity>
-        <activity android:name=".view.TestActivity" >
+        <activity android:name=".ui.TestActivity" >
         </activity>
     </application>
 

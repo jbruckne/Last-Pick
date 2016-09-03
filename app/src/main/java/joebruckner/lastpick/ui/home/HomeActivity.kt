@@ -1,6 +1,5 @@
 package joebruckner.lastpick.ui.home
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -19,7 +18,6 @@ import joebruckner.lastpick.utils.consume
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.replaceFrame
 import joebruckner.lastpick.utils.setHomeAsUpEnabled
-import joebruckner.lastpick.view.TestActivity
 import jonathanfinerty.once.Once
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
@@ -44,12 +42,7 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //startActivity(Intent(this, TestActivity::class.java))
-
         navigator = component.getNavigator()
-
-        startActivity(Intent(this, TestActivity::class.java))
 
         replaceFrame(R.id.frame, LandingFragment(), false)
         setupNavDrawer()
