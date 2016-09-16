@@ -6,12 +6,14 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/dependencies.gradle"
 
 android {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
     signingConfigs {
         config {
-            keyAlias 'lastpick'
-            storeFile file('/Users/joebruckner/Drive/Keystores/android.jks')
-            storePassword '826lastp49'
-            keyPassword '826lastp49'
+            keyAlias properties.getProperty('signing.keyAlias')
+            storeFile file(properties.getProperty('signing.storeFile'))
+            storePassword properties.getProperty('signing.storePassword')
+            keyPassword properties.getProperty('signing.keyPassword')
         }
     }
     compileSdkVersion 24
@@ -36,7 +38,6 @@ android {
             minifyEnabled false
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            signingConfig signingConfigs.config
         }
         release {
             minifyEnabled false
