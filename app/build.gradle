@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 apply from: "$rootDir/dependencies.gradle"
@@ -14,7 +15,7 @@ android {
         }
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "joebruckner.lastpick"
         minSdkVersion 19
@@ -26,6 +27,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+        incremental = false
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -48,6 +50,9 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
     return true
 }
 
@@ -59,6 +64,8 @@ repositories {
     maven {
         url "https://dl.bintray.com/jbruckne/maven"
     }
+    maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
+    mavenCentral()
 }
 
 dependencies {
@@ -75,6 +82,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger"
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.joebruckner.androidbase:androidbase:1.1.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
 }
