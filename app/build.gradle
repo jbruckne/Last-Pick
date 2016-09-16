@@ -6,16 +6,6 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/dependencies.gradle"
 
 android {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    signingConfigs {
-        config {
-            keyAlias properties.getProperty('signing.keyAlias')
-            storeFile file(properties.getProperty('signing.storeFile'))
-            storePassword properties.getProperty('signing.storePassword')
-            keyPassword properties.getProperty('signing.keyPassword')
-        }
-    }
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
@@ -43,6 +33,18 @@ android {
             minifyEnabled false
             proguardFile 'proguard-rules.pro'
             applicationIdSuffix ".release"
+
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            signingConfigs {
+                config {
+                    keyAlias properties.getProperty('signing.keyAlias')
+                    storeFile file(properties.getProperty('signing.storeFile'))
+                    storePassword properties.getProperty('signing.storePassword')
+                    keyPassword properties.getProperty('signing.keyPassword')
+                }
+            }
+
             signingConfig signingConfigs.config
         }
     }
