@@ -114,6 +114,10 @@ class HomeActivity : BaseActivity() {
                     navigator.showAbout()
                     false
                 }
+                id.action_login -> {
+                    navigator.showLogin()
+                    false
+                }
                 else -> false
             }
         }

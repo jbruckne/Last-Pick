@@ -11,4 +11,5 @@ interface FlowNavigator {
     fun showMovie(id: Int)
     fun showSpecial(type: Showcase)
     fun showAbout()
+    fun showLogin()
 }

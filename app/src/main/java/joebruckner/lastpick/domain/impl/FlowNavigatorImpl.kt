@@ -1,9 +1,13 @@
 package joebruckner.lastpick.domain.impl
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
+import joebruckner.lastpick.R
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.view.about.AboutActivity
@@ -61,5 +65,21 @@ class FlowNavigatorImpl @Inject constructor(
 
     override fun showAbout() {
         context.startActivity(Intent(context, AboutActivity::class.java))
+    }
+
+    override fun showLogin() {
+        val auth = FirebaseAuth.getInstance()
+        if (auth.currentUser == null) {
+            val intent = AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setIsSmartLockEnabled(false)
+                    .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
+                    .setLogo(R.mipmap.ic_launcher)
+                    .build()
+            (context as Activity).startActivityForResult(intent, 42)
+        } else {
+            AuthUI.getInstance().signOut(context as Activity)
+        }
+        //context.startActivity(Intent(context, LoginActivity::class.java))
     }
 }

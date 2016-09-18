@@ -1,5 +1,5 @@
 ext {
-    support_version = '24.2.0'
+    support_version = '24.2.1'
     retrofit = '2.1.0'
     firebase_version = '9.4.0'
     dagger = '2.6'
@@ -11,17 +11,18 @@ ext {
             "com.android.support:design:$support_version",
             "com.android.support:recyclerview-v7:$support_version",
             "com.android.support:cardview-v7:$support_version",
-            "com.android.support:palette-v7:$support_version",
-            "com.android.support:support-v4:$support_version"
+            "com.android.support:palette-v7:$support_version"
     ]
     firebase = [
-            "com.google.firebase:firebase-core:$firebase_version"
+            "com.google.firebase:firebase-core:$firebase_version",
+            "com.google.firebase:firebase-auth:$firebase_version"
+    ]
+    play = [
     ]
     square = [
             "com.squareup.retrofit2:retrofit:$retrofit",
             "com.squareup.retrofit2:adapter-rxjava:$retrofit",
             "com.squareup.retrofit2:converter-gson:$retrofit",
-            'com.squareup:otto:1.3.8',
             'com.squareup.okhttp3:okhttp:3.3.1'
     ]
     rx = [
