@@ -12,7 +12,7 @@ import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.tmdb.Video
 import joebruckner.lastpick.view.movie.MovieContract.Subview
 import joebruckner.lastpick.view.movie.MovieContract.View
-import joebruckner.lastpick.utils.applySchedulers
+import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope

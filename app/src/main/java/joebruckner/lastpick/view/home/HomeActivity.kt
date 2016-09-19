@@ -6,15 +6,14 @@ import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.widget.ImageView
+import android.widget.TextView
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.R.*
 import joebruckner.lastpick.domain.FlowNavigator
-import joebruckner.lastpick.utils.consume
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.replaceFrame
-import joebruckner.lastpick.utils.setHomeAsUpEnabled
+import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.view.common.BaseActivity
 import joebruckner.lastpick.view.home.bookmark.BookmarkFragment
 import joebruckner.lastpick.view.home.history.HistoryFragment
@@ -23,13 +22,14 @@ import jonathanfinerty.once.Once
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView.Builder
 
-class HomeActivity : BaseActivity() {
+class HomeActivity : BaseActivity(), HomeContract.View {
     // Parameters
     override val layoutId = layout.activity_home
     override var menuId = R.menu.menu_home
 
     // Objects
     lateinit var navigator: FlowNavigator
+    lateinit var presenter: HomeContract.Presenter
 
     // Views
     val drawerLayout by lazy { find<DrawerLayout>(id.drawer_layout) }
@@ -44,6 +44,7 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         navigator = component.getNavigator()
+        presenter = component.getHomePresenter()
 
         replaceFrame(id.frame, LandingFragment(), false)
         setupNavDrawer()
@@ -72,9 +73,35 @@ class HomeActivity : BaseActivity() {
         sequence.start()
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+    }
+
     override fun onResume() {
         super.onResume()
         drawerLayout.closeDrawers()
+        presenter.onResume()
+    }
+
+    override fun onStop() {
+        presenter.onDetach()
+        super.onStop()
+    }
+
+    override fun showLoggedIn(name: String, email: String, profilePic: String) {
+        navigationView.menu.findItem(R.id.action_login).title = "Logout"
+        navigationView.removeHeaderView(navigationView.getHeaderView(0))
+        val header = navigationView.inflateHeaderView(R.layout.header_nav_logged_in)
+        header.find<TextView>(R.id.account_name).text = name
+        header.find<TextView>(R.id.account_email).text = email
+        header.find<ImageView>(R.id.account_image).load(this, profilePic)
+    }
+
+    override fun showLoggedOut() {
+        navigationView.menu.findItem(R.id.action_login).title = "Login"
+        navigationView.removeHeaderView(navigationView.getHeaderView(0))
+        navigationView.inflateHeaderView(R.layout.header_nav_logged_out)
     }
 
     fun setupNavDrawer() {
@@ -115,7 +142,7 @@ class HomeActivity : BaseActivity() {
                     false
                 }
                 id.action_login -> {
-                    navigator.showLogin()
+                    presenter.onAccountStatusToggled()
                     false
                 }
                 else -> false

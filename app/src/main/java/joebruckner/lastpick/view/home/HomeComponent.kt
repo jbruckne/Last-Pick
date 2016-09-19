@@ -4,7 +4,6 @@ import dagger.Subcomponent
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.FlowNavigator
-import joebruckner.lastpick.view.home.HomeModule
 import joebruckner.lastpick.view.home.bookmark.BookmarkFragment
 import joebruckner.lastpick.view.home.history.HistoryFragment
 import joebruckner.lastpick.view.home.landing.LandingFragment
@@ -21,4 +20,5 @@ interface HomeComponent {
     fun inject(fragment: BookmarkFragment)
 
     fun getNavigator(): FlowNavigator
+    fun getHomePresenter(): HomePresenter
 }

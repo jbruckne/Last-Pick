@@ -39,8 +39,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/ic_account_circle"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="38dp"
-        tools:ignore="RtlHardcoded"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="38dp"/>
 
 </RelativeLayout>

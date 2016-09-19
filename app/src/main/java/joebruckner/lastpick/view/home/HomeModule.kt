@@ -9,7 +9,7 @@ import joebruckner.lastpick.view.home.bookmark.BookmarkContract
 import joebruckner.lastpick.view.home.bookmark.BookmarkPresenter
 import joebruckner.lastpick.view.home.history.HistoryContract
 import joebruckner.lastpick.view.home.history.HistoryPresenter
-import joebruckner.lastpick.view.home.landing.LandingContract.Presenter
+import joebruckner.lastpick.view.home.landing.LandingContract
 import joebruckner.lastpick.view.home.landing.LandingPresenter
 
 @Module
@@ -21,7 +21,11 @@ abstract class HomeModule {
 
     @Binds
     @ActivityScope
-    abstract fun provideLandingPresenter(presenter: LandingPresenter): Presenter
+    abstract fun bindHomePresenter(presenter: HomePresenter): HomeContract.Presenter
+
+    @Binds
+    @ActivityScope
+    abstract fun provideLandingPresenter(presenter: LandingPresenter): LandingContract.Presenter
 
     @Binds
     @ActivityScope

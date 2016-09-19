@@ -4,7 +4,7 @@ import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.BookmarkInteractor
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.utils.applySchedulers
+import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope

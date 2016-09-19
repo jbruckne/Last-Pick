@@ -8,50 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:998304593010:android:3d832909dca94281",
-        "android_client_info": {
-          "package_name": "joebruckner.lastpick"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "998304593010-ee8vper7a9n6o1ujahrl1fgltap9d3dq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "joebruckner.lastpick",
-            "certificate_hash": "338ECAB4AF56D698C184CC11FCA84AFB2226BE9A"
-          }
-        },
-        {
-          "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBqD0AmaniXOFWInpxI4b8JBmkr1943OV8"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "998304593010-fhm9e5mu1oh49131vvrt2ov30heeta50.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:998304593010:android:8bb49544329ec320",
         "android_client_info": {
           "package_name": "joebruckner.lastpick.debug"
@@ -102,6 +58,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "998304593010-3k4c4dnu4m8efqd9tucdqifv7n7jcj2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "joebruckner.lastpick.release",
+            "certificate_hash": "7945E77585C11E6F7D2E32826B47D1B18AB76E0E"
+          }
+        },
         {
           "client_id": "998304593010-hrulilu8lvmcctj3kudpg2mdisnqa3m0.apps.googleusercontent.com",
           "client_type": 1,

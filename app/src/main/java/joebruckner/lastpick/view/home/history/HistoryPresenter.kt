@@ -5,7 +5,7 @@ import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.HistoryInteractor
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.utils.applySchedulers
+import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope

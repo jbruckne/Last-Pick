@@ -73,10 +73,10 @@ class FlowNavigatorImpl @Inject constructor(
             val intent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
-                    .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
+                    .setProviders(AuthUI.GOOGLE_PROVIDER)
                     .setLogo(R.mipmap.ic_launcher)
                     .build()
-            (context as Activity).startActivityForResult(intent, 42)
+            (context as Activity).startActivityForResult(intent, 101)
         } else {
             AuthUI.getInstance().signOut(context as Activity)
         }

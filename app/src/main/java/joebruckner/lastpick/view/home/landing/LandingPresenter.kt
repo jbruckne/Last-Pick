@@ -6,7 +6,7 @@ import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.tmdb.SlimMovie
-import joebruckner.lastpick.utils.applySchedulers
+import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope

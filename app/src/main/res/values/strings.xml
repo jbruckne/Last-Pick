@@ -197,6 +197,7 @@
     <string name="images">Images</string>
     <string name="label_overview">Overview</string>
     <string name="action_login">Login</string>
+    <string name="app_icon">app_icon</string>
 
 
 </resources>
