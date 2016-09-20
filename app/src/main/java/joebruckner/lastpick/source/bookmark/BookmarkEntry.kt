@@ -12,3 +12,13 @@ object BookmarkEntry {
             "$COLUMN_MOVIE TEXT);"
     val DELETE_TABLE_BOOKMARKS = "DROP TABLE IF EXISTS $TABLE_BOOKMARKS"
 }
+
+object BookmarkEntryV2 {
+    val columnMovieId = "MovieId"
+    val tableBookmarks = "BookmarksV2"
+    val createTableBookmarks = "CREATE TABLE IF NOT EXISTS ${BookmarkEntryV2.tableBookmarks} (" +
+            "${DatabaseHelper.COLUMN_ID} INTEGER PRIMARY KEY, " +
+            "${BookmarkEntryV2.columnMovieId} INTEGER" +
+            ");"
+    val deleteTableBookmarks = "DROP TABLE IF EXISTS $tableBookmarks"
+}

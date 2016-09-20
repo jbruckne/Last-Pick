@@ -29,7 +29,6 @@ class MovieContract {
         fun onFilterDismissed(filter: Filter)
         fun getFilter(): Filter
         fun onBookmarkToggled()
-        fun getBookmarkStatus(): Boolean
         fun getMovie(): Movie?
     }
 

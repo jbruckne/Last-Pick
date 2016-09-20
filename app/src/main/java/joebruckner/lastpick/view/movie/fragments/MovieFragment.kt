@@ -19,10 +19,10 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouch
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Movie
 import joebruckner.lastpick.model.State
+import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieContract
 import joebruckner.lastpick.view.movie.adapters.MovieDetailsPagerAdapter
-import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.widgets.FilterSheetDialogBuilder
 import javax.inject.Inject
 
@@ -61,6 +61,7 @@ class MovieFragment() : BaseFragment(),
     val OUT_DURATION: Long = 250
     val IN_DURATION: Long = 350
 
+    private var isBookmarked: Boolean = false
     private var errorMessage: String = "Error"
     private var errorButtonMessage: String = "Try again"
     private var errorButtonListener: (() -> Unit) = {}
@@ -171,6 +172,7 @@ class MovieFragment() : BaseFragment(),
     }
 
     override fun setBookmark(isBookmarked: Boolean) {
+        this.isBookmarked = isBookmarked
         parent.supportInvalidateOptionsMenu()
     }
 
@@ -250,8 +252,11 @@ class MovieFragment() : BaseFragment(),
         super.onPrepareOptionsMenu(menu)
         try {
             val bookmark = menu.findItem(R.id.action_bookmark)
-            bookmark?.icon = if (presenter.getBookmarkStatus()) AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_24dp)
-            else AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_outline_24dp)
+            bookmark?.icon =
+                    if (isBookmarked)
+                        AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_24dp)
+                    else
+                        AppCompatDrawableManager.get().getDrawable(view!!.context, R.drawable.ic_bookmark_outline_24dp)
         } catch (e: Exception) {}
     }
 

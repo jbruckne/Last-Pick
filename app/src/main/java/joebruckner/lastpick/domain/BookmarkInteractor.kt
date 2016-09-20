@@ -1,11 +1,11 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.Movie
 import rx.Observable
 
 interface BookmarkInteractor {
-    fun getBookmarks(): Observable<List<Movie>>
-    fun isMovieBookmarked(movie: Movie): Boolean
-    fun addBookmark(movie: Movie)
-    fun removeBookmark(movie: Movie)
+    fun getBookmarks(): Observable<List<Int>>
+    fun isMovieBookmarked(id: Int): Observable<Boolean>
+    fun addBookmark(id: Int)
+    fun removeBookmark(id: Int)
+    fun syncBookmarks()
 }

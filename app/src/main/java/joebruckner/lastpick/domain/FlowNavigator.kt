@@ -12,4 +12,5 @@ interface FlowNavigator {
     fun showSpecial(type: Showcase)
     fun showAbout()
     fun showLogin()
+    fun showLogout()
 }

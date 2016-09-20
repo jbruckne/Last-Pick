@@ -68,18 +68,16 @@ class FlowNavigatorImpl @Inject constructor(
     }
 
     override fun showLogin() {
-        val auth = FirebaseAuth.getInstance()
-        if (auth.currentUser == null) {
-            val intent = AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setIsSmartLockEnabled(false)
-                    .setProviders(AuthUI.GOOGLE_PROVIDER)
-                    .setLogo(R.mipmap.ic_launcher)
-                    .build()
-            (context as Activity).startActivityForResult(intent, 101)
-        } else {
-            AuthUI.getInstance().signOut(context as Activity)
-        }
-        //context.startActivity(Intent(context, LoginActivity::class.java))
+        val intent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setIsSmartLockEnabled(false)
+                .setProviders(AuthUI.GOOGLE_PROVIDER)
+                .setLogo(R.mipmap.ic_launcher)
+                .build()
+        (context as Activity).startActivityForResult(intent, 101)
+    }
+
+    override fun showLogout() {
+        AuthUI.getInstance().signOut(context as Activity)
     }
 }

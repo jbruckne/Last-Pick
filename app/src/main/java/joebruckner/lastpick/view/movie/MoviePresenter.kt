@@ -10,9 +10,9 @@ import joebruckner.lastpick.model.ReviewSource
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.tmdb.Video
+import joebruckner.lastpick.utilities.applySchedulers
 import joebruckner.lastpick.view.movie.MovieContract.Subview
 import joebruckner.lastpick.view.movie.MovieContract.View
-import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope
@@ -162,7 +162,10 @@ class MoviePresenter @Inject constructor(
         if (viewIsLoading()) {
             movie?.let {
                 view?.showContent(it)
-                view?.setBookmark(bookmarkInteractor.isMovieBookmarked(it))
+                bookmarkInteractor
+                        .isMovieBookmarked(it.id)
+                        .compose(applySchedulers<Boolean>())
+                        .subscribe { view?.setBookmark(it) }
                 subviews.forEach { sub -> sub.updateMovie(it) }
             }
         }
@@ -190,16 +193,20 @@ class MoviePresenter @Inject constructor(
 
     override fun onBookmarkToggled() {
         movie?.let {
-            if (getBookmarkStatus()) {
-                bookmarkInteractor.removeBookmark(it)
-                view?.setBookmark(false)
-                view?.showSnackbar("Bookmark removed")
-            } else {
-                bookmarkInteractor.addBookmark(it)
-                view?.setBookmark(true)
-                view?.showSnackbar("Bookmark added")
-            }
-            logger.logBookmarkChange(it, !getBookmarkStatus())
+            bookmarkInteractor
+                    .isMovieBookmarked(it.id)
+                    .compose(applySchedulers<Boolean>())
+                    .subscribe { isBookmarked ->
+                        if (isBookmarked) {
+                            bookmarkInteractor.removeBookmark(it.id)
+                            view?.showSnackbar("Bookmark removed")
+                        } else {
+                            bookmarkInteractor.addBookmark(it.id)
+                            view?.showSnackbar("Bookmark added")
+                        }
+                        view?.setBookmark(isBookmarked)
+                        logger.logBookmarkChange(it, !isBookmarked)
+                    }
         }
     }
 
@@ -209,8 +216,6 @@ class MoviePresenter @Inject constructor(
     }
 
     override fun getFilter(): Filter = filter
-
-    override fun getBookmarkStatus() = bookmarkInteractor.isMovieBookmarked(movie!!)
 
     override fun getMovie() = movie
 }
