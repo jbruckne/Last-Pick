@@ -11,8 +11,8 @@ import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.view.movie.adapters.SourceAdapter.SourceViewHolder
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.inflate
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.inflate
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -48,7 +48,7 @@ class SourceAdapter @Inject constructor(
     override fun getItemCount() = if (showAll) sources.size else Math.min(sources.size, 4)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceViewHolder {
-        return SourceViewHolder(parent.inflate(R.layout.card_source))
+        return SourceViewHolder(parent.inflate(R.layout.item_source))
     }
 
     class SourceViewHolder(val view: View): RecyclerView.ViewHolder(view) {

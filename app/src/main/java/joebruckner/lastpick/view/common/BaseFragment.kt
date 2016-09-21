@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import joebruckner.lastpick.R
-import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utilities.find
 
 abstract class BaseFragment : Fragment(), BackPressListener {
     open val menuId: Int = R.menu.menu_empty

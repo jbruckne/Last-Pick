@@ -1,12 +1,9 @@
 package joebruckner.lastpick.view.movie
 
 import dagger.Subcomponent
-import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.ActivityModule
-import joebruckner.lastpick.view.movie.fragments.MovieFragment
-import joebruckner.lastpick.view.movie.fragments.MovieInfoFragment
-import joebruckner.lastpick.view.movie.fragments.MovieMediaFragment
-import joebruckner.lastpick.view.movie.fragments.MovieReviewFragment
+import joebruckner.lastpick.ActivityScope
+import joebruckner.lastpick.view.movie.MovieFragment
 
 @ActivityScope
 @Subcomponent(modules = arrayOf(
@@ -15,7 +12,4 @@ import joebruckner.lastpick.view.movie.fragments.MovieReviewFragment
 ))
 interface MovieComponent {
     fun inject(fragment: MovieFragment)
-    fun inject(fragment: MovieInfoFragment)
-    fun inject(fragment: MovieMediaFragment)
-    fun inject(fragment: MovieReviewFragment)
 }

@@ -4,9 +4,9 @@
     <!-- DUMMIES -->
     <string name="dummy_title">Kingsman: The Secret Service</string>
     <string name="dummy_summary">
-        A spy organization recruits an unrefined, but promising street kid into the agency\'s
-        ultra-competitive training program, just as a global threat emerges from a twisted tech
-        genius.
+        Following the events of Age of Ultron, the collective governments of the world pass an act
+        designed to regulate all superhuman activity.
+        This polarizes opinion amongst the Avengers, causing two factions…
     </string>
     <string name="dummy_cast">Cast: Jack Brown, Mitch Daniels, Sandy James</string>
     <string name="dummy_length">2 hr 15 min</string>
@@ -175,7 +175,7 @@
     <string name="filter_options">Filter Options</string>
     <string name="where_to_watch">Where to watch</string>
     <string name="see_all_trailers">See All Trailers</string>
-    <string name="view_more">View More</string>
+    <string name="view_more">More</string>
     <string name="metacritic_reviews">Metacritic</string>
     <string name="rotten_tomatoes_reviews">Rotten Tomatoes</string>
     <string name="themoviedb_reviews">The Movie Database</string>
@@ -198,6 +198,12 @@
     <string name="label_overview">Overview</string>
     <string name="action_login">Login</string>
     <string name="app_icon">app_icon</string>
+    <string name="label_sources">Where to watch</string>
+    <string name="label_cast">Cast</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_images">Images</string>
+    <string name="tagline">Some kind of tagline</string>
+    <string name="label_cast_and_crew">Cast and Crew</string>
 
 
 </resources>

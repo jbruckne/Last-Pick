@@ -9,9 +9,9 @@ import android.widget.TextView
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.tmdb.Video
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.inflate
-import joebruckner.lastpick.utils.load
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.inflate
+import joebruckner.lastpick.utilities.load
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -44,7 +44,7 @@ class TrailerAdapter @Inject constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrailerViewHolder {
-        val view = parent.inflate(R.layout.card_trailer)
+        val view = parent.inflate(R.layout.item_trailer)
         return TrailerViewHolder(view)
     }
 

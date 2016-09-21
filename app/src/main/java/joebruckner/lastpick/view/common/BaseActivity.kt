@@ -7,23 +7,19 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import joebruckner.lastpick.R
-import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utilities.find
 
 abstract class BaseActivity : AppCompatActivity() {
     protected abstract val layoutId: Int
     protected open val fabId = R.id.fab
     protected open val appBarId = R.id.appBar
     protected open val toolbarId = R.id.toolbar
-    protected open val tabLayoutId = R.id.tab_layout
-    protected open val collapsingToolbarId = R.id.collapsingToolbar
     protected open var menuId: Int = R.menu.menu_empty
 
     val logTag = javaClass.simpleName!!
@@ -34,8 +30,6 @@ abstract class BaseActivity : AppCompatActivity() {
     val fab                 by lazy { find<FloatingActionButton?>(fabId) }
     val toolbar             by lazy { find<Toolbar?>(toolbarId) }
     val appBar              by lazy { find<AppBarLayout?>(appBarId) }
-    val tabLayout           by lazy { find<TabLayout?>(tabLayoutId) }
-    val collapsingToolbar   by lazy { find<CollapsingToolbarLayout?>(collapsingToolbarId) }
     var menu: Menu? = null
 
     var colorPrimary: Int = Color.GRAY
@@ -89,9 +83,6 @@ abstract class BaseActivity : AppCompatActivity() {
         val primaryAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorPrimary, color)
         primaryAnimator.addUpdateListener { animator ->
             appBar?.setBackgroundColor(animator.animatedValue as Int)
-            tabLayout?.setBackgroundColor(animator.animatedValue as Int)
-            collapsingToolbar?.setBackgroundColor(animator.animatedValue as Int)
-            collapsingToolbar?.setContentScrimColor(animator.animatedValue as Int)
         }
         primaryAnimator.duration = 250
         primaryAnimator.start()
@@ -114,8 +105,7 @@ abstract class BaseActivity : AppCompatActivity() {
         if (isThemeLocked) return
         val animator = ValueAnimator.ofObject(ArgbEvaluator(), colorAccent, color)
         animator.addUpdateListener { animator ->
-            fab?.backgroundTintList = ColorStateList.valueOf(color)
-            tabLayout?.setSelectedTabIndicatorColor(color)
+            fab?.backgroundTintList = ColorStateList.valueOf(animator.animatedValue as Int)
         }
         animator.duration = 200
         animator.start()

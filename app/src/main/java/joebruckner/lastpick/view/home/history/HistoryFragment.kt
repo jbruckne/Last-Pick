@@ -11,8 +11,8 @@ import joebruckner.lastpick.model.State
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieActivity
 import joebruckner.lastpick.view.movie.adapters.MovieAdapter
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.visibleIf
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.visibleIf
 import javax.inject.Inject
 
 class HistoryFragment : BaseFragment(), HistoryContract.View {

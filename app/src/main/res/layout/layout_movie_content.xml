@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/movie_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/movie_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="96dp"
+        android:orientation="vertical"
+        android:elevation="4dp"
+        android:animateLayoutChanges="true"
+        tools:targetApi="N">
+
+        <RelativeLayout
+            android:id="@+id/movie_layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary">
+
+            <ImageView
+                android:id="@+id/movie_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/backdrop"
+                android:background="?android:attr/windowBackground"/>
+
+            <LinearLayout
+                android:id="@+id/movie_layout_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_below="@id/movie_backdrop"
+                android:layout_toEndOf="@+id/movie_poster"
+                android:orientation="vertical"
+                android:minHeight="80dp">
+
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:textSize="24sp"
+                    android:maxLines="3"
+                    tools:text="Some Movie Title"/>
+
+                <TextView
+                    android:id="@+id/movie_genres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    tools:text="Some Movie Genres"/>
+
+                <TextView
+                    android:id="@+id/movie_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    tools:text="Some Movie Info"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/movie_poster"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:layout_marginStart="16dp"
+                android:layout_alignBottom="@id/movie_layout_title"
+                android:elevation="4dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/poster"
+                android:background="@color/md_grey_910"/>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/movie_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/movie_layout_title"
+                android:background="?attr/colorPrimary"/>
+        </RelativeLayout>
+
+        <include layout="@layout/card_overview"/>
+
+        <include layout="@layout/card_credits"/>
+
+        <include layout="@layout/card_sources"/>
+
+        <include layout="@layout/card_trailers"/>
+
+        <include layout="@layout/card_images"/>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

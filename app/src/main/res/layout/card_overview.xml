@@ -6,8 +6,9 @@
     android:id="@+id/movie_card_overview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/movie_card_top_margin"
     app:cardBackgroundColor="?attr/colorBackgroundFloating"
-    app:cardCornerRadius="0dp"
+    app:cardCornerRadius="2dp"
     app:cardElevation="2dp">
 
     <LinearLayout
@@ -17,23 +18,34 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/movie_label_overview"
+            android:id="@+id/movie_tagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="16dp"
+            android:fontFamily="sans-serif"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/label_overview"/>
+            android:textStyle="bold|italic"
+            tools:text="@string/tagline"/>
 
         <TextView
-            android:id="@+id/movie_overview"
+            android:id="@+id/movie_overview_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:textSize="16sp"
-            android:text="@string/dummy_summary"/>
+            android:fontFamily="sans-serif-medium"
+            android:textSize="14sp"
+            tools:text="@string/dummy_summary"/>
 
+        <Button
+            android:id="@+id/movie_overview_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="?attr/colorAccent"
+            android:textSize="12sp"
+            android:text="@string/view_more"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

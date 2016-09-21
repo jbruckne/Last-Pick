@@ -1,8 +1,10 @@
-package joebruckner.lastpick.utils
+package joebruckner.lastpick.utilities
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
@@ -11,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import joebruckner.lastpick.widgets.PaletteTheme
@@ -47,23 +48,19 @@ inline fun consume(f: () -> Unit): Boolean {
     return true
 }
 
-fun View.visibleIf(bool: Boolean) {
-    this.visibility = if (bool) View.VISIBLE else View.GONE
-}
-
 fun ImageView.load(context: Context, path: String,
-                   success: (GlideDrawable) -> Unit = {},
+                   success: (Bitmap) -> Unit = {},
                    error: (Exception) -> Unit = {}
 ) {
-    Glide.with(context).load(path).listener(object: RequestListener<String, GlideDrawable> {
-        override fun onException(e: Exception, model: String?, target: Target<GlideDrawable>?,
+    Glide.with(context).load(path).asBitmap().listener(object: RequestListener<String, Bitmap> {
+        override fun onException(e: Exception, model: String?, target: Target<Bitmap>?,
                                  isFirstResource: Boolean): Boolean {
             error.invoke(e)
             return false
         }
 
-        override fun onResourceReady(resource: GlideDrawable, model: String?,
-                                     target: Target<GlideDrawable>?, isFromMemoryCache: Boolean,
+        override fun onResourceReady(resource: Bitmap, model: String?,
+                                     target: Target<Bitmap>?, isFromMemoryCache: Boolean,
                                      isFirstResource: Boolean): Boolean {
             success.invoke(resource)
             return false
@@ -77,7 +74,7 @@ fun ImageView.loadWithPalette(context: Context, path: String, duration: Long, al
             .load(path)
             .asBitmap()
             .listener(SimpleRequestListener { resource ->
-                PaletteTheme.Builder(resource).generateFrom { listener(it) }
+                PaletteTheme.Builder(resource).generate { listener(it) }
                 animate().alpha(alpha).duration = duration
             })
             .centerCrop()
@@ -109,3 +106,5 @@ fun <T> MutableCollection<T>.addIfNotContained(item: T) {
 }
 
 fun Int.isEven(): Boolean = this % 2 == 0
+
+fun isLollipop(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP

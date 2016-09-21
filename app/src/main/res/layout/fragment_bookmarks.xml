@@ -12,7 +12,7 @@
         android:paddingBottom="72dp"
         android:clipToPadding="false"
         android:visibility="visible"
-        tools:listitem="@layout/card_movie_list"
+        tools:listitem="@layout/item_movie"
         />
 
     <android.support.v4.widget.ContentLoadingProgressBar

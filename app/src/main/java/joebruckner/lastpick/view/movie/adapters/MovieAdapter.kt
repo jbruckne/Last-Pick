@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.inflate
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.inflate
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,7 +27,7 @@ class MovieAdapter @Inject constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder? {
-        val view = parent.inflate(R.layout.card_movie_list)
+        val view = parent.inflate(R.layout.item_movie)
         return MovieViewHolder(view)
     }
 

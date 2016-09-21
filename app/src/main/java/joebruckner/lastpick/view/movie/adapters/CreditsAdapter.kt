@@ -13,7 +13,7 @@ import joebruckner.lastpick.R
 import joebruckner.lastpick.model.tmdb.Cast
 import joebruckner.lastpick.model.tmdb.Credits
 import joebruckner.lastpick.model.tmdb.Crew
-import joebruckner.lastpick.utils.load
+import joebruckner.lastpick.utilities.load
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -57,7 +57,7 @@ class CreditsAdapter @Inject constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder? {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.card_actor, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_actor, parent, false)
         return CastViewHolder(view)
     }
 

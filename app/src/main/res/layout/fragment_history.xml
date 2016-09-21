@@ -13,7 +13,7 @@
         android:clipToPadding="false"
         android:visibility="visible"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/card_movie_list"
+        tools:listitem="@layout/item_movie"
         />
 
     <android.support.v4.widget.ContentLoadingProgressBar

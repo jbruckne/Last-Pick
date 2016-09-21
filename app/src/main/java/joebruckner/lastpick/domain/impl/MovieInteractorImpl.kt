@@ -7,8 +7,8 @@ import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.movie.LocalMovieDataSource
 import joebruckner.lastpick.source.movie.NetworkMovieDataSource
-import joebruckner.lastpick.utils.addIfNotContained
-import joebruckner.lastpick.utils.shuffle
+import joebruckner.lastpick.utilities.addIfNotContained
+import joebruckner.lastpick.utilities.shuffle
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -15,8 +15,8 @@ import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Filter
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.view.movie.adapters.GenreAdapter
-import joebruckner.lastpick.utils.darkenColor
-import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utilities.darkenColor
+import joebruckner.lastpick.utilities.find
 
 class FilterSheetDialogBuilder(
         val context: Context,

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.tmdb.Image
+import joebruckner.lastpick.utilities.*
 import joebruckner.lastpick.utils.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -63,8 +64,8 @@ class ImageAdapter @Inject constructor(
 
     override fun getItemViewType(position: Int): Int {
         return when (images[position].isPoster()) {
-            true -> R.layout.card_poster
-            else -> R.layout.card_backdrop
+            true -> R.layout.item_poster
+            else -> R.layout.item_backdrop
         }
     }
 

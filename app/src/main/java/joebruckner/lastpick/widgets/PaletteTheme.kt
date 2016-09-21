@@ -3,7 +3,7 @@ package joebruckner.lastpick.widgets
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v7.graphics.Palette
-import joebruckner.lastpick.utils.darkenColor
+import joebruckner.lastpick.utilities.darkenColor
 
 class PaletteTheme(val palette: Palette) {
     val defaultPrimary = Color.GRAY
@@ -41,7 +41,7 @@ class PaletteTheme(val palette: Palette) {
     fun getAccentColor() = chooseAccentSwatch()?.rgb ?: defaultAccent
 
     class Builder(val resource: Bitmap) {
-        fun generateFrom(listener: (PaletteTheme) -> Unit) {
+        fun generate(listener: (PaletteTheme) -> Unit) {
             Palette.from(resource).generate { palette ->
                 listener(PaletteTheme(palette))
             }

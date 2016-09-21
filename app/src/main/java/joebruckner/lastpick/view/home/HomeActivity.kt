@@ -13,6 +13,7 @@ import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.R.*
 import joebruckner.lastpick.domain.FlowNavigator
+import joebruckner.lastpick.utilities.*
 import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.view.common.BaseActivity
 import joebruckner.lastpick.view.home.bookmark.BookmarkFragment

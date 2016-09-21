@@ -7,8 +7,8 @@ import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.view.common.BaseActivity
-import joebruckner.lastpick.utils.replaceFrame
-import joebruckner.lastpick.utils.setHomeAsUpEnabled
+import joebruckner.lastpick.utilities.replaceFrame
+import joebruckner.lastpick.utilities.setHomeAsUpEnabled
 
 class SpecialsActivity : BaseActivity() {
     override val layoutId = R.layout.activity_specials

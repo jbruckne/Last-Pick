@@ -12,8 +12,8 @@ import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.adapters.SlimMovieAdapter
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.visibleIf
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.visibleIf
 import javax.inject.Inject
 
 class SpecialsFragment : BaseFragment(), SpecialsContract.View {
@@ -55,7 +55,7 @@ class SpecialsFragment : BaseFragment(), SpecialsContract.View {
 
         if (!isFirstStart) return
 
-        adapter = SlimMovieAdapter(context, R.layout.card_movie_list) {
+        adapter = SlimMovieAdapter(context, R.layout.item_movie) {
             presenter.movieSelected(it)
         }
 

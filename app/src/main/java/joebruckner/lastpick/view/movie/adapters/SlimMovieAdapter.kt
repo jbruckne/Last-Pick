@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import joebruckner.lastpick.R
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.model.tmdb.SlimMovie
-import joebruckner.lastpick.utils.find
+import joebruckner.lastpick.utilities.find
 
 class SlimMovieAdapter(
         val context: Context,

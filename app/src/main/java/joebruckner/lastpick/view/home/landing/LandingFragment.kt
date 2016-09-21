@@ -10,8 +10,8 @@ import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.view.common.BaseFragment
-import joebruckner.lastpick.utils.find
-import joebruckner.lastpick.utils.visibleIf
+import joebruckner.lastpick.utilities.find
+import joebruckner.lastpick.utilities.visibleIf
 import javax.inject.Inject
 
 class LandingFragment : BaseFragment(), LandingContract.View {
