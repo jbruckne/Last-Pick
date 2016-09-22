@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.BookmarkInteractor
 import joebruckner.lastpick.domain.FlowNavigator
+import joebruckner.lastpick.source.collection.CollectionRepository
 import joebruckner.lastpick.view.home.HomeContract.Presenter
 import joebruckner.lastpick.view.home.HomeContract.View
 import javax.inject.Inject
@@ -11,6 +12,7 @@ import javax.inject.Inject
 @ActivityScope
 class HomePresenter @Inject constructor(
         val bookmarkInteractor: BookmarkInteractor,
+        val collections: CollectionRepository,
         val navigator: FlowNavigator
 ) : Presenter, FirebaseAuth.AuthStateListener {
     var view: View? = null

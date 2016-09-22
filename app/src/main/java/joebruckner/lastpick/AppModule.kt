@@ -13,6 +13,8 @@ import joebruckner.lastpick.model.guidebox.GuideboxMovie
 import joebruckner.lastpick.source.DatabaseHelper
 import joebruckner.lastpick.source.GuideboxService
 import joebruckner.lastpick.source.TmdbService
+import joebruckner.lastpick.source.collection.CollectionRepository
+import joebruckner.lastpick.source.collection.LocalCollectionSource
 import joebruckner.lastpick.utils.SourceInfoDeserializer
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -101,5 +103,11 @@ class AppModule(val mainApp: MainApp) {
                 .client(client)
                 .build()
                 .create(GuideboxService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollections(repo: LocalCollectionSource): CollectionRepository {
+        return repo
     }
 }
