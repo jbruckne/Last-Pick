@@ -2,14 +2,18 @@ package joebruckner.lastpick.view.movie
 
 import android.graphics.Color
 import joebruckner.lastpick.ActivityScope
-import joebruckner.lastpick.domain.*
+import joebruckner.lastpick.domain.EventLogger
+import joebruckner.lastpick.domain.FlowNavigator
+import joebruckner.lastpick.domain.HistoryInteractor
+import joebruckner.lastpick.domain.MovieInteractor
 import joebruckner.lastpick.domain.impl.MovieInteractorImpl
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.ReviewSource
-import joebruckner.lastpick.model.State
 import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.ReviewSource
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.model.tmdb.Video
+import joebruckner.lastpick.source.collection.CollectionManager
 import joebruckner.lastpick.utilities.applySchedulers
 import joebruckner.lastpick.view.movie.MovieContract.Subview
 import joebruckner.lastpick.view.movie.MovieContract.View
@@ -19,7 +23,7 @@ import javax.inject.Inject
 class MoviePresenter @Inject constructor(
         val movieInteractor: MovieInteractor,
         val historyInteractor: HistoryInteractor,
-        val bookmarkInteractor: BookmarkInteractor,
+        val collections: CollectionManager,
         val navigator: FlowNavigator,
         val logger: EventLogger
 ) : MovieContract.Presenter {
@@ -160,13 +164,14 @@ class MoviePresenter @Inject constructor(
 
     private fun showMovie() {
         if (viewIsLoading()) {
-            movie?.let {
-                view?.showContent(it)
-                bookmarkInteractor
-                        .isMovieBookmarked(it.id)
+            movie?.let { movie ->
+                view?.showContent(movie)
+                collections
+                        .getCollection(0)
+                        .map { it.contains(movie.id) }
                         .compose(applySchedulers<Boolean>())
                         .subscribe { view?.setBookmark(it) }
-                subviews.forEach { sub -> sub.updateMovie(it) }
+                subviews.forEach { sub -> sub.updateMovie(movie) }
             }
         }
     }
@@ -192,20 +197,27 @@ class MoviePresenter @Inject constructor(
     }
 
     override fun onBookmarkToggled() {
-        movie?.let {
-            bookmarkInteractor
-                    .isMovieBookmarked(it.id)
+        movie?.let { movie ->
+            collections
+                    .getCollection(0)
+                    .map { it.contains(movie.id) }
                     .compose(applySchedulers<Boolean>())
                     .subscribe { isBookmarked ->
                         if (isBookmarked) {
-                            bookmarkInteractor.removeBookmark(it.id)
+                            collections
+                                    .getCollection(0)
+                                    .map { collections.removeMovie(0, movie.id) }
+                                    .subscribe()
                             view?.showSnackbar("Bookmark removed")
                         } else {
-                            bookmarkInteractor.addBookmark(it.id)
+                            collections
+                                    .getCollection(0)
+                                    .map { collections.addMovie(0, movie.id) }
+                                    .subscribe()
                             view?.showSnackbar("Bookmark added")
                         }
                         view?.setBookmark(isBookmarked)
-                        logger.logBookmarkChange(it, !isBookmarked)
+                        logger.logBookmarkChange(movie, !isBookmarked)
                     }
         }
     }

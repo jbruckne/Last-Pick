@@ -9,7 +9,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import joebruckner.lastpick.R
 import joebruckner.lastpick.domain.FlowNavigator
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.view.about.AboutActivity
 import joebruckner.lastpick.view.home.HomeActivity
 import joebruckner.lastpick.view.movie.MovieActivity

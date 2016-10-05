@@ -1,7 +1,7 @@
 package joebruckner.lastpick.domain.impl
 
 import joebruckner.lastpick.domain.HistoryInteractor
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
 import joebruckner.lastpick.source.history.LocalHistoryRepository
 import rx.Observable
 import javax.inject.Inject

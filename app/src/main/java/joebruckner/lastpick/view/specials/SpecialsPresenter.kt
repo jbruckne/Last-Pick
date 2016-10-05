@@ -4,7 +4,7 @@ import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.domain.EventLogger
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject

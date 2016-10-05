@@ -6,7 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.widget.Button
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieContract
 import joebruckner.lastpick.view.movie.adapters.ImageAdapter

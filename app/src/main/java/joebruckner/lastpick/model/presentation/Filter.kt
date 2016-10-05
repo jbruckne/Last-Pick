@@ -1,4 +1,4 @@
-package joebruckner.lastpick.model
+package joebruckner.lastpick.model.presentation
 
 import joebruckner.lastpick.model.tmdb.Genre
 

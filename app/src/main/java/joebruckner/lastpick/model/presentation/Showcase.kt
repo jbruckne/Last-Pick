@@ -1,4 +1,4 @@
-package joebruckner.lastpick.model
+package joebruckner.lastpick.model.presentation
 
 enum class Showcase(val title: String) {
     POPULAR("Popular"),

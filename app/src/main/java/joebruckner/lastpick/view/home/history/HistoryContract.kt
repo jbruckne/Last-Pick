@@ -1,7 +1,7 @@
 package joebruckner.lastpick.view.home.history
 
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.State
 
 class HistoryContract {
     interface Presenter {

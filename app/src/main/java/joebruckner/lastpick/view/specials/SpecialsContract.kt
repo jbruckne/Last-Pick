@@ -1,7 +1,7 @@
 package joebruckner.lastpick.view.specials
 
-import joebruckner.lastpick.model.Showcase
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Showcase
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.model.tmdb.SlimMovie
 
 class SpecialsContract {

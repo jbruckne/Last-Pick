@@ -3,9 +3,9 @@ package joebruckner.lastpick.source.movie
 import android.net.ConnectivityManager
 import android.util.Log
 import joebruckner.lastpick.MainApp
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Showcase
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Showcase
+import joebruckner.lastpick.model.presentation.Movie
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.GuideboxService

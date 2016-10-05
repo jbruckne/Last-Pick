@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieActivity
 import joebruckner.lastpick.view.movie.adapters.MovieAdapter

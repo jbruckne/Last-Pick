@@ -1,69 +1,92 @@
 package joebruckner.lastpick.source.collection
 
-import joebruckner.lastpick.model.MovieCollection
+import com.google.gson.Gson
+import joebruckner.lastpick.model.database.CollectionAction
+import joebruckner.lastpick.model.database.ItemAction
+import joebruckner.lastpick.source.DatabaseHelper
 import rx.Observable
+import java.util.*
 import javax.inject.Inject
 
-class LocalCollectionSource @Inject constructor(): CollectionRepository {
-    // collectionId, collection
-    val collections = mutableMapOf<Int, MovieCollection>()
-    // collectionId, movieId
-    val entries = mutableSetOf<Pair<Int, Int>>()
+class LocalCollectionSource @Inject constructor(
+        val dbHelper: DatabaseHelper,
+        val gson: Gson = Gson()
+): CollectionRepository {
 
-    override fun getAllCollections(): Observable<List<MovieCollection>> {
-        return Observable.defer {
-            Observable.just(collections.values.toList())
-        }
-    }
 
-    override fun getAllEntries(): Observable<List<Pair<Int, Int>>> {
-        return Observable.defer {
-            Observable.just(entries.toList())
-        }
-    }
+    override fun getAll(): Observable<List<CollectionAction>> {
+        return Observable.defer<List<CollectionAction>> {
+            val reader = dbHelper.readableDatabase
 
-    override fun getCollection(id: Int): Observable<MovieCollection> {
-        return Observable.defer<MovieCollection> {
-            if (collections.containsKey(id)) Observable.just(collections[id])
-            else Observable.error<MovieCollection>(Throwable("Collection does not exist"))
-        }
-    }
+            val cursor = reader.rawQuery("select * from ${CollectionEntry.tableCollections}", null)
 
-    override fun getMoviesInCollection(collectionId: Int): Observable<List<Int>> {
-        return Observable.defer<List<Int>> {
-            val movies = arrayListOf<Int>()
-            entries.forEach { if (it.first == collectionId) movies.add(it.second) }
-            Observable.just(movies)
-        }
-    }
-
-    override fun getCollectionsFromMovie(movieId: Int): Observable<List<MovieCollection>> {
-        return Observable.defer<List<MovieCollection>> {
-            val set = mutableSetOf<MovieCollection>()
-            entries.forEach {
-                if (it.second == movieId) collections[it.first]?.let { set.add(it) }
+            if (cursor.moveToFirst()) {
+                val collections = mutableListOf<CollectionAction>()
+                do {
+                    collections.add(CollectionEntry.retrieveCollection(cursor))
+                } while (cursor.moveToNext())
+                Observable.just(collections)
+            } else {
+                Observable.error<List<CollectionAction>>(Throwable("No Collections Found"))
             }
-            Observable.just(set.toList())
         }
     }
 
-    override fun addCollection(collection: MovieCollection) {
-        collections.put(collection.id, collection)
+    override fun getCollection(id: Int): Observable<List<ItemAction>> {
+        return Observable.defer<List<ItemAction>> {
+            val reader = dbHelper.readableDatabase
+
+            val cursor = reader.rawQuery("select * from ${CollectionEntry.tableCollections} " +
+                    "where ${ItemEntry.cid}=$id", null)
+
+            if (cursor.moveToFirst()) {
+                val items = mutableListOf<ItemAction>()
+                do {
+                    items.add(ItemEntry.retrieveItem(cursor))
+                } while (cursor.moveToNext())
+                Observable.just(items)
+            } else {
+                Observable.error<List<ItemAction>>(Throwable("Collection Not Found"))
+            }
+        }
     }
 
-    override fun updateCollection(collectionId: Int, name: String) {
-        collections.put(collectionId, MovieCollection(collectionId, name))
+    override fun createCollection(name: String): Observable<CollectionAction> {
+        return Observable.defer<CollectionAction> {
+            Observable.just(createCollection(
+                    UUID.randomUUID().mostSignificantBits.toInt(),
+                    name
+            ))
+        }
     }
 
-    override fun removeCollection(id: Int) {
-        collections.remove(id)
+    private fun createCollection(id: Int, name: String): CollectionAction {
+        val action = CollectionAction(1, id, name)
+        val content = CollectionEntry.createCollectionRow(action)
+        dbHelper.writableDatabase.insert(CollectionEntry.tableCollections, null, content)
+        return action
     }
 
-    override fun addToCollection(collectionId: Int, movieId: Int) {
-        entries.add(Pair(collectionId, movieId))
+    override fun updateCollection(id: Int, name: String): Observable<CollectionAction> {
+        return Observable.defer<CollectionAction> {
+            deleteCollection(id)
+            Observable.just(createCollection(id, name))
+        }
     }
 
-    override fun removeFromCollection(collectionId: Int, movieId: Int) {
-        entries.remove(Pair(collectionId, movieId))
+    override fun deleteCollection(id: Int) {
+        val action = CollectionAction(0, id, "")
+        val content = CollectionEntry.createCollectionRow(action)
+        dbHelper.writableDatabase.insert(CollectionEntry.tableCollections, null, content)
+    }
+
+    override fun addItem(cid: Int, mid: Int) {
+        val item = ItemEntry.createItemRow(ItemAction(1, mid, cid))
+        dbHelper.writableDatabase.insert(ItemEntry.tableItems, null, item)
+    }
+
+    override fun removeItem(cid: Int, mid: Int) {
+        val item = ItemEntry.createItemRow(ItemAction(0, mid, cid))
+        dbHelper.writableDatabase.insert(ItemEntry.tableItems, null, item)
     }
 }

@@ -17,8 +17,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import it.sephiroth.android.library.imagezoom.ImageViewTouch
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.utils.*
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieContract

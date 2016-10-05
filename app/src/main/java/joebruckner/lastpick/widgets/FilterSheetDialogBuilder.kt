@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import com.appyvet.rangebar.RangeBar
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Filter
+import joebruckner.lastpick.model.presentation.Filter
 import joebruckner.lastpick.model.tmdb.Genre
 import joebruckner.lastpick.view.movie.adapters.GenreAdapter
 import joebruckner.lastpick.utils.darkenColor

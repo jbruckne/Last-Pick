@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.inflate

@@ -1,6 +1,6 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
 import rx.Observable
 
 interface HistoryInteractor {

@@ -1,6 +1,6 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Showcase
 
 interface FlowNavigator {
     fun sendFeedback()

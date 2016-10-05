@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import joebruckner.lastpick.ActivityModule
 import joebruckner.lastpick.MainApp
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.view.common.BaseActivity
 import joebruckner.lastpick.utils.replaceFrame
 import joebruckner.lastpick.utils.setHomeAsUpEnabled

@@ -4,8 +4,8 @@ import android.support.v4.widget.NestedScrollView
 import android.widget.Button
 import android.widget.TextView
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.ReviewSource
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.ReviewSource
 import joebruckner.lastpick.view.common.BaseFragment
 import joebruckner.lastpick.view.movie.MovieContract
 import joebruckner.lastpick.utils.find

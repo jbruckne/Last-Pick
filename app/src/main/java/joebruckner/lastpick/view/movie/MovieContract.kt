@@ -1,9 +1,9 @@
 package joebruckner.lastpick.view.movie
 
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.ReviewSource
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.ReviewSource
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.tmdb.Video
 

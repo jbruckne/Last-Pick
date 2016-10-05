@@ -3,9 +3,9 @@ package joebruckner.lastpick.source.movie
 import android.content.ContentValues
 import android.util.Log
 import com.google.gson.Gson
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.DatabaseHelper
 import rx.Observable

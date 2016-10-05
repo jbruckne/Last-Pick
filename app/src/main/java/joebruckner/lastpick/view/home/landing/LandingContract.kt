@@ -1,7 +1,7 @@
 package joebruckner.lastpick.view.home.landing
 
-import joebruckner.lastpick.model.Showcase
-import joebruckner.lastpick.model.State
+import joebruckner.lastpick.model.presentation.Showcase
+import joebruckner.lastpick.model.presentation.State
 import joebruckner.lastpick.model.tmdb.SlimMovie
 
 class LandingContract {

@@ -1,16 +1,16 @@
 package joebruckner.lastpick.view.home.bookmark
 
 import joebruckner.lastpick.ActivityScope
-import joebruckner.lastpick.domain.BookmarkInteractor
 import joebruckner.lastpick.domain.FlowNavigator
 import joebruckner.lastpick.domain.MovieInteractor
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.source.collection.CollectionManager
 import joebruckner.lastpick.utilities.applySchedulers
 import javax.inject.Inject
 
 @ActivityScope
 class BookmarkPresenter @Inject constructor(
-        val bookmarkInteractor: BookmarkInteractor,
+        val collections: CollectionManager,
         val movieInteractor: MovieInteractor,
         val navigator: FlowNavigator
 ): BookmarkContract.Presenter {
@@ -26,8 +26,8 @@ class BookmarkPresenter @Inject constructor(
 
     override fun getBookmarks() {
         view?.showLoading()
-        bookmarkInteractor
-                .getBookmarks()
+        collections
+                .getCollection(0)
                 .flatMapIterable { it }
                 .flatMap { movieInteractor.getMovie(it) }
                 .toList()

@@ -1,9 +1,9 @@
 package joebruckner.lastpick.domain
 
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.Showcase
 import joebruckner.lastpick.model.guidebox.Source
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.model.tmdb.Video
 

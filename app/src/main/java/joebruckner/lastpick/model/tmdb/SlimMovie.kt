@@ -1,7 +1,7 @@
 package joebruckner.lastpick.model.tmdb
 
 import com.google.gson.annotations.SerializedName
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
 
 class SlimMovie(
         val id: Int,

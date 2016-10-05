@@ -1,9 +1,9 @@
 package joebruckner.lastpick.domain.impl
 
 import joebruckner.lastpick.domain.MovieInteractor
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.tmdb.Page
 import joebruckner.lastpick.source.movie.LocalMovieDataSource
 import joebruckner.lastpick.source.movie.NetworkMovieDataSource

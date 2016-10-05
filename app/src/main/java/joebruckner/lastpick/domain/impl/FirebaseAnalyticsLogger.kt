@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import joebruckner.lastpick.domain.EventLogger
-import joebruckner.lastpick.model.Filter
-import joebruckner.lastpick.model.Movie
-import joebruckner.lastpick.model.Showcase
+import joebruckner.lastpick.model.presentation.Filter
+import joebruckner.lastpick.model.presentation.Movie
+import joebruckner.lastpick.model.presentation.Showcase
 import joebruckner.lastpick.model.guidebox.Source
 import joebruckner.lastpick.model.tmdb.SlimMovie
 import joebruckner.lastpick.model.tmdb.Video

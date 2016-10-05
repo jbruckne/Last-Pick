@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import joebruckner.lastpick.ActivityScope
 import joebruckner.lastpick.R
-import joebruckner.lastpick.model.Movie
+import joebruckner.lastpick.model.presentation.Movie
 import joebruckner.lastpick.utils.find
 import joebruckner.lastpick.utils.inflate
 import javax.inject.Inject
